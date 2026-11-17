@@ -1,5 +1,7 @@
 # Matiz
 
+[Play Matiz](https://jorgebaptista.github.io/matiz/) · [Jogar em português europeu](https://jorgebaptista.github.io/matiz/editions/pt-PT/) · [Play in British English](https://jorgebaptista.github.io/matiz/editions/en-GB/)
+
 An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. Play in European Portuguese or British English. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
 Each edition starts with 68 practice words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
@@ -35,7 +37,7 @@ Each edition contains 188 original AI-drafted pilot questions, including its 120
 
 1. Review the pilot in small batches with native speakers. Ask testers which choices also seemed correct and which words they would actually use.
 2. Try another band of more demanding, useful words. Use Portuguese frequency and register as starting points, then adjust the difficulty based on playtests. Keep rounds at up to five words. Later, test whether players can use a word in a fresh sentence.
-3. Open the MIT repository with the credits and contribution guide. For the public game, run `npm run build:reviewed` and share the mobile web version first. Prepare a signed Android release and a way for pilot players to carry their progress across signing or platform changes before distributing it. [Android app signing](https://developer.android.com/studio/publish/app-signing)
+3. The public web pilot includes the original questions awaiting editorial review. Run `npm run build:reviewed` for a fully reviewed edition. Prepare a signed Android release and a way for pilot players to carry their progress across signing or platform changes before distributing it. [Android app signing](https://developer.android.com/studio/publish/app-signing)
 4. Welcome a first contributor-led language pack and use the experience to improve the guide. [Language packs](docs/languages.md)
 
 For the playable website, run `npm run build:site`. The maintainer guide covers local preview, publication, search indexing and the first community posts. [Website and launch guide](docs/launch.md)

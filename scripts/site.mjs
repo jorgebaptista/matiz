@@ -29,11 +29,16 @@ if (
   );
 }
 const absolute = (relative) => esc(new URL(relative, base).href);
+const languages = await readLanguages();
+const editionPath = locale => "editions/" + locale + "/";
 function publicLinks(route) {
   if (!base) return "";
   const url = absolute(route);
   return [
     '<link rel="canonical" href="' + url + '">',
+    ...languages.map(({ pack }) => '<link rel="alternate" hreflang="' + esc(pack.locale) +
+      '" href="' + absolute(editionPath(pack.locale)) + '">'),
+    '<link rel="alternate" hreflang="x-default" href="' + absolute("") + '">',
     '<meta property="og:url" content="' + url + '">',
     '<meta property="og:image" content="' + absolute("matiz.png") + '">',
     '<meta name="twitter:card" content="summary_large_image">',
@@ -44,7 +49,7 @@ const editions = [];
 const output = await mkdtemp(at(".matiz-site-"));
 try {
   const template = await read("site", "edition.html");
-  for (const { pack, locale: copy } of await readLanguages()) {
+  for (const { pack, locale: copy } of languages) {
     const locale = pack.locale;
     const isDefault = locale === defaultLocale;
     const relative = isDefault ? "" : locale;
@@ -59,7 +64,7 @@ try {
     const dest = path.join(output, route);
     await mkdir(dest, { recursive: true });
     await writeFile(path.join(dest, "index.html"), game);
-    const info = "editions/" + locale + "/";
+    const info = editionPath(locale);
     const word = (
       pack.levels.find((level) => level.id === "1") ?? pack.levels[0]
     ).words[0];
