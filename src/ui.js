@@ -9,6 +9,7 @@ import {
   next,
   finish,
   roundScore,
+  hasDaily, startDaily, activeSession,
 } from "./game.js";
 import { locale } from "./pack.js";
 import { translate, storageKey } from "./i18n.js";
@@ -88,7 +89,9 @@ function home() {
     [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
-    '</section><div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
+    '</section>' + (hasDaily ? '<button class="daily" data-action="daily"><strong>' + t("daily") +
+      '</strong><small>' + t("dailyHint") + '</small><span aria-hidden="true">→</span></button>' : '') +
+    '<div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
     t("learnedTotal", { count: total, total: wordTotal }) +
     '</span></div><div class="levels">' +
     levels
@@ -138,7 +141,7 @@ function roundTop(level, s, card) {
       .join("") +
     "</div>" +
     '<div class="eyebrow">' +
-    bandName(level) +
+    (state.dailyActive ? dailyLabel(s) + " · " : "") + bandName(level) +
     " · " +
     esc(level.name) +
     (card.practice ? " · " + t("practice") : "") +
@@ -172,7 +175,7 @@ function play(s) {
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
-      reviewTime(word) +
+      (state.dailyActive ? "" : reviewTime(word)) +
       (value && !correct
         ? '<p class="your">' + t("yourAnswer", { answer: value }) + '</p>'
         : "") +
@@ -205,20 +208,25 @@ function play(s) {
     '<button class="unsure" data-action="unsure">' + t("unsure") + '</button>'
   );
 }
+function dailyLabel(s) {
+  const date = new Intl.DateTimeFormat(locale.locale, { day: "numeric", month: "short", timeZone: "UTC" });
+  return t("daily") + " · " + esc(date.format(s.day * 86_400_000));
+}
 function summary(s) {
   return (
     header() +
-    '<section class="summary"><h1>' + t("roundComplete") + '</h1><div class="score">' +
+    '<section class="summary"><h1>' + (state.dailyActive ? dailyLabel(s) : t("roundComplete")) + '</h1><div class="score">' +
     roundScore(s) +
     "<span> / " +
     s.cards.length +
     '</span></div><p>' + t("correctAnswers") + '</p></section>' +
+    (state.dailyActive ? action("home", translate("backHome")) :
     action("continue", translate("playAgain")) +
-    '<button class="unsure" data-action="close">' + t("backHome") + '</button>'
+    '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
   );
 }
 function render(focus = false) {
-  const s = state.active && state.session;
+  const s = activeSession(state);
   root.classList.toggle("in-round", Boolean(s && s.cursor < s.cards.length));
   root.innerHTML = s ? play(s) : home();
   if (!s)
@@ -231,8 +239,9 @@ function render(focus = false) {
   }
 }
 function goHome() {
-  if (!state.active) return false;
+  if (!activeSession(state)) return false;
   state.active = false;
+  state.dailyActive = false;
   save();
   render(true);
   return true;
@@ -253,8 +262,9 @@ root.addEventListener("click", (e) => {
     return;
   }
   if (id === "start") start(state);
-  else if (state.active && state.session) {
-    const s = state.session;
+  else if (id === "daily") startDaily(state);
+  else if (activeSession(state)) {
+    const s = activeSession(state);
     if (id.startsWith("answer-"))
       answer(state, s.cards[s.cursor].options[Number(id.slice(7))]);
     else if (id === "unsure") answer(state, null);
@@ -267,4 +277,12 @@ root.addEventListener("click", (e) => {
   save();
   render(true);
 });
+const entry = new URL(window.location.href);
+if (hasDaily && entry.searchParams.get("mode") === "daily") {
+  startDaily(state);
+  save();
+  entry.searchParams.delete("mode");
+  if (entry.protocol === "http:" || entry.protocol === "https:")
+    history.replaceState(null, "", entry.href);
+}
 render();

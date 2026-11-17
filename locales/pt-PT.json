@@ -33,6 +33,8 @@
     "heroArt": "ãáa",
     "resume": "Continuar a ronda",
     "play": "Jogar",
+    "daily": "Desafio do dia",
+    "dailyHint": "4 palavras, da mais fácil à mais difícil",
     "yourWords": "As tuas palavras",
     "learnedTotal": "{count} / {total} aprendidas",
     "seenTotal": "{count} de {total} vistas",

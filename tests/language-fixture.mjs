@@ -17,6 +17,7 @@ export const fixtureLocale = {
   locale: "en-GB", languageName: "British English", title: "Matiz · Synonyms",
   description: "New words and reviews in rounds of up to five.",
   strings: {
+    daily: "Daily challenge", dailyHint: "4 words, from easiest to hardest",
     editionHeading: "A synonym game in British English", editionPlay: "Play in English",
     editionNote: "Free · No account · Progress saved on this device",
     sampleLabel: "A word from the game", revealSynonym: "Reveal the synonym",

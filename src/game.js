@@ -1,6 +1,7 @@
 import { applyAnswer, emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import { pack } from "./pack.js";
+import { dailyCards, dailyDay } from "./daily.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;
@@ -25,6 +26,20 @@ export const levels = pack.levels.map(({ id, name, words }) => ({
 export const wordsById = new Map(
   levels.flatMap((level) => level.words.map((word) => [word.id, word])),
 );
+
+// Fixed slots keep the daily at four even if more practice bands are added.
+const dailyBands = ["0", "1", "2", "3"].map(id => levels.find(level => level.id === id));
+export const hasDaily = pack.locale === "pt-PT" && dailyBands.every(band => band?.words.length);
+export function startDaily(state, now = Date.now()) {
+  if (!hasDaily) return;
+  const day = dailyDay(now);
+  if (state.daily?.day !== day)
+    state.daily = { day, cards: dailyCards(dailyBands, day), cursor: 0, answers: [] };
+  state.dailyActive = true;
+  state.active = false;
+}
+
+export const activeSession = state => state.dailyActive ? state.daily : state.active ? state.session : null;
 
 /** Create an offline save with one resumable session. */
 export const fresh = () => ({
@@ -112,6 +127,14 @@ export function restoreState(saved) {
       : [];
     if (parked.length) state.parkedSessions = parked;
     state.active = Boolean(state.session && saved.active);
+    if (hasDaily && Number.isSafeInteger(saved.daily?.day)) {
+      const daily = restoreSession(saved.daily);
+      if (daily) {
+        state.daily = daily;
+        state.dailyActive = Boolean(saved.dailyActive);
+        if (state.dailyActive) state.active = false;
+      }
+    }
   }
   return state;
 }
@@ -138,6 +161,7 @@ function struggling(state) {
 
 /** Resume, or draw overdue cards then easy-to-hard unseen cards; idle play is free practice. */
 export function start(state, now = Date.now(), rng = Math.random) {
+  if (state.dailyActive) state.dailyActive = false;
   if (state.session) {
     state.active = true;
     return state.session;
@@ -192,13 +216,14 @@ export function start(state, now = Date.now(), rng = Math.random) {
 
 /** Count an answer once and schedule from answer time, never from round creation. */
 export function answer(state, value, now = Date.now()) {
-  const session = state.session;
-  if (!state.active || !session || session.cursor >= session.cards.length ||
+  const session = activeSession(state);
+  if (!session || session.cursor >= session.cards.length ||
     session.answers.length !== session.cursor) return;
   const card = session.cards[session.cursor];
   const word = wordsById.get(card.id);
   if (!word || (value !== null && !card.options.includes(value))) return;
   session.answers.push(value);
+  if (state.dailyActive) return;
   for (const p of Object.values(state.progress)) {
     if (p.termId !== word.id && p.questionsLeft > 0) p.questionsLeft--;
   }
@@ -244,8 +269,8 @@ export function answer(state, value, now = Date.now()) {
 
 /** Advance only past an answered card. */
 export function next(state) {
-  const session = state.session;
-  if (state.active && session && session.answers.length > session.cursor)
+  const session = activeSession(state);
+  if (session && session.answers.length > session.cursor)
     session.cursor++;
 }
 

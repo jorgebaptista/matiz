@@ -71,6 +71,7 @@ try {
       sentence: word.example,
     };
     const page = template
+      .replace("<!-- daily-link -->", () => locale === "pt-PT" ? '<a href="../../' + esc(route) + '?mode=daily">' + esc(copy.strings.daily) + '</a>' : '')
       .replace("<!-- public-links -->", () => publicLinks(info))
       .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(fields[key]));
     const dir = path.join(output, info);

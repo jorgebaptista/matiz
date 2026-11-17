@@ -6,6 +6,8 @@ The pack contains 68 words. Its eight-word introductory band precedes Precisão,
 
 ## Practice schedule
 
+**Desafio do dia** offers four PT-PT words, one each from Entrada, Precisão, Subtileza and Argúcia. The Lisbon calendar date selects a word from each band's fixed shuffled deck and shuffles its choices. Each deck runs through every word before repeating. Web and Android builds with the same pack agree offline, with no scheduled jobs or daily editing. Pack edits can change future draws on updated devices. An opened challenge keeps its cards until you leave it and open another day's challenge. Today's attempt and score are saved locally, separately from the practice round and review schedule.
+
 A round contains up to five words. Due reviews take priority over new words. After a miss or **Não sei**, the word becomes eligible again after five other answers or ten minutes, whichever comes first. Both carry over between rounds and visits. Getting a scheduled retry right sets a review for the next day. Later successful scheduled reviews use intervals of 3, 7, 14 and 30 days. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked **Aprendida**.
 
 Repeated retrieval improved delayed vocabulary recall in an experiment with word pairs. A separate spacing experiment found that the best review gap depended on how long the material had to be remembered. Neither study tested Matiz's multiple-choice game, level sizes or exact intervals. Those are pilot settings. [Karpicke and Roediger](https://doi.org/10.1126/science.1152408) · [Cepeda et al.](https://doi.org/10.1111/j.1467-9280.2008.02209.x)

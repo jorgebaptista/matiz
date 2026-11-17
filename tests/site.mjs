@@ -97,6 +97,19 @@ try {
     .getByRole("link", { name: "Jogar em português", exact: true })
     .getAttribute("href");
   assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
+  const dailyLink = await staticPage.getByRole("link", { name: "Desafio do dia" }).getAttribute("href");
+  const daily = await browser.newPage({ viewport: { width: 390, height: 800 } });
+  await daily.goto(new URL(dailyLink, staticPage.url()).href);
+  for (let i = 0; i < 4; i++) {
+    assert.match(await daily.locator(".eyebrow").innerText(), /Desafio do dia/);
+    await daily.getByRole("button", { name: "Não sei" }).click();
+    if (i === 0) await daily.reload();
+    await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
+  }
+  assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
+  await daily.getByRole("button", { name: "Voltar ao início" }).click();
+  await daily.getByRole("button", { name: /Desafio do dia/ }).click();
+  assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
   await play

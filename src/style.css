@@ -129,6 +129,22 @@ header {
   background: var(--green);
   color: var(--paper);
 }
+.daily {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 13px 17px;
+  text-align: left;
+  background: var(--paper);
+  color: var(--green);
+}
+.daily strong { font-size: 1.05rem; }
+.daily small { grid-column: 1; color: var(--muted); }
+.daily span { grid-area: 1 / 2 / 3 / 3; }
 h1,
 h2,
 .number,
