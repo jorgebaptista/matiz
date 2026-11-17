@@ -2,11 +2,11 @@
 
 [Build and test locally](docs/development.md) · [Add a language](docs/languages.md)
 
-Matiz helps fluent speakers find a more precise way to say something. A good candidate is a word you might use in a conversation, an essay or a letter. A rare word earns its place when its meaning or register adds something.
+Choose words that help fluent speakers express themselves more precisely. Uncommon words should add a useful meaning or register.
 
-**Add your language.** Start with an example that would interest someone who already speaks it. You can translate the interface, supply questions or review another contributor's pack. The guide walks through building a first playable edition locally. [Language-pack guide](docs/languages.md)
+**Add a language.** Translate the interface, write questions or review a pack. Follow the [language-pack guide](docs/languages.md).
 
-**Contribute a feature.** Describe the player problem and a concrete example in an issue, or open a focused pull request with a test. For a change to game rules, start in `src/game.js` and `tests/game.test.mjs`. For an interface change, check it at phone width and include the necessary translation keys. Keep borrowed code and data traceable to their authors and licences. [Feature and word proposals](https://github.com/jorgebaptista/matiz/issues/new/choose)
+**Contribute a feature.** [Open an issue](https://github.com/jorgebaptista/matiz/issues/new/choose) with an example, or a focused PR with tests for changed behaviour. Practice rules live in `src/game.js` and `tests/game.test.mjs`. Check interface changes at phone width and update translations. Credit borrowed code and data, including their licences.
 
 ## Suggest a word
 
@@ -16,17 +16,19 @@ Open an issue with a word, the sense you have in mind and an example. Or copy th
 - Check the intended sense against a reference and record the link. Write the example and explanation yourself. Use `origin: "ai-drafted"` for an AI draft, including after someone edits or reviews it, or `"human-written"` for an original human draft.
 - Set `status` to `draft` and suggest a numeric `targetLevel`. Run `npm run content:check`.
 
-## Review and add a level
+## Review words and levels
 
-To schedule daily sets in a language pack, add one new question to each of bands 0 through 3 with the same `dailyOn` date in `YYYY-MM-DD` format. Submit a batch together and run `npm run content:check` to catch duplicate words, duplicate slots and incomplete dates. Ship the updated web bundle and APK before the first date. Existing installs can keep cycling through their bundled sets offline.
+A fluent reviewer plays each question before reading the example. Replace alternatives that could also be correct: players see only the headword. Check part of speech, register and idiomatic usage.
 
-A fluent reviewer of the edition’s language plays the question before looking at the example. Can they defend a second option for another common sense of the word? The player sees only the headword, so replace ambiguous alternatives. Check part of speech, register and idiomatic usage. Read the example aloud and consider where you would use the word yourself.
-
-When a question is ready, move it from the queue to the appropriate level in the edition’s pack, remove `targetLevel`, set `status` to `reviewed` and add `reviewedBy` with the reviewer's agreed public credit. Keep the original drafting credit, intended sense and references. For each existing `pilot` entry, add those review fields in place. A passing content check verifies the fields. People judge the language.
+Move reviewed questions from the queue to the appropriate level. Remove `targetLevel`, set `status` to `reviewed` and add `reviewedBy` with the reviewer's agreed public credit. Keep the original drafting credit, intended sense and references. For existing `pilot` entries, add those review fields in place.
 
 Place each band in the pack in order of difficulty. Give it a unique, stable numeric string ID and a display name. Pick as many reviewed words as fit the band. The game calculates totals and deals up to five words per round across all bands. Preserve published IDs so existing players keep their word histories and saved rounds. Changes to a live answer or its choices need a saved-round compatibility check before release.
 
-Run `npm run content:check`, `npm test`, `npm run build` and `npm run test:browser` before submitting a pack change. To build a fully reviewed edition, use `npm run build:reviewed`. That command requires a review credit and a reference for every playable word. Opening the source repository can happen independently.
+Run the [development checks](docs/development.md#checks) before submitting a pack change.
+
+## Schedule daily words
+
+Add one new question to each of bands 0 through 3 with the same `dailyOn` date in `YYYY-MM-DD` format. Submit complete dates and run `npm run content:check`. Publish the web bundle and APK before the first date; older installs keep cycling through their bundled sets offline.
 
 ## Pull requests
 

@@ -18,7 +18,7 @@ No account. Progress stays on your device.
 - [Add a language](docs/languages.md)
 - [Build and test](docs/development.md)
 - [Practice and spaced repetition](docs/learning.md) · [Challenge rules](docs/survival.md)
-- [Publish the website](docs/launch.md) · [Maintain the repository](docs/maintaining.md)
+- [Maintaining and publishing](docs/maintaining.md)
 - [Credits and licences](docs/credits.md)
 
 Thanks to [OpenQuiz](https://github.com/ndunl075/OpenQuiz) for the code we reuse, and Magoosh for the inspiration.

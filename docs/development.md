@@ -35,10 +35,4 @@ The task builds the game into `android/build/outputs/apk/debug/matiz-debug.apk`.
 
 Before public Android distribution, prepare a signed release and a way for pilot players to carry their progress across signing or platform changes. [Android app signing](https://developer.android.com/studio/publish/app-signing)
 
-## Next steps
-
-- Review pilot questions with native speakers, especially ambiguous choices and word usefulness.
-- Welcome contributor-led language packs and improve the guide through their feedback.
-- Test whether players can use learned words in fresh sentences.
-
-[Contributing](../CONTRIBUTING.md) · [Website and launch guide](launch.md)
+[Contributing](../CONTRIBUTING.md) · [Maintaining and publishing](maintaining.md)
