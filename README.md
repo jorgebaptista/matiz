@@ -1,10 +1,10 @@
 # Matiz
 
-**[Play Matiz →](https://jorgebaptista.github.io/matiz/)**
+**[Play Matiz →](https://jorgebaptista.github.io/matiz/)** · [![MIT licence](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 
 A free, open-source synonym game for a richer vocabulary in a language you already speak. Short rounds, daily words and challenges with friends.
 
-`PT-PT` · `en-GB` · `Web` · `Android` · [MIT](LICENSE)
+`PT-PT` · `en-GB` · `Web` · `Android`
 
 No account. Progress stays on your device.
 
