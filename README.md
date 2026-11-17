@@ -1,8 +1,16 @@
 # Matiz
 
-An offline synonym game for fluent speakers, starting with European Portuguese. Open the game and play a round of up to five words. Each word has four choices, a skip option and an original example sentence. Two correct encounters fix a word. A miss or skip resets that word. Complete a level to unlock the next, or replay a completed level for practice.
+An offline synonym game for fluent speakers, starting with European Portuguese. Open the game and play a round of up to five words. Each word has four choices, a skip option and an original example sentence. Tap **Jogar** to let Matiz choose the words. Open a difficulty band under **As tuas palavras** to see each word and its learning status.
 
-The first pack contains 60 words across three levels (10, 20 and 30). Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
+The pack contains 68 words. Its eight-word introductory band precedes Precisão, Subtileza and Argúcia. Band sizes can vary with the material. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
+
+## Practice schedule
+
+A round takes up to five due words, oldest due first, before filling spare places with new words from the easier bands. A miss or **Não sei** makes that word due again in ten minutes. Correct scheduled answers set intervals of 1, 3, 7, 14 and then 30 days. A word remains eligible for review after it is marked **Aprendida**. Extra practice between scheduled reviews is available when there are no due or eligible new words.
+
+Repeated retrieval improved delayed vocabulary recall in an experiment with word pairs. A separate spacing experiment found that the best review gap depended on how long the material had to be remembered. Neither study tested Matiz's multiple-choice game, level sizes or exact intervals. Those are pilot settings. [Karpicke and Roediger](https://doi.org/10.1126/science.1152408) · [Cepeda et al.](https://doi.org/10.1111/j.1467-9280.2008.02209.x)
+
+For new play, **Aprendida** records a successful scheduled review after an earlier correct answer. Old saves keep their previously fixed words and unfinished rounds. Matiz estimates the first review date for each previously seen word from its saved timestamp and progress.
 
 ## Build and play
 
@@ -19,18 +27,18 @@ For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME
 
 ## Content and reuse
 
-Matiz starts with 60 AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The first suggestion is *alvitrar*. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
+Matiz starts with 68 AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The first suggestion is *alvitrar*. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
 
 ## Roadmap
 
 1. Review the pilot in small batches with native speakers. Ask testers which choices also seemed correct and which words they would actually use.
-2. Try a fourth level of more demanding, useful words. Use Portuguese frequency and register as starting points, then adjust the difficulty based on playtests. Keep rounds at up to five words. Later, test whether players can use a word in a fresh sentence.
+2. Try another band of more demanding, useful words. Use Portuguese frequency and register as starting points, then adjust the difficulty based on playtests. Keep rounds at up to five words. Later, test whether players can use a word in a fresh sentence.
 3. Open the MIT repository with the credits and contribution guide. For the public game, run `npm run build:reviewed` and share the mobile web version first. Prepare a signed Android release and a way for pilot players to carry their progress across signing or platform changes before distributing it. [Android app signing](https://developer.android.com/studio/publish/app-signing)
 4. For a second language, add its own editorial queue, native reviewers, playable pack, translated interface and separate saved progress. Reuse the game engine.
 
 ## Credits
 
-Thank you to the [OpenQuiz contributors](https://github.com/ndunl075/OpenQuiz). Matiz uses their code to select practice words, shuffle answer choices and update progress after each answer. The [upstream revision](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib) and [MIT copyright notice](vendor/openquiz/LICENSE) identify the code included in this build.
+Thank you to the [OpenQuiz contributors](https://github.com/ndunl075/OpenQuiz). Matiz uses their code to shuffle answer choices and track answers. The [upstream revision](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib) and [MIT copyright notice](vendor/openquiz/LICENSE) identify the code included in this build.
 
 [Magoosh Vocabulary Builder](https://magoosh.com/vocabulary-builder/) inspired the short rounds and unlockable levels. The European Portuguese questions and examples were written for Matiz.
 
@@ -38,4 +46,4 @@ The typefaces are [DM Sans](https://github.com/googlefonts/dm-fonts) and [Instru
 
 ## Verify
 
-Run `npm test` for content checks and progress rules. After building, run `npx playwright install chromium` and `npm run test:browser` to verify play, interruption, persistence and unlocking at phone width. `MATIZ_BROWSER` can point to an installed Chromium browser. `MATIZ_CDP` can point to the forwarded WebView debugging endpoint of a fresh Android test emulator to run the same checks inside the installed APK.
+Run `npm test` for content checks and progress rules. After building, run `npx playwright install chromium` and `npm run test:browser` to verify play, interruption, persistence and the word collection at phone width. `MATIZ_BROWSER` can point to an installed Chromium browser. `MATIZ_CDP` can point to the forwarded WebView debugging endpoint of a fresh Android test emulator to run the same checks inside the installed APK.

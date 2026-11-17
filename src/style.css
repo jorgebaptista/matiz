@@ -261,6 +261,21 @@ h2,
 .trail {
   font-size: 22px;
 }
+.band summary { cursor: pointer; list-style: none; }
+.band summary::-webkit-details-marker { display: none; }
+.band summary:focus-visible { outline: 3px solid #986626; outline-offset: 2px; }
+.band[open] .trail { transform: rotate(90deg); }
+.band ul { list-style: none; padding: 0 0 12px; margin: 0; }
+.band li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 8px;
+}
+.band li small, .review-time { color: var(--muted); font-size: 0.9375rem; }
+.band .synonym { display: block; }
+.review-time { margin-top: 14px; }
 .nav {
   justify-content: space-between;
   margin: 10px 0;

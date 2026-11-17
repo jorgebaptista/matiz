@@ -1,9 +1,9 @@
 import {
   levels,
   fresh,
-  fixedCount,
-  complete,
-  unlocked,
+  learned,
+  wordsById,
+  restoreState,
   start,
   answer,
   next,
@@ -18,9 +18,7 @@ const alert = document.querySelector("#storage-alert");
 function restore() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
-    return saved?.version === 1 && saved.progress && saved.sessions
-      ? saved
-      : fresh();
+    return restoreState(saved);
   } catch {
     return fresh();
   }
@@ -41,19 +39,36 @@ const esc = (x) =>
         c
       ],
   );
-const current = () => levels.find((l) => l.id === state.active);
 const badge =
   '<span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>';
 const header = () =>
   '<header><span class="brand">' +
   badge +
   'Matiz</span><span class="locale">Português europeu</span></header>';
-const over = (level) =>
-  '<div class="eyebrow">Nível ' +
-  level.id +
-  " <span>·</span> " +
-  esc(level.name) +
-  "</div>";
+const bandName = (level) =>
+  level.id === "0" ? "Entrada" : "Nível " + level.id;
+const bandById = new Map(levels.map((level) => [level.id, level]));
+function wordStatus(word) {
+  if (learned(state, word)) return "Aprendida";
+  return state.progress[word.id]?.seen ? "Em aprendizagem" : "Por descobrir";
+}
+function reviewTime(word) {
+  const due = state.progress[word.id]?.dueAt;
+  if (!Number.isFinite(due)) return "";
+  if (due <= Date.now())
+    return '<p class="review-time">Revisão disponível.</p>';
+  const when = new Intl.DateTimeFormat("pt-PT", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(due);
+  return (
+    '<p class="review-time">Próxima revisão · ' +
+    esc(when) +
+    "</p>"
+  );
+}
 function action(id, label) {
   return (
     '<button class="primary" data-action="' +
@@ -64,61 +79,57 @@ function action(id, label) {
   );
 }
 function home() {
-  const focus = levels.find((l) => !complete(state, l)) ?? levels.at(-1);
-  const total = levels.reduce((n, l) => n + fixedCount(state, l), 0);
-  const started =
-    !!state.sessions[focus.id] || focus.words.some((w) => state.progress[w.id]);
+  const total = levels.reduce(
+    (sum, l) => sum + l.words.filter((w) => learned(state, w)).length,
+    0,
+  );
   return (
     header() +
     '<section class="hero"><div class="art" aria-hidden="true"><i>ã</i><i>á</i><i>a</i></div>' +
-    '<h1>Sinónimos</h1><p>Até cinco palavras por ronda.</p>' +
-    action(
-      "start-" + focus.id,
-      complete(state, focus)
-        ? "Voltar a jogar"
-        : started
-          ? "Continuar a jogar"
-          : "Começar a jogar",
-    ) +
-    "</section>" +
-    '<div class="section-title"><h2>Níveis</h2><span>' +
+    "<h1>Sinónimos</h1><p>Palavras novas e revisões em rondas de até cinco.</p>" +
+    action("start", state.session ? "Continuar a ronda" : "Jogar") +
+    '</section><div class="section-title"><h2>As tuas palavras</h2><span>' +
     total +
-    ` / ${wordTotal} palavras fixadas</span></div><div class="levels">` +
+    " / " +
+    wordTotal +
+    ' aprendidas</span></div><div class="levels">' +
     levels
-      .map((l) => {
-        const open = unlocked(state, l),
-          count = fixedCount(state, l);
-        const status = !open
-          ? "Conclui o nível " + (Number(l.id) - 1)
-          : complete(state, l)
-            ? "Concluído · Voltar a jogar"
-            : count + " de " + l.words.length + " fixadas";
+      .map((level) => {
+        const seen = level.words.filter(
+          (w) => state.progress[w.id]?.seen,
+        ).length;
         return (
-          '<button class="level" data-action="start-' +
-          l.id +
-          '" ' +
-          (open ? "" : "disabled") +
-          '><span class="number">' +
-          l.id +
+          '<details class="band"><summary class="level"><span class="number">' +
+          (level.id === "0" ? "E" : level.id) +
           '</span><span class="level-text"><strong>' +
-          esc(l.name) +
+          esc(level.name) +
           "</strong><small>" +
-          status +
-          '</small></span><span class="quantity">' +
-          l.words.length +
-          ' palavras</span><span class="trail" aria-hidden="true">' +
-          (open ? "›" : "–") +
-          "</span></button>"
+          seen +
+          " de " +
+          level.words.length +
+          ' vistas</small></span><span class="trail" aria-hidden="true">›</span></summary><ul>' +
+          level.words
+            .map(
+              (w) =>
+                "<li><span>" +
+                esc(w.word) +
+                (state.progress[w.id]?.seen ? "<small class=\"synonym\">" + esc(w.key) + "</small>" : "") +
+                "</span><small>" +
+                wordStatus(w) +
+                "</small></li>",
+            )
+            .join("") +
+          "</ul></details>"
         );
       })
       .join("") +
     "</div>"
   );
 }
-function roundTop(level, s) {
+function roundTop(level, s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
   return (
-    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> Níveis</button><span>Palavra ' +
+    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> Início</button><span>Palavra ' +
     pos +
     " de " +
     s.cards.length +
@@ -132,17 +143,22 @@ function roundTop(level, s) {
       )
       .join("") +
     "</div>" +
-    over(level)
+    '<div class="eyebrow">' +
+    bandName(level) +
+    " · " +
+    esc(level.name) +
+    (card.practice ? " · Prática livre" : "") +
+    "</div>"
   );
 }
-function play(level, s) {
-  if (s.cursor >= s.cards.length) return summary(level, s);
+function play(s) {
+  if (s.cursor >= s.cards.length) return summary(s);
   const card = s.cards[s.cursor],
-    word = level.words.find((w) => w.id === card.id);
+    word = wordsById.get(card.id);
   const answered = s.answers.length > s.cursor,
     value = s.answers[s.cursor],
-    correct = value === word.key;
-  const top = roundTop(level, s);
+    correct = value === (card.key ?? word.key);
+  const top = roundTop(bandById.get(word.levelId), s, card);
   if (answered) {
     const status = correct
       ? "Certo!"
@@ -158,10 +174,11 @@ function play(level, s) {
       "</div><h1>" +
       esc(word.word) +
       '</h1><p class="meaning">' +
-      esc(word.key) +
+      esc(card.key ?? word.key) +
       '</p><div class="example"><h2>Exemplo</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
+      reviewTime(word) +
       (value && !correct
         ? '<p class="your">Escolheste «' + esc(value) + "».</p>"
         : "") +
@@ -194,61 +211,24 @@ function play(level, s) {
     '<button class="unsure" data-action="unsure">Não sei</button>'
   );
 }
-function summary(level, s) {
-  const fixed = fixedCount(state, level),
-    done = complete(state, level),
-    score = roundScore(s, level);
-  const following = levels[Number(level.id)];
-  const title = s.replay
-    ? "Revisão concluída"
-    : done
-      ? "Nível concluído!"
-      : "Ronda concluída";
-  const subtitle =
-    done && !s.replay
-      ? following
-        ? "Desbloqueaste o nível " + following.id + " · " + following.name + "."
-        : `Fixaste as ${wordTotal} palavras do jogo.`
-      : "Dois acertos fixam uma palavra. As que falhares voltam noutra ronda.";
+function summary(s) {
   return (
     header() +
-    '<section class="summary">' +
-    over(level) +
-    "<h1>" +
-    title +
-    '</h1><div class="score">' +
-    score +
+    '<section class="summary"><h1>Ronda concluída</h1><div class="score">' +
+    roundScore(s) +
     "<span> / " +
     s.cards.length +
     "</span></div><p>respostas certas</p></section>" +
-    '<div class="track"><i style="width:' +
-    (fixed / level.words.length) * 100 +
-    '%"></i></div><p class="stats">' +
-    fixed +
-    " de " +
-    level.words.length +
-    ' palavras fixadas</p><p class="description">' +
-    esc(subtitle) +
-    "</p>" +
-    action(
-      "continue",
-      done && following && !s.replay
-        ? "Jogar o nível " + following.id
-        : done
-          ? "Voltar aos níveis"
-          : "Jogar outra ronda",
-    ) +
-    (!done
-      ? '<button class="unsure" data-action="close">Voltar aos níveis</button>'
-      : "")
+    action("continue", "Jogar outra ronda") +
+    '<button class="unsure" data-action="close">Voltar ao início</button>'
   );
 }
 function render(focus = false) {
-  const level = current(),
-    s = level && state.sessions[level.id];
+  const s = state.active && state.session;
   root.classList.toggle("in-round", Boolean(s && s.cursor < s.cards.length));
-  root.innerHTML = s ? play(level, s) : home();
-  if (!s) root.append(document.querySelector("#credits").content.cloneNode(true));
+  root.innerHTML = s ? play(s) : home();
+  if (!s)
+    root.append(document.querySelector("#credits").content.cloneNode(true));
   window.scrollTo(0, 0);
   if (focus) {
     const h = root.querySelector(".result") ?? root.querySelector("h1");
@@ -258,7 +238,7 @@ function render(focus = false) {
 }
 function goHome() {
   if (!state.active) return false;
-  state.active = null;
+  state.active = false;
   save();
   render(true);
   return true;
@@ -273,32 +253,21 @@ window.addEventListener("storage", (e) => {
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
-  const id = target.dataset.action,
-    l = current();
+  const id = target.dataset.action;
   if (id === "home") {
     goHome();
     return;
   }
-  if (id.startsWith("start-"))
-    start(
-      state,
-      levels.find((v) => v.id === id.slice(6)),
-    );
-  else if (l) {
-    const s = state.sessions[l.id];
+  if (id === "start") start(state);
+  else if (state.active && state.session) {
+    const s = state.session;
     if (id.startsWith("answer-"))
-      answer(state, l, s.cards[s.cursor].options[Number(id.slice(7))]);
-    else if (id === "unsure") answer(state, l, null);
-    else if (id === "next") next(state, l);
+      answer(state, s.cards[s.cursor].options[Number(id.slice(7))]);
+    else if (id === "unsure") answer(state, null);
+    else if (id === "next") next(state);
     else if (id === "continue" || id === "close") {
-      const done = complete(state, l),
-        replay = s.replay,
-        following = levels[Number(l.id)];
-      finish(state, l);
-      if (id === "continue" && !replay) {
-        if (!done) start(state, l);
-        else if (following) start(state, following);
-      }
+      finish(state);
+      if (id === "continue") start(state);
     }
   }
   save();

@@ -2,6 +2,88 @@
   "locale": "pt-PT",
   "levels": [
     {
+      "id": "0",
+      "name": "Primeiros passos",
+      "words": [
+        {
+          "id": "ponderar",
+          "word": "ponderar",
+          "answer": "considerar",
+          "alternatives": ["confirmar", "esquecer", "prometer"],
+          "example": "Antes de responder à proposta, a Rita quis ponderar as duas opções.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "nítido",
+          "word": "nítido",
+          "answer": "claro",
+          "alternatives": ["baço", "distante", "discreto"],
+          "example": "Depois de limpar os óculos, viu o contorno nítido das letras.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "sereno",
+          "word": "sereno",
+          "answer": "tranquilo",
+          "alternatives": ["atento", "curioso", "decidido"],
+          "example": "Mesmo quando o comboio parou no túnel, o miúdo manteve-se sereno.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "salientar",
+          "word": "salientar",
+          "answer": "destacar",
+          "alternatives": ["resumir", "corrigir", "comparar"],
+          "example": "Na reunião, a Leonor quis salientar uma passagem que tinha escapado aos colegas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "breve",
+          "word": "breve",
+          "answer": "curto",
+          "alternatives": ["urgente", "simples", "raro"],
+          "example": "Houve uma breve pausa para café antes da última conversa da tarde.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "cativar",
+          "word": "cativar",
+          "answer": "encantar",
+          "alternatives": [
+            "convencer pela força",
+            "surpreender por acaso",
+            "explicar em pormenor"
+          ],
+          "example": "Bastou-lhe contar a primeira história para cativar a sala inteira.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "invulgar",
+          "word": "invulgar",
+          "answer": "pouco comum",
+          "alternatives": ["pouco claro", "pouco útil", "pouco visível"],
+          "example": "Era invulgar nevar naquela vila tão perto do mar.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "abrandar",
+          "word": "abrandar",
+          "answer": "desacelerar",
+          "alternatives": ["parar", "recuar", "desviar"],
+          "example": "Ao aproximar-se da passadeira, o ciclista começou a abrandar.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        }
+      ]
+    },
+    {
       "id": "1",
       "name": "Precisão",
       "words": [

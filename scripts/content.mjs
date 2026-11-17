@@ -85,11 +85,16 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
     Array.isArray(pack.levels) && pack.levels.length > 0,
     "Expected at least one level.",
   );
-  for (const [i, level] of pack.levels.entries()) {
+  const levelIds = new Set();
+  for (const level of pack.levels) {
     requireContent(
-      level.id === String(i + 1) && filled(level.name),
-      "Expected a named sequential level at " + (i + 1),
+      typeof level.id === "string" &&
+        /^(0|[1-9]\d*)$/.test(level.id) &&
+        !levelIds.has(level.id) &&
+        filled(level.name),
+      "Expected a named level with a unique numeric ID: " + level.id,
     );
+    levelIds.add(level.id);
     requireContent(
       Array.isArray(level.words) && level.words.length > 0,
       "Empty level " + level.id,
@@ -104,7 +109,7 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
     for (const card of drafts.words) {
       checkWord(card, ["draft"]);
       requireContent(
-        Number.isSafeInteger(card.targetLevel) && card.targetLevel > 0,
+        Number.isSafeInteger(card.targetLevel) && card.targetLevel >= 0,
         card.id + ": choose a target level",
       );
     }

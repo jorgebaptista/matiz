@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { chromium } from "@playwright/test";
-import { levels } from "../src/game.js";
+import { levels, wordsById } from "../src/game.js";
 
 const remote = process.env.MATIZ_CDP;
 const browser = remote
@@ -26,8 +26,11 @@ try {
     ? context.pages().find((p) => p.url().includes("android_asset"))
     : await context.newPage();
   assert.ok(page, "Expected the Matiz WebView");
-  if (!remote)
+  if (!remote) {
+    // Older Android WebViews can parse the bundle without providing structuredClone.
+    await page.addInitScript(() => { window.structuredClone = undefined; });
     await page.goto(pathToFileURL(path.resolve("dist/index.html")).href);
+  }
   page.setDefaultTimeout(6000);
   const button = (name) => page.getByRole("button", { name, exact: true });
   const tap = (name) => button(name).click();
@@ -41,10 +44,12 @@ try {
     }
   }
   await page.locator(".hero").waitFor();
-  assert.equal(
-    await page.locator(".level:disabled").count(),
-    levels.length - 1,
-  );
+  assert.equal(await page.locator(".band").count(), levels.length);
+  await page.locator(".band summary").first().click();
+  const entry = page.locator(".band").first();
+  assert.equal(await entry.locator("li").count(), levels[0].words.length);
+  assert.match(await entry.innerText(), /Por descobrir/);
+  await entry.locator("summary").click();
   await capture("levels");
   await page.locator(".hero .primary").click();
   await page.locator(".choice").first().waitFor();
@@ -69,33 +74,95 @@ try {
   await page.locator(".hero .primary").click();
   assert.equal(await h1.innerText(), first);
   await page.locator(".primary").click();
-  let lastScore = 0;
-  while (!(await h1.innerText().then((v) => v === "Nível concluído!"))) {
-    if (await page.locator(".summary").count()) {
-      await page.locator(".primary").click();
-      continue;
-    }
-    const target = await h1.innerText();
-    const word = levels[0].words.find((w) => w.word === target);
-    assert.ok(word, target);
-    await page.locator(".choice").filter({ hasText: word.key }).first().click();
+  while (!(await page.locator(".summary").count())) {
+    const word = wordsById.get(await h1.innerText());
+    assert.ok(word && word.levelId === levels[0].id);
+    const i = await page
+      .locator(".choice")
+      .evaluateAll(
+        (choices, key) =>
+          choices.findIndex((el) => el.lastChild.textContent === key),
+        word.key,
+      );
+    assert.ok(i >= 0);
+    await page.locator(".choice").nth(i).click();
     assert.equal(await page.locator(".result").innerText(), "Certo!");
+    assert.ok(await page.locator(".review-time").isVisible());
     await page.locator(".primary").click();
-    assert.ok(
-      ++lastScore < levels[0].words.length * 3 + 5,
-      "Level must be completable",
+  }
+  assert.match(await page.locator(".score").innerText(), /4\s*\/\s*5/);
+  await tap("Voltar ao início");
+  await entry.locator("summary").click();
+  assert.ok(
+    (await entry.innerText()).includes(
+      "5 de " + levels[0].words.length + " vistas",
+    ),
+  );
+  assert.equal(
+    await entry.locator("li").filter({ hasText: "Em aprendizagem" }).count(),
+    5,
+  );
+  await page.locator(".hero .primary").click();
+  await page.locator(".choice").first().waitFor();
+  if (!remote) {
+    // Model an update of the installed game while the old answer screen is open.
+    const legacy = wordsById.get("renitente");
+    const later = wordsById.get("tergiversar");
+    const yesterday = Date.now() - 2 * 86_400_000;
+    await page.evaluate(
+      ({ legacy, later, yesterday }) => {
+        localStorage.setItem(
+          "matiz.pt-PT.v1",
+          JSON.stringify({
+            version: 1,
+            active: "1",
+            progress: {
+              [legacy.id]: {
+                termId: legacy.id,
+                setId: "1",
+                seen: 1,
+                box: 1,
+                correct: 1,
+                incorrect: 0,
+                lastSeen: Date.now(),
+              },
+              [later.id]: {
+                termId: later.id,
+                setId: "3",
+                seen: 1,
+                box: 0,
+                correct: 0,
+                incorrect: 1,
+                lastSeen: yesterday,
+              },
+            },
+            sessions: {
+              1: {
+                cards: [{ id: legacy.id, options: legacy.choices }],
+                cursor: 0,
+                answers: [legacy.key],
+                replay: false,
+              },
+            },
+          }),
+        );
+      },
+      { legacy, later, yesterday },
+    );
+    await page.reload();
+    await page.locator(".feedback").waitFor();
+    assert.equal(await h1.innerText(), legacy.word);
+    await page.locator(".primary").click();
+    await page.locator(".summary").waitFor();
+    await page.locator(".primary").click();
+    assert.equal(await h1.innerText(), later.word);
+    assert.match(await page.locator(".eyebrow").innerText(), /Argúcia/);
+    console.log(
+      "Upgrade: answered legacy card resumes and an older hard word returns before unseen entry words.",
     );
   }
-  await page.locator(".primary").click();
-  assert.match(await page.locator(".eyebrow").innerText(), /Nível 2/i);
-  await page.locator(".back").click();
-  assert.equal(
-    await page.locator(".level:disabled").count(),
-    levels.length - 2,
-  );
   console.log(
-    (remote ? "Android WebView" : "Mobile browser") +
-      ": skip, feedback, reload, resume, full first level and unlock passed.",
+    "Mobile flow: collection, entry round, feedback, resume, score and next round passed.",
   );
 } finally {
   await browser.close();
