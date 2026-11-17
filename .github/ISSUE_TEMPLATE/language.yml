@@ -1,0 +1,22 @@
+name: Propose a language pack
+description: Bring Matiz to people who already speak another language.
+title: "Language pack: "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: locale
+    attributes:
+      label: Language and variety
+      placeholder: Italiano (it-IT)
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: One sample synonym question
+      description: Give a target, one best match, three alternatives, an original example and a reference for its intended sense.
+  - type: textarea
+    id: role
+    attributes:
+      label: How would you like to contribute?
+      description: Writing questions, translating the interface and reviewing a variety you speak are all useful.

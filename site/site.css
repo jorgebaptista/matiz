@@ -1,0 +1,150 @@
+@font-face {
+  font-family: "DM Sans";
+  src: url("./dm-sans.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+}
+:root {
+  font:
+    112.5%/1.55 "DM Sans",
+    system-ui,
+    sans-serif;
+  color: #173c32;
+  background: #f7f5ed;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  max-width: 64rem;
+  margin: auto;
+  padding: 0 clamp(1.2rem, 5vw, 3.5rem);
+}
+header,
+footer,
+.links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+header,
+footer {
+  padding: 1rem 0;
+  border-block-end: 1px solid #ced4c7;
+}
+.brand {
+  font:
+    2rem Georgia,
+    serif;
+}
+a {
+  color: #174f42;
+  text-underline-offset: 0.18em;
+}
+a:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #94601e;
+  outline-offset: 4px;
+}
+.intro {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: clamp(1rem, 4vw, 3rem);
+  align-items: center;
+  padding: clamp(2rem, 6vw, 5rem) 0;
+}
+h1,
+h2 {
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(2.3rem, 5.5vw, 4rem);
+  margin: 0;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+p {
+  max-width: 63ch;
+}
+aside {
+  background: #174f42;
+  color: #f7f5ed;
+  border-radius: 1rem;
+  padding: 1.6rem;
+}
+aside h2 {
+  font-size: 2.3rem;
+  margin: 0.5rem 0;
+}
+aside summary {
+  cursor: pointer;
+  color: #ffcea5;
+  font-weight: 650;
+  padding: 0.5rem 0;
+}
+aside details p {
+  margin-bottom: 0;
+}
+.editions p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.editions p:last-child {
+  margin-bottom: 0;
+}
+.editions p > a + a {
+  font-size: 0.88rem;
+}
+.brand {
+  text-decoration: none;
+}
+.play {
+  display: inline-flex;
+  align-items: center;
+  gap: 2rem;
+  background: #174f42;
+  color: white;
+  border-radius: 0.55rem;
+  padding: 0.75rem 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.intro small {
+  display: block;
+  margin: 0.6rem 0;
+  font-size: 0.82rem;
+}
+main > section + section {
+  border-top: 1px solid #ced4c7;
+  padding: 1.7rem 0;
+}
+.links,
+footer {
+  justify-content: flex-start;
+  gap: 1.5rem;
+}
+footer {
+  border-block-start: 1px solid #ced4c7;
+  font-size: 0.85rem;
+}
+@media (max-width: 42rem) {
+  .intro {
+    grid-template-columns: 1fr;
+  }
+  aside {
+    padding: 1.15rem;
+  }
+  .links,
+  footer {
+    gap: 0.75rem 1.5rem;
+  }
+}

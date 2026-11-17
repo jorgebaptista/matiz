@@ -1,0 +1,16 @@
+name: Suggest a feature
+description: Describe a change to the game or how people contribute.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would you like to do?
+      description: Give a real example from playing or contributing.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What would success look like?
+      description: If there is reusable open-source work, include a source and licence link.

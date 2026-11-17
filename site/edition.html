@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="{{locale}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#174f42">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <!-- public-links -->
+  <link rel="stylesheet" href="../../site.css">
+</head>
+<body>
+  <header><a class="brand" href="../../">Matiz</a><a href="https://github.com/jorgebaptista/matiz">GitHub</a></header>
+  <main>
+    <section class="intro">
+      <div><h1>{{editionHeading}}</h1><p>{{description}}</p><div class="links"><a class="play" href="../../{{route}}">{{editionPlay}} <span aria-hidden="true">→</span></a><!-- daily-link --></div><small>{{editionNote}}</small></div>
+      <aside><small>{{sampleLabel}}</small><h2>{{word}}</h2><p>{{prompt}}</p><details><summary>{{revealSynonym}}</summary><strong>{{answer}}</strong><p>{{sentence}}</p></details></aside>
+    </section>
+    <section><h2>{{howToPlay}}</h2><p>{{howToPlayText}}</p></section>
+    <section><h2>{{contributionHeading}}</h2><p class="links"><a href="https://github.com/jorgebaptista/matiz/issues/new/choose">{{suggestWord}}</a><a href="https://github.com/jorgebaptista/matiz/blob/HEAD/docs/languages.md">{{addLanguage}}</a></p></section>
+  </main>
+  <footer><a href="https://github.com/jorgebaptista/matiz#credits">{{credits}}</a><a href="../../{{route}}index.html" download="Matiz-{{locale}}.html">{{downloadGame}}</a><a href="../../" lang="en">All languages</a></footer>
+</body></html>
