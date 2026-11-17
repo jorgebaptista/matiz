@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { chromium } from "@playwright/test";
-import { levels, wordsById } from "../src/game.js";
+import { practiceLevels, wordsById } from "../src/game.js";
 import { testLanguages } from "./languages-browser.mjs";
 
 const remote = process.env.MATIZ_CDP;
@@ -14,6 +14,7 @@ const browser = remote
       executablePath: process.env.MATIZ_BROWSER || undefined,
     });
 try {
+  const levels = practiceLevels();
   const context = remote
     ? browser.contexts()[0]
     : await browser.newContext({
@@ -76,7 +77,8 @@ try {
   assert.equal(await h1.innerText(), first);
   await page.locator(".primary").click();
   while (!(await page.locator(".summary").count())) {
-    const word = wordsById.get(await h1.innerText());
+    const headword = await h1.innerText();
+    const word = levels[0].words.find(w => w.word === headword);
     assert.ok(word && word.levelId === levels[0].id);
     const i = await page
       .locator(".choice")

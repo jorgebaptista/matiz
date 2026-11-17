@@ -9,21 +9,23 @@ import {
   next,
   finish,
   roundScore,
-  hasDaily, startDaily, activeSession,
+  hasDaily, startDaily, activeSession, practiceLevels,
 } from "./game.js";
 import { locale } from "./pack.js";
+import { dailyDay } from "./daily.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
 
 const t = (key, values) => esc(translate(key, values));
 
 const root = document.querySelector("#game");
-const wordTotal = levels.reduce((sum, level) => sum + level.words.length, 0);
 const alert = document.querySelector("#storage-alert");
 function restore() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
-    return restoreState(saved);
+    const restored = restoreState(saved);
+    if (restored.dailyActive && restored.daily.day !== dailyDay()) restored.dailyActive = false;
+    return restored;
   } catch {
     return fresh();
   }
@@ -79,7 +81,9 @@ function action(id, label) {
   );
 }
 function home() {
-  const total = levels.reduce(
+  const available = practiceLevels();
+  const wordTotal = available.reduce((sum, level) => sum + level.words.length, 0);
+  const total = available.reduce(
     (sum, l) => sum + l.words.filter((w) => learned(state, w)).length,
     0,
   );
@@ -94,7 +98,7 @@ function home() {
     '<div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
     t("learnedTotal", { count: total, total: wordTotal }) +
     '</span></div><div class="levels">' +
-    levels
+    available
       .map((level) => {
         const seen = level.words.filter(
           (w) => state.progress[w.id]?.seen,
@@ -210,7 +214,7 @@ function play(s) {
 }
 function dailyLabel(s) {
   const date = new Intl.DateTimeFormat(locale.locale, { day: "numeric", month: "short", timeZone: "UTC" });
-  return t("daily") + " · " + esc(date.format(s.day * 86_400_000));
+  return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + " · " + t(s.debut ? "dailyDebut" : "dailyEncore");
 }
 function summary(s) {
   return (

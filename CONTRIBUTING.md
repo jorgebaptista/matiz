@@ -16,6 +16,8 @@ Open an issue with a word, the sense you have in mind and an example. Or copy th
 
 ## Review and add a level
 
+To schedule PT-PT daily sets, add one new question to each of bands 0 through 3 with the same `dailyOn` date in `YYYY-MM-DD` format. Submit a batch together and run `npm run content:check` to catch duplicate words, duplicate slots and incomplete dates. Ship the updated web bundle and APK before the first date. Existing installs can keep cycling through their bundled sets offline.
+
 A fluent European Portuguese reviewer plays the question before looking at the example. Can they defend a second option for another common sense of the word? The player sees only the headword, so replace ambiguous alternatives. Check part of speech, register and idiomatic usage. Read the example aloud and consider where you would use the word yourself.
 
 When a question is ready, move it from the queue to the appropriate level in `packs/pt-PT.json`, remove `targetLevel`, set `status` to `reviewed` and add `reviewedBy` with the reviewer's agreed public credit. Keep the original drafting credit, intended sense and references. For each existing `pilot` entry, add those review fields in place. A passing content check verifies the fields. People judge the language.

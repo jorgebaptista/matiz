@@ -40,6 +40,18 @@ const sample = {
   levels: [{ id: "1", name: "Primeiro", words: [first] }],
 };
 
+test("daily content requires a real date and exactly one word per band", () => {
+  const broken = structuredClone(pack);
+  const date = broken.levels[0].words.find(w => w.dailyOn).dailyOn;
+  const word = broken.levels[1].words.find(w => w.dailyOn === date);
+  word.dailyOn = "2026-02-30";
+  assert.throws(() => checkContent(broken), /invalid daily debut/);
+  delete word.dailyOn;
+  assert.throws(() => checkContent(broken), /one daily debut per band/);
+  broken.levels[0].words[0].dailyOn = date;
+  assert.throws(() => checkContent(broken), /duplicate daily band/);
+});
+
 test("new levels accept reviewed questions and reviewed builds require review for every playable question", () => {
   const updated = structuredClone(sample);
   const words = [

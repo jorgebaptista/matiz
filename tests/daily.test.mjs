@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { dailyCards, dailyDay } from "../src/daily.js";
-import { fresh, levels, wordsById, start, startDaily, answer, next, restoreState, roundScore } from "../src/game.js";
+import { fresh, levels, practiceLevels, wordsById, start, startDaily, answer, next, restoreState, roundScore } from "../src/game.js";
 
 test("the shared date changes at Lisbon midnight in winter and summer", () => {
   for (const midnight of ["2026-11-18T00:00Z", "2026-07-17T23:00Z", "2026-03-29T23:00Z", "2026-10-26T00:00Z"]) {
@@ -51,4 +51,41 @@ test("daily feedback, completion and tomorrow's draw preserve the parked practic
   assert.notDeepEqual(state.daily.cards.map(c => c.id), first);
   assert.deepEqual(state.session, practice);
   assert.deepEqual(state.progress, progress);
+});
+
+test("a debut is exclusive that day, joins its own band tomorrow, and never leaks into an encore", () => {
+  const state = fresh(), today = Date.parse("2026-11-17T12:00Z"), day = dailyDay(today);
+  startDaily(state, today);
+  assert.equal(state.daily.debut, true);
+  const available = n => practiceLevels(n).flatMap(band => band.words.map(w => w.id));
+  for (const card of state.daily.cards) {
+    assert.ok(!available(day).includes(card.id));
+    assert.ok(available(day + 1).includes(card.id));
+    assert.equal(wordsById.get(card.id).debutDay, day);
+  }
+  state.daily.debut = false;
+  answer(state, null);
+  const started = structuredClone(state.daily);
+  startDaily(state, today);
+  assert.deepEqual(state.daily, started);
+  startDaily(state, today - 86400000);
+  assert.equal(state.daily.debut, false);
+  assert.ok(state.daily.cards.every(c => available(day - 1).includes(c.id)));
+});
+
+test("every scheduled set is unique, then the entire calendar loops intact", () => {
+  const state = fresh(), ids = new Set();
+  const dates = levels[0].words.map(w => w.debutDay).filter(Number.isInteger).sort((a,b) => a-b);
+  assert.ok(dates.length >= 30);
+  const after = dates.at(-1) + 1;
+  for (const [i, date] of dates.entries()) {
+    startDaily(state, (date + 0.5) * 86400000);
+    assert.equal(state.daily.debut, true);
+    const original = state.daily.cards;
+    for (const card of original) ids.add(card.id);
+    startDaily(state, (after + i + 0.5) * 86400000);
+    assert.equal(state.daily.debut, false);
+    assert.deepEqual(state.daily.cards, original);
+  }
+  assert.equal(ids.size, dates.length * 4);
 });

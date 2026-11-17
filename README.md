@@ -2,11 +2,11 @@
 
 An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. European Portuguese is the first playable edition. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
-The pack contains 68 words. Its eight-word introductory band precedes Precisão, Subtileza and Argúcia. Band sizes can vary with the material. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
+Practice starts with 68 words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
 
 ## Practice schedule
 
-**Desafio do dia** offers four PT-PT words, one each from Entrada, Precisão, Subtileza and Argúcia. The Lisbon calendar date selects a word from each band's fixed shuffled deck and shuffles its choices. Each deck runs through every word before repeating. Web and Android builds with the same pack agree offline, with no scheduled jobs or daily editing. Pack edits can change future draws on updated devices. An opened challenge keeps its cards until you leave it and open another day's challenge. Today's attempt and score are saved locally, separately from the practice round and review schedule.
+**Desafio do dia** introduces four PT-PT words, from easiest to hardest. The first 30 sets run from 17 November through 16 December 2026. At midnight in Lisbon each set joins regular practice, even for players who missed it. On unscheduled days, earlier sets loop in order as **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
 
 A round contains up to five words. Due reviews take priority over new words. After a miss or **Não sei**, the word becomes eligible again after five other answers or ten minutes, whichever comes first. Both carry over between rounds and visits. Getting a scheduled retry right sets a review for the next day. Later successful scheduled reviews use intervals of 3, 7, 14 and 30 days. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked **Aprendida**.
 
@@ -29,7 +29,7 @@ For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME
 
 ## Content and reuse
 
-Matiz starts with 68 AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The first suggestion is *alvitrar*. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
+The initial pack and the 120 daily words are AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
 
 ## Roadmap
 

@@ -13,13 +13,14 @@ const SIZE = 5;
 export const levels = pack.levels.map(({ id, name, words }) => ({
   id,
   name,
-  words: words.map(({ id: wordId, word, answer, alternatives, example }) => ({
+  words: words.map(({ id: wordId, word, answer, alternatives, example, dailyOn }) => ({
     id: wordId,
     word,
     key: answer,
     choices: [answer, ...alternatives],
     example,
     levelId: id,
+    ...(dailyOn ? { debutDay: Date.parse(dailyOn) / DAY } : {}),
   })),
 }));
 /** Resolve cards from any band without relying on the current screen. */
@@ -30,11 +31,25 @@ export const wordsById = new Map(
 // Fixed slots keep the daily at four even if more practice bands are added.
 const dailyBands = ["0", "1", "2", "3"].map(id => levels.find(level => level.id === id));
 export const hasDaily = pack.locale === "pt-PT" && dailyBands.every(band => band?.words.length);
+const debutCalendar = hasDaily ? dailyBands[0].words.map(w => w.debutDay)
+  .filter(Number.isInteger).sort((a, b) => a - b) : [];
+export function practiceLevels(day = dailyDay()) {
+  return levels.map(band => ({ ...band, words: band.words.filter(w => w.debutDay == null || w.debutDay < day) }));
+}
 export function startDaily(state, now = Date.now()) {
   if (!hasDaily) return;
   const day = dailyDay(now);
-  if (state.daily?.day !== day)
-    state.daily = { day, cards: dailyCards(dailyBands, day), cursor: 0, answers: [] };
+  const released = debutCalendar.filter(date => date <= day);
+  const latest = released[released.length - 1];
+  const debut = latest === day;
+  if (state.daily?.day !== day || (debut && !state.daily.debut && !state.daily.answers.length)) {
+    // The first unscheduled day reprises the first published set, then the next.
+    let sourceDay = latest;
+    if (released.length && !debut)
+      sourceDay = released[(day - latest - 1) % released.length];
+    const bands = dailyBands.map(band => ({ ...band, words: band.words.filter(w => w.debutDay === sourceDay) }));
+    state.daily = { day, debut, cards: dailyCards(bands, sourceDay ?? day), cursor: 0, answers: [] };
+  }
   state.dailyActive = true;
   state.active = false;
 }
@@ -149,8 +164,8 @@ const seen = (state, word) => (state.progress[word.id]?.seen ?? 0) > 0;
 const dueAt = (progress) => Number.isFinite(progress?.dueAt)
   ? progress.dueAt : 0;
 
-function struggling(state) {
-  return levels.find((level) => {
+function struggling(state, available) {
+  return available.find((level) => {
     const encountered = level.words.filter((word) => seen(state, word));
     const retries = encountered.filter((word) => state.progress[word.id].retry);
     // Pause introductions, not reviews. Small bands use a reachable threshold.
@@ -172,14 +187,15 @@ export function start(state, now = Date.now(), rng = Math.random) {
     state.active = true;
     return state.session;
   }
-  const words = [...wordsById.values()];
+  const available = practiceLevels(dailyDay(now));
+  const words = available.flatMap(band => band.words);
   const reviews = words.filter((word) => {
     const p = state.progress[word.id];
     return p?.seen > 0 && (dueAt(p) <= now || p.questionsLeft != null);
   }).sort((a, b) => dueAt(state.progress[a.id]) - dueAt(state.progress[b.id]));
-  const difficultyPause = struggling(state);
+  const difficultyPause = struggling(state, available);
   const pristine = !words.some((word) => seen(state, word));
-  const bands = pristine ? levels.slice(0, 1) : levels;
+  const bands = pristine ? available.slice(0, 1) : available;
   const unseen = bands.flatMap(level => shuffle(level.words.filter(w => !seen(state, w)), rng));
   const practicePool = shuffle(words.filter(w => seen(state, w) && !reviews.includes(w)), rng);
   if (difficultyPause) practicePool.sort((a, b) =>

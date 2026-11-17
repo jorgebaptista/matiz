@@ -35,6 +35,8 @@
     "play": "Jogar",
     "daily": "Desafio do dia",
     "dailyHint": "4 palavras, da mais fácil à mais difícil",
+    "dailyDebut": "Palavras novas",
+    "dailyEncore": "Revisita",
     "yourWords": "As tuas palavras",
     "learnedTotal": "{count} / {total} aprendidas",
     "seenTotal": "{count} de {total} vistas",

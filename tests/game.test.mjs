@@ -3,16 +3,16 @@ import assert from "node:assert/strict";
 import pack from "../packs/pt-PT.json" with { type: "json" };
 import { emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import {
-  levels, wordsById, restoreState, fresh, start, answer, next, finish,
+  levels, practiceLevels, wordsById, restoreState, fresh, start, answer, next, finish,
   roundScore, learned,
 } from "../src/game.js";
 
 const DAY = 86_400_000;
 const RETRY = 600_000;
-const NOW = Date.UTC(2026, 10, 17, 12);
+const NOW = Date.UTC(2026, 9, 1, 12);
 const rng = () => 0.23;
 const first = levels[0].words[0];
-const words = [...wordsById.values()];
+const words = practiceLevels(NOW / DAY).flatMap(band => band.words);
 const key = (card) => wordsById.get(card.id).key;
 
 function progress(word, overrides = {}) {
@@ -63,7 +63,7 @@ test("exports pack order, stable IDs and a cross-band word map", () => {
     assert.equal(wordsById.get(word.id), word);
     assert.equal(word.levelId, level.id);
     assert.deepEqual(Object.keys(word).sort(),
-      ["id", "word", "key", "choices", "example", "levelId"].sort());
+      ["id", "word", "key", "choices", "example", "levelId", ...(word.debutDay == null ? [] : ["debutDay"])].sort());
   }
 });
 
@@ -110,7 +110,7 @@ test("a review backlog fills the round without new words or duplicates", () => {
 
 test("spare places cross band boundaries without old mastery gates", () => {
   const state = fresh();
-  for (const word of levels[0].words.slice(0, -2)) state.progress[word.id] = progress(word);
+  for (const word of practiceLevels(Math.floor(NOW / DAY))[0].words.slice(0, -2)) state.progress[word.id] = progress(word);
   start(state, NOW, rng);
   assert.deepEqual(state.session.cards.map((card) => wordsById.get(card.id).levelId),
     ["0", "0", "1", "1", "1"]);

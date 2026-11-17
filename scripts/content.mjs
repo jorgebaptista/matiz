@@ -136,6 +136,7 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
     "Expected at least one level.",
   );
   const levelIds = new Set();
+  const debutDates = new Map();
   for (const level of pack.levels) {
     requireContent(
       typeof level.id === "string" &&
@@ -149,8 +150,23 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
       Array.isArray(level.words) && level.words.length > 0,
       "Empty level " + level.id,
     );
-    for (const card of level.words) checkWord(card, ["pilot", "reviewed"]);
+    for (const card of level.words) {
+      checkWord(card, ["pilot", "reviewed"]);
+      if (!Object.hasOwn(card, "dailyOn")) continue;
+      const date = card.dailyOn;
+      requireContent(pack.locale === "pt-PT" && ["0", "1", "2", "3"].includes(level.id) &&
+        typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+        Number.isFinite(Date.parse(date)) && new Date(date).toISOString().startsWith(date + "T"),
+        card.id + ": invalid daily debut");
+      if (!debutDates.has(date)) debutDates.set(date, new Set());
+      const bands = debutDates.get(date);
+      requireContent(!bands.has(level.id), date + ": duplicate daily band " + level.id);
+      bands.add(level.id);
+    }
+    requireContent(level.words.some(card => !card.dailyOn), "Each level needs a regular practice word");
   }
+  for (const [date, bands] of debutDates)
+    requireContent(bands.size === 4, date + ": expected one daily debut per band");
   if (drafts) {
     requireContent(
       drafts.locale === pack.locale && Array.isArray(drafts.words),
