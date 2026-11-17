@@ -16,10 +16,6 @@
   "devDependencies": {
     "@playwright/test": "1.65.1",
     "esbuild": "0.28.2",
-    "jsqr": "1.4.0",
     "pngjs": "7.0.0"
-  },
-  "dependencies": {
-    "qrcode-generator": "2.0.4"
   }
 }

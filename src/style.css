@@ -216,9 +216,7 @@ h2,
   background: #d1dfac;
   color: #254839;
   border: 1px solid #123e31;
-  font:
-    40px/1 "Instrument Serif",
-    serif;
+  font: 40px/1 "DM Sans", sans-serif;
   border-radius: 7px;
 }
 .art i:first-child {

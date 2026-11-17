@@ -23,7 +23,6 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
       ["licenseOpenquiz", "vendor/openquiz/LICENSE"],
       ["licenseDMSans", "vendor/fonts/dmsans-OFL.txt"],
       ["licenseInstrumentSerif", "vendor/fonts/instrumentserif-OFL.txt"],
-      ["licenseQR", "vendor/qrcode/LICENSE"],
       ["licenseAndroidX", "vendor/androidx/LICENSE"],
     ].map(async ([key, file]) => [key, escapeHTML(await readFile(path.join(projectRoot, file), "utf8"))])),
   ]);

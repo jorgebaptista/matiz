@@ -1,4 +1,3 @@
-import qrcode from "qrcode-generator";
 import { roundScore, wordsById } from "./game.js";
 import { locale } from "./pack.js";
 import { translate as t } from "./i18n.js";
@@ -13,7 +12,8 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
     document.fonts.load('400 62px "Instrument Serif"'),
   ]);
   const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = 1080;
+  canvas.width = 1080;
+  canvas.height = 800;
   const ctx = canvas.getContext("2d");
   const ink = "#174f42", muted = "#526a5d", paper = "#f7f5ed";
   const box = (x, y, w, h, colour, radius = 0) => {
@@ -27,7 +27,7 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
     ctx.font = `${weight} ${size}px "${font}"`;
     ctx.fillText(String(value), x, y, width);
   };
-  box(0, 0, 1080, 1080, paper);
+  box(0, 0, canvas.width, canvas.height, paper);
   [30, 44, 58].forEach((h, i) => box(72 + i * 19, 122 - h, 12, h, i === 2 ? "#c97735" : ink));
   label("Matiz", 142, 123, 62, { font: "Instrument Serif", weight: 400 });
   ctx.textAlign = "right";
@@ -39,41 +39,30 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(session.day * 86_400_000), 76, 340, 30, { colour: muted });
   const score = roundScore(session);
-  label(survival ? score : `${score} / ${session.cards.length}`, 65, 600, 240, { weight: 600 });
+  label(survival ? score : `${score} / ${session.cards.length}`, 65, 555, 220, { weight: 600 });
   if (survival) {
-    box(72, 690, 280, 138, "#edf0e6", 20);
-    label(t("yourBest"), 96, 739, 28, { colour: muted, width: 232 });
-    label(Math.max(best, score), 96, 800, 48, { weight: 600 });
+    box(72, 620, 280, 118, "#edf0e6", 20);
+    label(t("yourBest"), 96, 660, 28, { colour: muted, width: 232 });
+    label(Math.max(best, score), 96, 714, 48, { weight: 600 });
     if (session.target != null) {
-      box(376, 690, 280, 138, "#edf0e6", 20);
-      label(t("challenger"), 400, 739, 28, { colour: muted, width: 232 });
-      label(session.target, 400, 800, 48, { weight: 600 });
+      box(376, 620, 280, 118, "#edf0e6", 20);
+      label(t("challenger"), 400, 660, 28, { colour: muted, width: 232 });
+      label(session.target, 400, 714, 48, { weight: 600 });
     }
   } else {
     session.cards.forEach((card, index) => {
       const correct = session.answers[index] === (card.key ?? wordsById.get(card.id)?.key);
       const x = 76 + index * 76;
-      box(x, 690, 58, 58, correct ? ink : "#dce2d7", 12);
+      box(x, 620, 58, 58, correct ? ink : "#dce2d7", 12);
       // A shape as well as colour distinguishes correct answers.
-      label(correct ? "✓" : "–", x + 14, 731, 36, { colour: correct ? paper : muted });
+      label(correct ? "✓" : "–", x + 14, 661, 36, { colour: correct ? paper : muted });
     });
-  }
-  const qr = qrcode(0, "M");
-  qr.addData(url, "Byte");
-  qr.make();
-  const count = qr.getModuleCount(), cell = Math.floor(252 / (count + 8));
-  const size = (count + 8) * cell, left = 1008 - size, top = 1008 - size;
-  box(left, top, size, size, "#fff");
-  for (let row = 0; row < count; row++) {
-    for (let col = 0; col < count; col++) {
-      if (qr.isDark(row, col)) box(left + (col + 4) * cell, top + (row + 4) * cell, cell, cell, ink);
-    }
   }
   const dataUrl = canvas.toDataURL("image/png");
   const blob = await new Promise((resolve, reject) => canvas.toBlob(
     value => value ? resolve(value) : reject(new Error("Could not draw result")), "image/png",
   ));
-  const name = `matiz-${survival ? "survival" : "daily"}-${locale.locale}.png`;
+  const name = `matiz-${survival ? "challenge" : "daily"}-${locale.locale}.png`;
   // The card contains the result; the caption only needs the clickable link.
   return { text: url, url, dataUrl, file: new File([blob], name, { type: "image/png" }) };
 }

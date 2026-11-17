@@ -94,7 +94,7 @@ export async function testDailySharing(browser) {
       assert.deepEqual(errors, []);
       await page.close();
     }
-    console.log("Daily sharing: both editions, PNG attachments, decoded QR, cancellation, image download and link fallbacks passed.");
+    console.log("Daily sharing: both editions, PNG attachments, playable links, cancellation, image download and link fallbacks passed.");
   } finally {
     await context.close();
   }
