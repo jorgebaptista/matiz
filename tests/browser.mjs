@@ -6,6 +6,7 @@ import path from "node:path";
 import { chromium } from "@playwright/test";
 import { practiceLevels, wordsById } from "../src/game.js";
 import { testLanguages } from "./languages-browser.mjs";
+import { testDailySharing } from "./share-browser.mjs";
 
 const remote = process.env.MATIZ_CDP;
 const browser = remote
@@ -167,7 +168,10 @@ try {
   console.log(
     "Mobile flow: collection, entry round, feedback, resume, score and next round passed.",
   );
-  if (!remote) await testLanguages(browser);
+  if (!remote) {
+    await testLanguages(browser);
+    await testDailySharing(browser);
+  }
 } finally {
   await browser.close();
 }

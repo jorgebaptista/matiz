@@ -38,7 +38,12 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
     });
     const notices = licenses.map(([key, text]) =>
       `<details><summary>${escapeHTML(locale.strings[key])}</summary><pre lang="en">${text}</pre></details>`);
-    const metadata = { locale: locale.locale, title: locale.title, description: locale.description };
+    const siteRoot = (process.env.SITE_URL || "https://jorgebaptista.github.io/matiz").replace(/\/+$/, "") + "/";
+    const route = "jogar/" + (locale.locale === defaultLocale ? "" : locale.locale + "/");
+    const metadata = {
+      locale: locale.locale, title: locale.title, description: locale.description,
+      playUrl: new URL(route, siteRoot).href,
+    };
     const editionOptions = languages.map(({ locale: edition }) => {
       const root = locale.locale === defaultLocale ? "./" : "../";
       const route = root + (edition.locale === defaultLocale ? "" : edition.locale + "/");
