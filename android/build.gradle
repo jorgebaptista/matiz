@@ -1,22 +1,29 @@
 plugins {
     id 'com.android.application' version '8.4.2'
 }
+def siteUrl = new URI(System.getenv('SITE_URL') ?: 'https://jorgebaptista.github.io/matiz/')
+def challengePath = siteUrl.path.replaceAll('/+$', '') + '/jogar/'
 android {
     namespace 'pt.matiz.game'
     compileSdk 34
+    buildFeatures { buildConfig true }
     defaultConfig {
         applicationId 'pt.matiz.game'
         minSdk 26
         targetSdk 34
         versionCode 7
         versionName '0.4.0'
+        manifestPlaceholders = [challengeHost: siteUrl.host, challengePath: challengePath]
+        buildConfigField 'String', 'CHALLENGE_HOST', '"' + siteUrl.host + '"'
+        buildConfigField 'String', 'CHALLENGE_PATH', '"' + challengePath + '"'
     }
     sourceSets.main.assets.srcDir '../dist'
 }
 def packGame = tasks.register('packGame', Exec) {
     workingDir '..'
     commandLine 'node', 'scripts/build.mjs'
-    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../locales'), fileTree('../editorial'), fileTree('../vendor'), fileTree('../scripts'), '../package-lock.json', '../LICENSE')
+    inputs.property 'siteUrl', siteUrl.toString()
+    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../locales'), fileTree('../editorial'), fileTree('../archives'), fileTree('../vendor'), fileTree('../scripts'), '../package-lock.json', '../LICENSE')
     outputs.dir '../dist'
 }
 tasks.named('preBuild').configure { dependsOn packGame }

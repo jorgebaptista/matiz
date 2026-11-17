@@ -22,3 +22,19 @@ export function dailyShareText(session, playUrl) {
     link.href,
   ].join("\n");
 }
+
+/** Share a reproducible Survival invitation with a score and no answer text. */
+export function survivalShareText(session, playUrl) {
+  if (session.cursor !== session.cards.length) throw new Error("Finish the run before sharing it.");
+  const link = new URL(playUrl);
+  link.search = new URLSearchParams({
+    mode: "survival", seed: String(session.seed), v: session.version, score: String(roundScore(session)),
+  }).toString();
+  link.hash = "";
+  return [
+    `Matiz · ${translate("survival")} · ${locale.locale}`,
+    translate("survivalShareScore", { count: roundScore(session) }),
+    translate("survivalShareInvite"),
+    link.href,
+  ].join("\n");
+}

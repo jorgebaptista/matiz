@@ -2,7 +2,8 @@ import { applyAnswer, emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import { pack } from "./pack.js";
 import { dailyCards, dailyDay } from "./daily.js";
-import { dailyBandsFor } from "./bands.js";
+import { dailyBandsFor, gameLevels } from "./bands.js";
+import { createSurvival, restoreSurvival, survivalVersion, survivalId, survivalAttempt, restoreAttempts, mergeAttempts } from "./survival.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;
@@ -11,19 +12,7 @@ const INTERVALS = [1, 3, 7, 14, 30];
 const SIZE = 5;
 
 /** Bands and words retain pack order and stable save identifiers. */
-export const levels = pack.levels.map(({ id, name, words }) => ({
-  id,
-  name,
-  words: words.map(({ id: wordId, word, answer, alternatives, example, dailyOn }) => ({
-    id: wordId,
-    word,
-    key: answer,
-    choices: [answer, ...alternatives],
-    example,
-    levelId: id,
-    ...(dailyOn ? { debutDay: Date.parse(dailyOn) / DAY } : {}),
-  })),
-}));
+export const levels = gameLevels(pack);
 /** Resolve cards from any band without relying on the current screen. */
 export const wordsById = new Map(
   levels.flatMap((level) => level.words.map((word) => [word.id, word])),
@@ -39,6 +28,7 @@ export function practiceLevels(day = dailyDay()) {
 }
 export function startDaily(state, now = Date.now()) {
   if (!hasDaily) return;
+  state.survivalActive = false;
   const day = dailyDay(now);
   const released = debutCalendar.filter(date => date <= day);
   const latest = released[released.length - 1];
@@ -55,9 +45,61 @@ export function startDaily(state, now = Date.now()) {
   state.active = false;
 }
 
-export const activeSession = state => state.dailyActive ? state.daily : state.active ? state.session : null;
+export const activeSession = state => state.survivalActive ? state.survival : state.dailyActive ? state.daily : state.active ? state.session : null;
 
-/** Create an offline save with one resumable session. */
+/** Resume Survival, or accept a particular challenge without changing practice or daily saves. */
+export function startSurvival(state, seed, target = null, challengeLevels = levels) {
+  rememberSurvival(state);
+  if (!state.survival || seed !== undefined) {
+    const version = survivalVersion(challengeLevels);
+    if (seed === undefined) {
+      seed = crypto.getRandomValues(new Uint32Array(1))[0];
+      while (state.survivalAttempts?.[`${version}:${seed}`]) seed = (seed + 1) >>> 0;
+    }
+    const run = createSurvival(challengeLevels, seed, target);
+    const previous = state.survivalAttempts?.[survivalId(run)];
+    state.survival = previous
+      ? restoreSurvival({ ...run, answers: previous.answers, cursor: previous.cursor }) ?? run
+      : run;
+  }
+  state.survivalActive = true;
+  state.dailyActive = false;
+  state.active = false;
+  rememberSurvival(state);
+  return state.survival;
+}
+
+function rememberSurvival(state) {
+  const run = state.survival;
+  if (!run) return;
+  state.survivalAttempts = mergeAttempts({
+    ...state.survivalAttempts, [survivalId(run)]: survivalAttempt(run),
+  }, state.survivalAttempts ?? {});
+}
+
+/** Reconcile first attempts saved by another tab before writing this tab's state. */
+export function reconcileSurvival(state, saved) {
+  state.survivalAttempts = mergeAttempts(state.survivalAttempts ?? {}, restoreAttempts(saved?.survivalAttempts));
+  const run = state.survival;
+  if (run) {
+    const attempt = state.survivalAttempts[survivalId(run)];
+    if (attempt) state.survival = restoreSurvival({ ...run, answers: attempt.answers, cursor: attempt.cursor }) ?? run;
+  }
+  state.survivalBests ??= {};
+  if (saved) {
+    for (const key of Object.keys(state.survivalAttempts)) {
+      const version = key.split(":")[0];
+      const best = saved.survivalBests?.[version];
+      state.survivalBests[version] = Number.isSafeInteger(best) && best >= 0 ? best : 0;
+    }
+  }
+  for (const [key, attempt] of Object.entries(state.survivalAttempts)) {
+    const version = key.split(":")[0];
+    state.survivalBests[version] = Math.max(state.survivalBests[version] ?? 0, attempt.score);
+  }
+}
+
+/** Create local progress before any game mode has been played. */
 export const fresh = () => ({
   version: 2,
   progress: {},
@@ -151,6 +193,16 @@ export function restoreState(saved) {
         if (state.dailyActive) state.active = false;
       }
     }
+    if (saved.survival) state.survival = restoreSurvival(saved.survival);
+    if (Object.hasOwn(saved, "survivalActive")) state.survivalActive = Boolean(state.survival && saved.survivalActive);
+    if (saved.survivalBests) state.survivalBests = Object.fromEntries(Object.entries(saved.survivalBests)
+      .filter(([version, score]) => /^s1-[a-f0-9]{8}$/.test(version) && Number.isSafeInteger(score) && score >= 0));
+    if (saved.survivalAttempts) state.survivalAttempts = restoreAttempts(saved.survivalAttempts);
+    rememberSurvival(state);
+    if (state.survivalActive) {
+      state.active = false;
+      state.dailyActive = false;
+    }
   }
   return state;
 }
@@ -177,6 +229,7 @@ function struggling(state, available) {
 
 /** Resume, or draw overdue cards then easy-to-hard unseen cards; idle play is free practice. */
 export function start(state, now = Date.now(), rng = Math.random) {
+  state.survivalActive = false;
   if (state.dailyActive) state.dailyActive = false;
   if (state.session) {
     state.active = true;
@@ -237,9 +290,15 @@ export function answer(state, value, now = Date.now()) {
   if (!session || session.cursor >= session.cards.length ||
     session.answers.length !== session.cursor) return;
   const card = session.cards[session.cursor];
-  const word = wordsById.get(card.id);
+  const word = state.survivalActive ? card : wordsById.get(card.id);
   if (!word || (value !== null && !card.options.includes(value))) return;
   session.answers.push(value);
+  if (state.survivalActive) {
+    state.survivalBests ??= {};
+    state.survivalBests[session.version] = Math.max(state.survivalBests[session.version] ?? 0, roundScore(session));
+    rememberSurvival(state);
+    return;
+  }
   if (state.dailyActive) return;
   for (const p of Object.values(state.progress)) {
     if (p.termId !== word.id && p.questionsLeft > 0) p.questionsLeft--;
@@ -287,8 +346,11 @@ export function answer(state, value, now = Date.now()) {
 /** Advance only past an answered card. */
 export function next(state) {
   const session = activeSession(state);
-  if (session && session.answers.length > session.cursor)
-    session.cursor++;
+  if (!session || session.answers.length <= session.cursor) return;
+  if (state.survivalActive && session.answers[session.cursor] !== session.cards[session.cursor].key)
+    session.cursor = session.cards.length;
+  else session.cursor++;
+  if (state.survivalActive) rememberSurvival(state);
 }
 
 /** Clear only a fully completed round; exiting instead sets active to false. */

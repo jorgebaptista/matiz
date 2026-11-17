@@ -139,7 +139,8 @@ select.locale {
   background: var(--green);
   color: var(--paper);
 }
-.daily {
+.daily,
+.survival {
   width: 100%;
   display: flex;
   gap: 11px;
@@ -152,8 +153,21 @@ select.locale {
   background: var(--paper);
   color: var(--green);
 }
-.daily strong { font-size: 1.05rem; }
+.daily strong, .survival strong { font-size: 1.05rem; }
 .daily-arrow { margin-inline-start: auto; }
+.survival-icon { font-size: 24px; }
+.survival-best { margin-inline-start: auto; font-size: 0.875rem; color: var(--muted); }
+.survival-rules { margin-top: 12px; line-height: 1.5; }
+.challenge-target { margin-top: 8px; color: var(--muted); }
+.secondary {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  font-weight: 600;
+}
 .calendar { flex: none; width: 24px; height: 24px; }
 .calendar-check { display: none; }
 .daily[data-status="dailyUnplayed"] {

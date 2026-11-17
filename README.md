@@ -6,6 +6,8 @@ An open-source synonym game for people who want a richer vocabulary in a languag
 
 Each edition starts with 68 practice words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
 
+Survival gives one point per correct answer and ends on the first mistake. Share the result to challenge someone to the same questions. [Rules and challenge links](docs/survival.md)
+
 ## Practice schedule
 
 The daily challenge introduces four words in each edition, from easiest to hardest. The first 30 sets run from 17 November through 16 December 2026. At midnight in Lisbon each set joins regular practice, even for players who missed it. On unscheduled days, earlier sets loop in order as **Encore** or **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
