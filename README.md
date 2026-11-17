@@ -1,12 +1,12 @@
 # Matiz
 
-An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. European Portuguese is the first playable edition. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
+An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. Play in European Portuguese or British English. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
-Practice starts with 68 words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
+Each edition starts with 68 practice words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
 
 ## Practice schedule
 
-**Desafio do dia** introduces four PT-PT words, from easiest to hardest. The first 30 sets run from 17 November through 16 December 2026. At midnight in Lisbon each set joins regular practice, even for players who missed it. On unscheduled days, earlier sets loop in order as **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
+The daily challenge introduces four words in each edition, from easiest to hardest. The first 30 sets run from 17 November through 16 December 2026. At midnight in Lisbon each set joins regular practice, even for players who missed it. On unscheduled days, earlier sets loop in order as **Encore** or **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
 
 A round contains up to five words. Due reviews take priority over new words. After a miss or **Não sei**, the word becomes eligible again after five other answers or ten minutes, whichever comes first. Both carry over between rounds and visits. Getting a scheduled retry right sets a review for the next day. Later successful scheduled reviews use intervals of 3, 7, 14 and 30 days. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked **Aprendida**.
 
@@ -23,13 +23,13 @@ npm ci
 npm run build
 ```
 
-Open `dist/index.html` in a browser. The game, fonts and notices are bundled in this one file.
+Open `dist/en-GB/index.html` for British English or `dist/index.html` for European Portuguese. Each file includes its game, fonts and notices. On the website and Android, use the language menu on the game’s home screen. Each language keeps its own progress.
 
 For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME`, then run `gradlew.bat assembleDebug` from `android` on Windows or `./gradlew assembleDebug` on macOS/Linux. The task builds the same game into `android/build/outputs/apk/debug/matiz-debug.apk`. This offline Android package requests no network permission. The debug build is for personal testing.
 
 ## Content and reuse
 
-The initial pack and the 120 daily words are AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
+Each edition contains 188 original AI-drafted pilot questions, including its 120 daily debuts. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
 
 ## Roadmap
 
@@ -44,7 +44,7 @@ For the playable website, run `npm run build:site`. The maintainer guide covers 
 
 Thank you to the [OpenQuiz contributors](https://github.com/ndunl075/OpenQuiz). Matiz uses their code to shuffle answer choices and track answers. The [upstream revision](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib) and [MIT copyright notice](vendor/openquiz/LICENSE) identify the code included in this build.
 
-[Magoosh Vocabulary Builder](https://magoosh.com/vocabulary-builder/) inspired the short rounds and unlockable levels. The European Portuguese questions and examples were written for Matiz.
+[Magoosh Vocabulary Builder](https://magoosh.com/vocabulary-builder/) inspired the short rounds and unlockable levels. The Portuguese and English questions and examples were written for Matiz.
 
 The typefaces are [DM Sans](https://github.com/googlefonts/dm-fonts) and [Instrument Serif](https://github.com/Instrument/instrument-serif). Their authors' [DM Sans](vendor/fonts/dmsans-OFL.txt) and [Instrument Serif](vendor/fonts/instrumentserif-OFL.txt) licence notices are included. Players can read all bundled notices offline under **Créditos e licenças** on the levels screen.
 

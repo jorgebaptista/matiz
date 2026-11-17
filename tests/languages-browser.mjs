@@ -56,9 +56,9 @@ export async function testLanguages(browser) {
     assert.equal(JSON.parse(ptSave).progress.ponderar.seen, 1);
     const ptWord = await page.locator("h1").innerText();
     await page.goto("https://matiz.test/jogar/en-GB/");
-    assert.equal(await page.title(), "Matiz · Synonyms");
+    assert.equal(await page.title(), "Matiz · A British English synonym game");
     assert.equal(await page.locator("html").getAttribute("lang"), "en-GB");
-    assert.equal(await page.locator(".locale").innerText(), "British English");
+    assert.equal(await page.locator("select.locale option:checked").innerText(), "British English");
     assert.equal(await page.locator(".hero .primary").textContent(), "Play→");
     assert.match(await page.locator(".credits").innerText(), /Credits and licences/);
     await page.locator(".hero .primary").click();

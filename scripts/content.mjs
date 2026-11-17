@@ -1,6 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { dailyBandIds } from "../src/bands.js";
 
 export const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 export const defaultLocale = "pt-PT";
@@ -154,7 +155,7 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
       checkWord(card, ["pilot", "reviewed"]);
       if (!Object.hasOwn(card, "dailyOn")) continue;
       const date = card.dailyOn;
-      requireContent(pack.locale === "pt-PT" && ["0", "1", "2", "3"].includes(level.id) &&
+      requireContent(dailyBandIds.includes(level.id) &&
         typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) &&
         Number.isFinite(Date.parse(date)) && new Date(date).toISOString().startsWith(date + "T"),
         card.id + ": invalid daily debut");
@@ -166,7 +167,7 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
     requireContent(level.words.some(card => !card.dailyOn), "Each level needs a regular practice word");
   }
   for (const [date, bands] of debutDates)
-    requireContent(bands.size === 4, date + ": expected one daily debut per band");
+    requireContent(bands.size === dailyBandIds.length, date + ": expected one daily debut per band");
   if (drafts) {
     requireContent(
       drafts.locale === pack.locale && Array.isArray(drafts.words),

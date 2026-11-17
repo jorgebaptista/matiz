@@ -1,6 +1,6 @@
 # Contribute a language
 
-Matiz uses one game engine and two JSON files per language. PT-PT is currently the only shipped pack. The English example below is illustrative; tests create it in a temporary directory and remove it afterwards.
+Matiz uses one game engine and two JSON files per language. European Portuguese and British English ship with the game. The examples below show how the English files are structured; use your own locale tag when adding an edition.
 
 ## 1. Choose the locale and create the files
 
@@ -16,7 +16,7 @@ No engine changes, build registration or package-script changes are needed. Ever
 
 ## 2. Write a playable pack
 
-For a minimal local example, save this as `packs/en-GB.json`:
+A minimal English pack has this shape:
 
 ```json
 {
@@ -49,7 +49,7 @@ Level IDs are unique numeric strings; `"0"` is the optional introductory band. A
 
 ## 3. Translate every interface string
 
-Copy `locales/pt-PT.json` to `locales/en-GB.json`, change its locale and metadata, and translate **every** value in `strings`. Keep all key names. These top-level fields are the stable interface for the separate static site generator:
+Copy a shipped locale file to a new file named for your language, update its locale and metadata, and translate **every** value in `strings`. Keep all key names. These top-level fields are the stable interface for the separate static site generator:
 
 ```json
 {
@@ -115,11 +115,11 @@ The checker validates every discovered locale, metadata identity, nonempty UI va
 | Pack | Standalone output | Site copy/link |
 | --- | --- | --- |
 | `pt-PT` | `dist/index.html` | `jogar/index.html` |
-| `en-GB` (when contributed) | `dist/en-GB/index.html` | `jogar/en-GB/index.html` |
+| `en-GB` | `dist/en-GB/index.html` | `jogar/en-GB/index.html` |
 
 Each HTML file includes its own vocabulary, translated UI, JavaScript, CSS, fonts and notices. Open the file directly and play with networking disabled. No runtime locale fetch or language service is needed. The English home page lists each playable pack automatically. The site builder also creates `editions/<locale>/` with the translated title, description, sample question and play link. Use a fresh build output directory when retiring a locale; builds overwrite current files without purging old output folders.
 
-PT-PT keeps `matiz.pt-PT.v1` as its storage key. Other locales use `matiz.<locale>.v1`, so even matching word IDs cannot share progress on the same web origin. Storage still belongs to the browser origin or local file; moving a file or switching between the website and Android does not transfer a save. Android continues opening `dist/index.html` through its existing asset entry point, with PT-PT as the default. Its build task tracks locale and draft changes.
+Each edition keeps progress in `matiz.<locale>.v1` on the current device and browser. Android opens PT-PT on first launch, then remembers the language selected on the game's home screen. Downloaded HTML files open directly in their own language.
 
 The desktop browser check uses Playwright Chromium by default. Install it with `npx playwright install chromium`. Set `MATIZ_BROWSER` to an installed Chromium executable to override it; for example in PowerShell, `$env:MATIZ_BROWSER = 'C:\Program Files\Google\Chrome\Application\chrome.exe'`. The existing PT-PT play and save-migration checks still run. A second test creates a temporary English pack, builds both languages and verifies translated offline play, plural text, credits, resume and save isolation on one simulated origin. It does not add or ship an English edition. Browser fixtures are skipped in the existing Android CDP mode; that mode retains its PT-PT device checks.
 

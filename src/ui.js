@@ -20,6 +20,9 @@ const t = (key, values) => esc(translate(key, values));
 
 const root = document.querySelector("#game");
 const alert = document.querySelector("#storage-alert");
+const bundledApp = location.protocol === "file:" && location.pathname.startsWith("/android_asset/");
+const editionPicker = document.querySelector("#edition-picker").content.querySelector("select");
+const canSwitch = (bundledApp || /^https?:$/.test(location.protocol)) && editionPicker.options.length > 1;
 function restore() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
@@ -43,7 +46,8 @@ const badge =
 const header = () =>
   '<header><span class="brand">' +
   badge +
-  t("brand") + '</span><span class="locale">' + esc(locale.languageName) + '</span></header>';
+  t("brand") + '</span>' + (canSwitch ? editionPicker.outerHTML :
+    '<span class="locale">' + esc(locale.languageName) + '</span>') + '</header>';
 const bandById = new Map(levels.map((level) => [level.id, level]));
 const difficultyKeys = ["entryBand", "easyBand", "mediumBand", "hardBand"];
 function wordHeading(word) {
@@ -268,6 +272,10 @@ function goHome() {
   return true;
 }
 window.matizBack = goHome;
+root.addEventListener("change", event => {
+  if (!canSwitch || !event.target.matches("select.locale")) return;
+  location.assign(event.target.value + (bundledApp ? "index.html" : ""));
+});
 if (hasDaily) {
   // Refresh the indicator if the home screen stays open across Lisbon midnight.
   window.setInterval(refreshDailyButton, 30_000);

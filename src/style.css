@@ -108,6 +108,16 @@ header {
 .locale {
   color: var(--muted);
 }
+select.locale {
+  min-height: 44px;
+  max-width: 56%;
+  padding: 0 5px;
+  color: var(--green);
+  background: var(--paper);
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
 .eyebrow {
   letter-spacing: 0;
   font-size: 0.9375rem;

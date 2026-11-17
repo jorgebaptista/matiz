@@ -2,6 +2,7 @@ import { applyAnswer, emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import { pack } from "./pack.js";
 import { dailyCards, dailyDay } from "./daily.js";
+import { dailyBandsFor } from "./bands.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;
@@ -29,8 +30,8 @@ export const wordsById = new Map(
 );
 
 // Fixed slots keep the daily at four even if more practice bands are added.
-const dailyBands = ["0", "1", "2", "3"].map(id => levels.find(level => level.id === id));
-export const hasDaily = pack.locale === "pt-PT" && dailyBands.every(band => band?.words.length);
+const dailyBands = dailyBandsFor(levels);
+export const hasDaily = dailyBands.length > 0;
 const debutCalendar = hasDaily ? dailyBands[0].words.map(w => w.debutDay)
   .filter(Number.isInteger).sort((a, b) => a - b) : [];
 export function practiceLevels(day = dailyDay()) {

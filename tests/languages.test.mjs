@@ -46,7 +46,7 @@ test("convention discovery builds two offline files, preserves legal notices and
     const english = await readFile(path.join(fixture.outdir, "en-GB/index.html"), "utf8");
     const portuguese = await readFile(path.join(fixture.outdir, "index.html"), "utf8");
     assert.match(english, /<html lang="en-GB">/);
-    assert.match(english, /<title>Matiz · Synonyms<\/title>/);
+    assert.ok(english.includes(`<title>${fixtureLocale.title}</title>`));
     assert.match(english, /Which meaning is closest/);
     assert.doesNotMatch(english, /draft-only|Qual é o sentido|renitente/);
     assert.ok(portuguese.includes(`<title>${languages[1].locale.title}</title>`));

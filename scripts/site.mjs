@@ -8,6 +8,7 @@ import {
   rm,
 } from "node:fs/promises";
 import path from "node:path";
+import { dailyBandsFor } from "../src/bands.js";
 import { defaultLocale, projectRoot, readLanguages } from "./content.mjs";
 import { escapeHTML as esc } from "../src/html.js";
 
@@ -71,7 +72,7 @@ try {
       sentence: word.example,
     };
     const page = template
-      .replace("<!-- daily-link -->", () => locale === "pt-PT" ? '<a href="../../' + esc(route) + '?mode=daily">' + esc(copy.strings.daily) + '</a>' : '')
+      .replace("<!-- daily-link -->", () => dailyBandsFor(pack.levels).length ? '<a href="../../' + esc(route) + '?mode=daily">' + esc(copy.strings.daily) + '</a>' : '')
       .replace("<!-- public-links -->", () => publicLinks(info))
       .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(fields[key]));
     const dir = path.join(output, info);
@@ -100,7 +101,7 @@ try {
         '">About this edition</a></p>',
     )
     .join("\n");
-  const featured = editions.find((edition) => edition.locale === defaultLocale) ?? editions[0];
+  const featured = editions.find((edition) => edition.locale.startsWith("en-")) ?? editions[0];
   const example = { locale: featured.locale, name: featured.name, word: featured.word.word, answer: featured.word.answer, sentence: featured.word.example };
   let html = (await read("site", "index.html"))
     .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(example[key]))

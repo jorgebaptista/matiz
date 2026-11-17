@@ -135,6 +135,27 @@ try {
     .click();
   await play.getByRole("button", { name: "Jogar", exact: true }).click();
   assert.equal(await play.locator(".choice").count(), 4);
+  await play.getByRole("button", { name: "Início", exact: true }).click();
+  const originalSave = await play.evaluate(() => localStorage.getItem("matiz.pt-PT.v1"));
+  await play.getByRole("combobox").selectOption({ label: "British English" });
+  await play.waitForURL(url + "jogar/en-GB/");
+  await play.getByRole("button", { name: "Daily challenge", exact: true }).click();
+  for (const [i, label] of ["Entry", "Easy", "Medium", "Hard"].entries()) {
+    assert.equal(await play.locator(".difficulty").innerText(), label);
+    await play.getByRole("button", { name: "I don't know" }).click();
+    if (i === 0) await play.reload();
+    await play.getByRole("button", { name: i === 3 ? "View result" : "Next word" }).click();
+  }
+  assert.match(await play.locator(".score").innerText(), /0\s*\/\s*4/);
+  await play.getByRole("button", { name: "Back home" }).click();
+  assert.equal(await play.locator(".daily").getAttribute("data-status"), "dailyCompleted");
+  await play.getByRole("combobox").selectOption({ label: "Português europeu" });
+  await play.waitForURL(url + "jogar/");
+  assert.equal(await play.evaluate(() => localStorage.getItem("matiz.pt-PT.v1")), originalSave);
+  await staticPage.goto(url);
+  await staticPage.getByRole("link", { name: "About British English" }).click();
+  assert.equal(await staticPage.locator("html").getAttribute("lang"), "en-GB");
+  assert.match(await staticPage.getByRole("link", { name: "Daily challenge" }).getAttribute("href"), /en-GB\/\?mode=daily$/);
   console.log(
     "Crawlable mobile homepage, project path, share card and first question passed.",
   );

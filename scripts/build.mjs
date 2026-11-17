@@ -39,7 +39,14 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
     const notices = licenses.map(([key, text]) =>
       `<details><summary>${escapeHTML(locale.strings[key])}</summary><pre lang="en">${text}</pre></details>`);
     const metadata = { locale: locale.locale, title: locale.title, description: locale.description };
+    const editionOptions = languages.map(({ locale: edition }) => {
+      const root = locale.locale === defaultLocale ? "./" : "../";
+      const route = root + (edition.locale === defaultLocale ? "" : edition.locale + "/");
+      const selected = edition.locale === locale.locale ? " selected" : "";
+      return `<option value="${escapeHTML(route)}" lang="${escapeHTML(edition.locale)}"${selected}>${escapeHTML(edition.languageName)}</option>`;
+    });
     const html = template
+      .replace("<!-- edition-options -->", () => editionOptions.join(""))
       .replace(/\{\{([a-zA-Z]+)\}\}/g, (_, key) => escapeHTML(metadata[key] ?? locale.strings[key]))
       .replace("/* GAME_CSS */", () => style.outputFiles[0].text)
       .replace("/* GAME_JS */", () => script.outputFiles[0].text.replace(/<\/script/gi, "<\\/script"))

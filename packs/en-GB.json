@@ -1,0 +1,1841 @@
+{
+  "locale": "en-GB",
+  "levels": [
+    {
+      "id": "0",
+      "name": "First steps",
+      "words": [
+        {
+          "id": "brief",
+          "word": "brief",
+          "answer": "short",
+          "alternatives": ["late", "dull", "shallow"],
+          "example": "We had time for a brief chat before the train left.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "sturdy",
+          "word": "sturdy",
+          "answer": "strongly built",
+          "alternatives": ["heavy", "ornate", "rigidly fixed"],
+          "example": "She tested the sturdy stool before climbing on it.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "glimpse",
+          "word": "glimpse",
+          "answer": "quick look",
+          "alternatives": ["careful search", "distant sound", "long wait"],
+          "example": "A gap in the hedge gave us a glimpse of the river.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "eager",
+          "word": "eager",
+          "answer": "keen",
+          "alternatives": ["calm", "proud", "relieved"],
+          "example": "The apprentices were eager to try the new lathe.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "mend",
+          "word": "mend",
+          "answer": "repair",
+          "alternatives": ["polish", "measure", "replace"],
+          "example": "He used red thread to mend the tear.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "weary",
+          "word": "weary",
+          "answer": "tired",
+          "alternatives": ["worried", "bored", "lonely"],
+          "example": "The weary walkers rested on the station steps.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "scarce",
+          "word": "scarce",
+          "answer": "in short supply",
+          "alternatives": ["in great demand", "in poor condition", "in plain sight"],
+          "example": "Clean jars grew scarce as the jam cooled.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "gather",
+          "word": "gather",
+          "answer": "collect",
+          "alternatives": ["scatter", "compare", "flatten"],
+          "example": "The children helped gather fallen apples.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "pause",
+          "word": "pause",
+          "answer": "brief stop",
+          "alternatives": ["false start", "quick turn", "slow finish"],
+          "example": "A pause in the music let us hear the rain.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-17"
+        },
+        {
+          "id": "gentle",
+          "word": "gentle",
+          "answer": "mild",
+          "alternatives": ["shy", "slow", "pale"],
+          "example": "A gentle breeze barely stirred the curtains.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-18"
+        },
+        {
+          "id": "shrink",
+          "word": "shrink",
+          "answer": "grow smaller",
+          "alternatives": ["fall apart", "grow heavier", "lose colour"],
+          "example": "Wash the jumper in cool water or it might shrink.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-19"
+        },
+        {
+          "id": "swift",
+          "word": "swift",
+          "answer": "quick",
+          "alternatives": ["light", "quiet", "smooth"],
+          "example": "One swift movement freed the trapped sleeve.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-20"
+        },
+        {
+          "id": "damp",
+          "word": "damp",
+          "answer": "slightly wet",
+          "alternatives": ["slightly cold", "slightly rough", "slightly loose"],
+          "example": "The towels were still damp at lunchtime.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-21"
+        },
+        {
+          "id": "wander",
+          "word": "wander",
+          "answer": "roam",
+          "alternatives": ["rush", "follow", "return"],
+          "example": "We had an hour to wander through the old town.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-22"
+        },
+        {
+          "id": "generous",
+          "word": "generous",
+          "answer": "giving",
+          "alternatives": ["grateful", "cheerful", "wealthy"],
+          "example": "It was generous of Rosa to share her last slice.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-23"
+        },
+        {
+          "id": "choose",
+          "word": "choose",
+          "answer": "select",
+          "alternatives": ["compare", "describe", "notice"],
+          "example": "Let the youngest guest choose the first song.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-24"
+        },
+        {
+          "id": "gloomy",
+          "word": "gloomy",
+          "answer": "downcast",
+          "alternatives": ["startled", "awkward", "restless"],
+          "example": "He sounded gloomy after the match was cancelled.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-25"
+        },
+        {
+          "id": "reply",
+          "word": "reply",
+          "answer": "respond",
+          "alternatives": ["repeat", "request", "recall"],
+          "example": "I need to check the diary before I reply.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-26"
+        },
+        {
+          "id": "silent",
+          "word": "silent",
+          "answer": "soundless",
+          "alternatives": ["empty", "hidden", "still"],
+          "example": "The silent film drew a noisy crowd.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-27"
+        },
+        {
+          "id": "tidy",
+          "word": "tidy",
+          "answer": "neat",
+          "alternatives": ["clean-cut", "plain", "small"],
+          "example": "Even the spare cables sat in tidy rows.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-28"
+        },
+        {
+          "id": "begin",
+          "word": "begin",
+          "answer": "start",
+          "alternatives": ["plan", "try", "continue"],
+          "example": "The talks begin as soon as the doors close.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-29"
+        },
+        {
+          "id": "odd",
+          "word": "odd",
+          "answer": "unusual",
+          "alternatives": ["incorrect", "unwanted", "unclear"],
+          "example": "An odd pair of shoes stood outside the shed.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-30"
+        },
+        {
+          "id": "cheerful",
+          "word": "cheerful",
+          "answer": "happy",
+          "alternatives": ["brave", "alert", "polite"],
+          "example": "The kettle whistled a cheerful little tune.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-01"
+        },
+        {
+          "id": "harsh",
+          "word": "harsh",
+          "answer": "severe",
+          "alternatives": ["sudden", "public", "careless"],
+          "example": "Several readers found the review rather harsh.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-02"
+        },
+        {
+          "id": "delay",
+          "word": "delay",
+          "answer": "postpone",
+          "alternatives": ["forget", "shorten", "refuse"],
+          "example": "Fog forced us to delay the launch.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-03"
+        },
+        {
+          "id": "tiny",
+          "word": "tiny",
+          "answer": "minute",
+          "alternatives": ["fragile", "young", "narrow"],
+          "example": "A tiny brass key lay beneath the envelope.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-04"
+        },
+        {
+          "id": "stroll",
+          "word": "stroll",
+          "answer": "walk leisurely",
+          "alternatives": ["run steadily", "wait patiently", "turn sharply"],
+          "example": "We like to stroll along the canal after supper.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-05"
+        },
+        {
+          "id": "bold",
+          "word": "bold",
+          "answer": "daring",
+          "alternatives": ["fierce", "clever", "loud"],
+          "example": "Opening a theatre in that village was a bold decision.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-06"
+        },
+        {
+          "id": "assist",
+          "word": "assist",
+          "answer": "help",
+          "alternatives": ["lead", "watch", "teach"],
+          "example": "A neighbour offered to assist with the move.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-07"
+        },
+        {
+          "id": "loose",
+          "word": "loose",
+          "answer": "unfastened",
+          "alternatives": ["uneven", "tilted", "torn"],
+          "example": "A loose strap trailed behind the basket.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-08"
+        },
+        {
+          "id": "vanish",
+          "word": "vanish",
+          "answer": "disappear",
+          "alternatives": ["break", "escape notice briefly", "turn away"],
+          "example": "The frost began to vanish in the morning sun.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-09"
+        },
+        {
+          "id": "plainly",
+          "word": "plainly",
+          "answer": "clearly",
+          "alternatives": ["softly", "quickly", "politely"],
+          "example": "The diagram plainly showed the missing link.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-10"
+        },
+        {
+          "id": "remain",
+          "word": "remain",
+          "answer": "stay",
+          "alternatives": ["settle an argument", "prepare", "arrive"],
+          "example": "One passenger chose to remain on board.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-11"
+        },
+        {
+          "id": "useful",
+          "word": "useful",
+          "answer": "helpful",
+          "alternatives": ["popular", "modern", "tidy"],
+          "example": "A pencil proved more useful than a camera.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-12"
+        },
+        {
+          "id": "mistake",
+          "word": "mistake",
+          "answer": "error",
+          "alternatives": ["delay", "guess", "risk"],
+          "example": "The extra zero was a mistake.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-13"
+        },
+        {
+          "id": "soak",
+          "word": "soak",
+          "answer": "drench",
+          "alternatives": ["rinse lightly", "fold tightly", "heat gently"],
+          "example": "One burst pipe can soak an entire carpet.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-14"
+        },
+        {
+          "id": "protect",
+          "word": "protect",
+          "answer": "safeguard",
+          "alternatives": ["repair", "claim", "display"],
+          "example": "The low wall helps protect the garden.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-15"
+        },
+        {
+          "id": "glad",
+          "word": "glad",
+          "answer": "pleased",
+          "alternatives": ["amused", "proud", "calm"],
+          "example": "I was glad to hear the bridge had reopened.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-16"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "Precision",
+      "words": [
+        {
+          "id": "reluctant",
+          "word": "reluctant",
+          "answer": "unwilling",
+          "alternatives": ["unable", "uncertain of the facts", "unprepared"],
+          "example": "Mira was reluctant to lend out the only key.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "candid",
+          "word": "candid",
+          "answer": "frank",
+          "alternatives": ["tactful", "accurate", "informal"],
+          "example": "A candid answer would spare us another meeting.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fleeting",
+          "word": "fleeting",
+          "answer": "short-lived",
+          "alternatives": ["unexpected", "slight", "fragile"],
+          "example": "She caught a fleeting scent of woodsmoke.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "lavish",
+          "word": "lavish",
+          "answer": "extravagant",
+          "alternatives": ["elegant", "expensive to repair", "graceful"],
+          "example": "The opening night was celebrated with a lavish supper.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "promptly",
+          "word": "promptly",
+          "answer": "without delay",
+          "alternatives": ["without warning", "without charge", "without doubt"],
+          "example": "The hotel promptly returned the forgotten scarf.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "dreary",
+          "word": "dreary",
+          "answer": "dull",
+          "alternatives": ["cold", "difficult", "untidy"],
+          "example": "Another dreary afternoon stretched ahead of him.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "hinder",
+          "word": "hinder",
+          "answer": "impede",
+          "alternatives": ["mislead", "reverse", "interrupt briefly"],
+          "example": "Loose gravel can hinder a cyclist on the bend.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "knack",
+          "word": "knack",
+          "answer": "flair",
+          "alternatives": ["habit", "method", "privilege"],
+          "example": "She has a knack for spotting the missing figure.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "wary",
+          "word": "wary",
+          "answer": "cautious",
+          "alternatives": ["suspiciously quiet", "clumsy", "ashamed"],
+          "example": "The boat crew grew wary as the mist thickened.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ample",
+          "word": "ample",
+          "answer": "plentiful",
+          "alternatives": ["minimal", "measured", "unlimited"],
+          "example": "The kitchen had ample space for two cooks.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "vivid",
+          "word": "vivid",
+          "answer": "strikingly clear",
+          "alternatives": ["strictly accurate", "newly familiar", "deeply personal"],
+          "example": "Years later he kept a vivid memory of the tiled hall.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-17"
+        },
+        {
+          "id": "disclose",
+          "word": "disclose",
+          "answer": "reveal",
+          "alternatives": ["confirm", "explain", "record"],
+          "example": "The letter did not disclose the donor's name.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-18"
+        },
+        {
+          "id": "resolve",
+          "word": "resolve",
+          "answer": "determination",
+          "alternatives": ["permission", "impatience", "success"],
+          "example": "The setback did little to weaken her resolve.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-19"
+        },
+        {
+          "id": "fragile",
+          "word": "fragile",
+          "answer": "easily damaged",
+          "alternatives": ["poorly made", "lightweight", "short-lived"],
+          "example": "A fragile rim made the cup difficult to post.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-20"
+        },
+        {
+          "id": "thrive",
+          "word": "thrive",
+          "answer": "flourish",
+          "alternatives": ["persist unchanged", "appear suddenly", "spread thinly"],
+          "example": "The herbs thrive on the sunny sill.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-21"
+        },
+        {
+          "id": "reliable",
+          "word": "reliable",
+          "answer": "dependable",
+          "alternatives": ["frequent", "thoughtful", "ordinary"],
+          "example": "The village needed a reliable bus service.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-22"
+        },
+        {
+          "id": "overlook",
+          "word": "overlook",
+          "answer": "fail to notice",
+          "alternatives": ["refuse to discuss", "struggle to recall", "delay checking"],
+          "example": "It is easy to overlook the small print beneath the table.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-23"
+        },
+        {
+          "id": "adjust",
+          "word": "adjust",
+          "answer": "modify",
+          "alternatives": ["install", "remove", "inspect"],
+          "example": "They had to adjust the height of the stand.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-24"
+        },
+        {
+          "id": "restraint",
+          "word": "restraint",
+          "answer": "self-control",
+          "alternatives": ["hesitation", "fear", "good manners"],
+          "example": "It took restraint to leave the last pastry alone.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-25"
+        },
+        {
+          "id": "visible",
+          "word": "visible",
+          "answer": "in sight",
+          "alternatives": ["on display by choice", "within reach", "in focus"],
+          "example": "The old path was barely visible through the reeds.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-26"
+        },
+        {
+          "id": "neglect",
+          "word": "neglect",
+          "answer": "fail to attend to",
+          "alternatives": ["refuse permission for", "lose track of time", "undo deliberately"],
+          "example": "In the rush to open they began to neglect the garden.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-27"
+        },
+        {
+          "id": "praise",
+          "word": "praise",
+          "answer": "commend",
+          "alternatives": ["thank", "trust", "defend"],
+          "example": "The judge paused to praise the young accompanist.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-28"
+        },
+        {
+          "id": "accurate",
+          "word": "accurate",
+          "answer": "correct",
+          "alternatives": ["thorough", "concise", "precise in appearance"],
+          "example": "Her accurate sketch guided the builders through the repair.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-29"
+        },
+        {
+          "id": "modest",
+          "word": "modest",
+          "answer": "unassuming",
+          "alternatives": ["ashamed", "anxious", "uncertain"],
+          "example": "The modest winner gave most of the credit to her teammates.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-30"
+        },
+        {
+          "id": "thorough",
+          "word": "thorough",
+          "answer": "comprehensive",
+          "alternatives": ["regular", "prompt", "formal"],
+          "example": "The editor asked for a thorough check of every quotation.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-01"
+        },
+        {
+          "id": "defect",
+          "word": "defect",
+          "answer": "flaw",
+          "alternatives": ["wear", "change", "loss"],
+          "example": "A small defect in the mould left a ridge on every bowl.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-02"
+        },
+        {
+          "id": "startle",
+          "word": "startle",
+          "answer": "surprise suddenly",
+          "alternatives": ["frighten gradually", "annoy repeatedly", "confuse completely"],
+          "example": "The first clap of thunder was enough to startle the cat.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-03"
+        },
+        {
+          "id": "retain",
+          "word": "retain",
+          "answer": "keep",
+          "alternatives": ["recover", "choose", "repair"],
+          "example": "The house will retain its original shutters.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-04"
+        },
+        {
+          "id": "encounter",
+          "word": "encounter",
+          "answer": "come across",
+          "alternatives": ["look after", "wait for", "listen to"],
+          "example": "Walkers sometimes encounter deer beside this stream.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-05"
+        },
+        {
+          "id": "grudging",
+          "word": "grudging",
+          "answer": "reluctantly given",
+          "alternatives": ["secretly planned", "openly hostile", "poorly worded"],
+          "example": "Even the runner-up offered grudging admiration.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-06"
+        },
+        {
+          "id": "forbid",
+          "word": "forbid",
+          "answer": "prohibit",
+          "alternatives": ["discourage", "criticise", "avoid"],
+          "example": "The lease does not forbid pets.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-07"
+        },
+        {
+          "id": "worthy",
+          "word": "worthy",
+          "answer": "deserving",
+          "alternatives": ["wealthy", "fortunate", "famous"],
+          "example": "The panel found three projects worthy of support.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-08"
+        },
+        {
+          "id": "abandon",
+          "word": "abandon",
+          "answer": "give up",
+          "alternatives": ["put aside briefly", "hand over carefully", "bring to a close as planned"],
+          "example": "They had to abandon the search at dusk.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-09"
+        },
+        {
+          "id": "endure",
+          "word": "endure",
+          "answer": "withstand",
+          "alternatives": ["prevent", "escape", "repair"],
+          "example": "The rope must endure years of exposure to salt.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-10"
+        },
+        {
+          "id": "subtle",
+          "word": "subtle",
+          "answer": "hard to detect",
+          "alternatives": ["easy to explain", "pleasant to touch", "slow to change"],
+          "example": "A subtle difference in colour betrayed the repair.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-11"
+        },
+        {
+          "id": "confirm",
+          "word": "confirm",
+          "answer": "verify",
+          "alternatives": ["suggest", "forecast", "summarise"],
+          "example": "A second reading should confirm the measurement.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-12"
+        },
+        {
+          "id": "shrewd",
+          "word": "shrewd",
+          "answer": "astute",
+          "alternatives": ["inventive", "learned", "bold"],
+          "example": "Buying the adjoining strip of land was a shrewd move.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-13"
+        },
+        {
+          "id": "setback",
+          "word": "setback",
+          "answer": "reverse in progress",
+          "alternatives": ["change of plan", "missed appointment", "final defeat"],
+          "example": "The broken pump was a setback for the gardeners.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-14"
+        },
+        {
+          "id": "abundant",
+          "word": "abundant",
+          "answer": "plentiful",
+          "alternatives": ["widely scattered", "highly valued", "rapidly growing"],
+          "example": "Wild mint was abundant along the stream.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-15"
+        },
+        {
+          "id": "persist",
+          "word": "persist",
+          "answer": "carry on",
+          "alternatives": ["insist on proof", "stay behind", "move slowly"],
+          "example": "The tapping seemed to persist after the clock had stopped.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-16"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Nuance",
+      "words": [
+        {
+          "id": "measured",
+          "word": "measured",
+          "answer": "deliberate",
+          "alternatives": ["verified", "precise in size", "quiet"],
+          "example": "Her measured reply steadied the room.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "tentative",
+          "word": "tentative",
+          "answer": "provisional",
+          "alternatives": ["unofficial", "impractical", "unwanted"],
+          "example": "We made a tentative booking while the roof was being repaired.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "elusive",
+          "word": "elusive",
+          "answer": "hard to pin down",
+          "alternatives": ["hard to justify", "hard to forgive", "hard to afford"],
+          "example": "The tune was familiar but its title remained elusive.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "scrutinise",
+          "word": "scrutinise",
+          "answer": "examine closely",
+          "alternatives": ["criticise openly", "describe precisely", "revise repeatedly"],
+          "example": "The clerk used a lens to scrutinise the watermark.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "plausible",
+          "word": "plausible",
+          "answer": "believable",
+          "alternatives": ["proved", "likely to succeed", "easily tested"],
+          "example": "The engineer offered a plausible explanation for the hum.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "implicitly",
+          "word": "implicitly",
+          "answer": "by implication",
+          "alternatives": ["by agreement", "by mistake", "by contrast"],
+          "example": "Leaving a seat free implicitly acknowledged her right to attend.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "reconcile",
+          "word": "reconcile",
+          "answer": "bring into agreement",
+          "alternatives": ["explain in detail", "compare in public", "approve in advance"],
+          "example": "The auditor struggled to reconcile the two sets of figures.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "concede",
+          "word": "concede",
+          "answer": "acknowledge",
+          "alternatives": ["propose", "dispute", "emphasise"],
+          "example": "Even the architect had to concede that the doorway was too low.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "pretext",
+          "word": "pretext",
+          "answer": "ostensible reason",
+          "alternatives": ["firm intention", "remote cause", "opening remark"],
+          "example": "Fetching her coat gave her a pretext for leaving early.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "nuance",
+          "word": "nuance",
+          "answer": "fine distinction",
+          "alternatives": ["minor error", "private meaning", "formal exception"],
+          "example": "A change of stress gave the phrase a different nuance.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "reserved",
+          "word": "reserved",
+          "answer": "restrained",
+          "alternatives": ["confused", "uninterested", "secretive by necessity"],
+          "example": "His reserved manner softened when the music began.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "coherent",
+          "word": "coherent",
+          "answer": "logically connected",
+          "alternatives": ["persuasive", "original", "strictly factual"],
+          "example": "The fragments finally formed a coherent account.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "reciprocal",
+          "word": "reciprocal",
+          "answer": "mutual",
+          "alternatives": ["equal in value", "voluntary", "simultaneous"],
+          "example": "The libraries agreed on reciprocal borrowing rights.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "coincide",
+          "word": "coincide",
+          "answer": "occur together",
+          "alternatives": ["fit precisely inside", "follow closely", "merge gradually"],
+          "example": "Our visits to the island rarely coincide.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "misgiving",
+          "word": "misgiving",
+          "answer": "doubt",
+          "alternatives": ["accusation", "regret about the past", "embarrassment"],
+          "example": "One misgiving lingered after the contract was signed.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "undermine",
+          "word": "undermine",
+          "answer": "weaken",
+          "alternatives": ["expose", "contradict", "reverse"],
+          "example": "An unexplained exception could undermine the whole argument.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "defer",
+          "word": "defer",
+          "answer": "put off",
+          "alternatives": ["refuse", "withdraw", "approve informally"],
+          "example": "The trustees chose to defer the vote until May.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "implicit",
+          "word": "implicit",
+          "answer": "understood without being stated",
+          "alternatives": ["settled by a vote", "agreed in writing", "known from experience"],
+          "example": "An implicit promise hung over the handshake.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "counterpart",
+          "word": "counterpart",
+          "answer": "corresponding person or thing",
+          "alternatives": ["opposing argument", "loose imitation", "secondary benefit"],
+          "example": "The nurse rang her counterpart at the other clinic.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "warranted",
+          "word": "warranted",
+          "answer": "justified",
+          "alternatives": ["compulsory", "predictable", "verified"],
+          "example": "The second inspection was warranted given the smell of gas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "prudent",
+          "word": "prudent",
+          "answer": "judicious",
+          "alternatives": ["frugal by necessity", "patient", "obedient"],
+          "example": "Taking a spare chart seemed prudent in that fog.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-17"
+        },
+        {
+          "id": "assert",
+          "word": "assert",
+          "answer": "state firmly",
+          "alternatives": ["demonstrate", "request", "imply"],
+          "example": "The witness would only assert what she had seen herself.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-18"
+        },
+        {
+          "id": "depict",
+          "word": "depict",
+          "answer": "portray",
+          "alternatives": ["admire", "analyse", "invent"],
+          "example": "The carvings depict a fleet of fishing boats.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-19"
+        },
+        {
+          "id": "contrive",
+          "word": "contrive",
+          "answer": "devise",
+          "alternatives": ["approve", "restore", "conceal"],
+          "example": "We had to contrive a latch from the wire in the drawer.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-20"
+        },
+        {
+          "id": "profound",
+          "word": "profound",
+          "answer": "deep",
+          "alternatives": ["complicated", "earnest", "lasting forever"],
+          "example": "The move had a profound effect on her work.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-21"
+        },
+        {
+          "id": "sustain",
+          "word": "sustain",
+          "answer": "maintain",
+          "alternatives": ["initiate", "improve", "regain"],
+          "example": "It was difficult to sustain the note without taking a breath.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-22"
+        },
+        {
+          "id": "attribute",
+          "word": "attribute",
+          "answer": "ascribe",
+          "alternatives": ["allocate", "announce", "attach physically"],
+          "example": "The crew attribute the rescue to a stroke of luck.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-23"
+        },
+        {
+          "id": "displace",
+          "word": "displace",
+          "answer": "supplant",
+          "alternatives": ["outnumber", "undermine gradually", "copy"],
+          "example": "The new timetable will displace the old one in March.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-24"
+        },
+        {
+          "id": "deduce",
+          "word": "deduce",
+          "answer": "infer",
+          "alternatives": ["measure", "confirm experimentally", "remember"],
+          "example": "From the wheel marks she could deduce which gate had been used.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-25"
+        },
+        {
+          "id": "retract",
+          "word": "retract",
+          "answer": "take back",
+          "alternatives": ["explain", "rephrase", "conceal"],
+          "example": "The paper agreed to retract the allegation.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-26"
+        },
+        {
+          "id": "extraneous",
+          "word": "extraneous",
+          "answer": "irrelevant",
+          "alternatives": ["accidental", "foreign-born", "overlooked"],
+          "example": "Remove extraneous details so the instructions fit on one card.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-27"
+        },
+        {
+          "id": "consecutive",
+          "word": "consecutive",
+          "answer": "successive",
+          "alternatives": ["overlapping", "simultaneous", "regularly spaced apart"],
+          "example": "Rain stopped play on three consecutive afternoons.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-28"
+        },
+        {
+          "id": "spontaneous",
+          "word": "spontaneous",
+          "answer": "unprompted",
+          "alternatives": ["unusual", "disorderly", "brief"],
+          "example": "The reading ended in spontaneous applause.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-29"
+        },
+        {
+          "id": "plight",
+          "word": "plight",
+          "answer": "difficult situation",
+          "alternatives": ["binding promise of payment", "sudden disaster", "poor judgement"],
+          "example": "The letter described the plight of the stranded crew.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-30"
+        },
+        {
+          "id": "prospect",
+          "word": "prospect",
+          "answer": "possibility",
+          "alternatives": ["commitment", "method", "consequence"],
+          "example": "The prospect of a late train made the walkers hurry.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-01"
+        },
+        {
+          "id": "negotiate",
+          "word": "negotiate",
+          "answer": "bargain",
+          "alternatives": ["concede", "insist", "agree in advance"],
+          "example": "The two clubs met to negotiate the rent.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-02"
+        },
+        {
+          "id": "resolute",
+          "word": "resolute",
+          "answer": "steadfast",
+          "alternatives": ["quick-witted", "carefree", "resentful"],
+          "example": "Even after two refusals the petitioners remained resolute.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-03"
+        },
+        {
+          "id": "inclination",
+          "word": "inclination",
+          "answer": "tendency",
+          "alternatives": ["obligation", "choice already made", "temporary order"],
+          "example": "Her first inclination was to ask a question.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-04"
+        },
+        {
+          "id": "deliberation",
+          "word": "deliberation",
+          "answer": "careful consideration",
+          "alternatives": ["formal approval", "public argument", "private enquiry"],
+          "example": "The jury returned after a morning of deliberation.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-05"
+        },
+        {
+          "id": "contradict",
+          "word": "contradict",
+          "answer": "say the opposite of",
+          "alternatives": ["fail to understand", "draw attention to", "ask for proof of"],
+          "example": "The second witness appeared to contradict the first.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-06"
+        },
+        {
+          "id": "coax",
+          "word": "coax",
+          "answer": "gently persuade",
+          "alternatives": ["firmly order", "secretly deceive", "publicly encourage"],
+          "example": "It took an hour to coax the kitten out of the shed.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-07"
+        },
+        {
+          "id": "ingenious",
+          "word": "ingenious",
+          "answer": "inventive",
+          "alternatives": ["accurate", "meticulous", "profitable"],
+          "example": "An ingenious folding handle made the case easier to store.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-08"
+        },
+        {
+          "id": "prevalent",
+          "word": "prevalent",
+          "answer": "widespread",
+          "alternatives": ["popular", "unavoidable", "officially accepted"],
+          "example": "The spelling was prevalent in letters from that decade.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-09"
+        },
+        {
+          "id": "discrepancy",
+          "word": "discrepancy",
+          "answer": "mismatch",
+          "alternatives": ["omission", "ambiguity", "delayed effect"],
+          "example": "A discrepancy between the two totals prompted a recount.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-10"
+        },
+        {
+          "id": "compatible",
+          "word": "compatible",
+          "answer": "able to work together",
+          "alternatives": ["equal in quality", "similar in appearance", "easy to replace"],
+          "example": "The older bulbs are compatible with the new sockets.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-11"
+        },
+        {
+          "id": "undue",
+          "word": "undue",
+          "answer": "excessive",
+          "alternatives": ["unexpected", "unexplained", "avoidable"],
+          "example": "Packing the case too tightly put undue pressure on the hinge.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-12"
+        },
+        {
+          "id": "forethought",
+          "word": "forethought",
+          "answer": "advance consideration",
+          "alternatives": ["swift action", "careful observation", "good timing"],
+          "example": "A little forethought would have put the spare key in the van.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-13"
+        },
+        {
+          "id": "mediate",
+          "word": "mediate",
+          "answer": "act as an intermediary",
+          "alternatives": ["give a final ruling", "accept the blame", "offer a reward"],
+          "example": "An independent chair agreed to mediate between the tenants.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-14"
+        },
+        {
+          "id": "indifferent",
+          "word": "indifferent",
+          "answer": "unconcerned",
+          "alternatives": ["unaware", "undecided", "unwilling"],
+          "example": "The dog was indifferent to the music but alert to the doorbell.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-15"
+        },
+        {
+          "id": "apparent",
+          "word": "apparent",
+          "answer": "seeming",
+          "alternatives": ["measurable", "credible", "significant"],
+          "example": "The apparent symmetry vanished when she turned the tile over.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-16"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Subtle distinctions",
+      "words": [
+        {
+          "id": "taciturn",
+          "word": "taciturn",
+          "answer": "habitually quiet",
+          "alternatives": ["mildly annoyed", "slow to decide", "unusually shy about one subject"],
+          "example": "The taciturn gardener could talk for hours about grafting pears.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fastidious",
+          "word": "fastidious",
+          "answer": "exacting",
+          "alternatives": ["frivolous", "impatient", "confident"],
+          "example": "The fastidious tuner checked every string twice.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "equivocate",
+          "word": "equivocate",
+          "answer": "speak ambiguously",
+          "alternatives": ["change sides", "exaggerate wildly", "admit defeat"],
+          "example": "Pressed for a date, the chair began to equivocate.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "disparate",
+          "word": "disparate",
+          "answer": "fundamentally different",
+          "alternatives": ["unequally distributed", "loosely connected", "far apart in space"],
+          "example": "The archive brings together three disparate kinds of testimony.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "perspicacious",
+          "word": "perspicacious",
+          "answer": "quick to discern",
+          "alternatives": ["eager to please", "prone to doubt", "slow to judge"],
+          "example": "Her perspicacious question exposed a gap in both plans.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "demur",
+          "word": "demur",
+          "answer": "raise an objection",
+          "alternatives": ["delay a decision", "withdraw an offer", "change allegiance"],
+          "example": "Most trustees nodded, but one rose to demur.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "circumspect",
+          "word": "circumspect",
+          "answer": "cautious",
+          "alternatives": ["indirect in speech", "thoroughly informed", "unsure of the outcome"],
+          "example": "She became circumspect whenever anyone mentioned the missing page.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "succinct",
+          "word": "succinct",
+          "answer": "concise",
+          "alternatives": ["exact", "straightforward", "understated"],
+          "example": "The catalogue supplied a succinct account of the discovery.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "precipitate",
+          "word": "precipitate",
+          "answer": "unduly hasty",
+          "alternatives": ["long overdue", "strictly necessary", "wholly unexpected"],
+          "example": "Selling the press before the grant decision struck us as precipitate.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fortuitous",
+          "word": "fortuitous",
+          "answer": "occurring by chance",
+          "alternatives": ["long awaited", "especially useful", "highly improbable"],
+          "example": "A fortuitous meeting on the ferry reunited the old colleagues.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inherent",
+          "word": "inherent",
+          "answer": "intrinsic",
+          "alternatives": ["inevitable", "universal", "hereditary"],
+          "example": "There is an inherent tension between speed and accuracy.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "relinquish",
+          "word": "relinquish",
+          "answer": "give up possession of",
+          "alternatives": ["offer temporarily", "claim formally", "divide equally"],
+          "example": "The retiring captain agreed to relinquish the key.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "contentious",
+          "word": "contentious",
+          "answer": "likely to provoke dispute",
+          "alternatives": ["hard to verify", "easily misunderstood", "deeply personal"],
+          "example": "The division of rehearsal time proved contentious.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ostentatiously",
+          "word": "ostentatiously",
+          "answer": "showily",
+          "alternatives": ["clumsily", "proudly but privately", "ceremonially"],
+          "example": "He ostentatiously counted out the tip in front of the queue.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "contrition",
+          "word": "contrition",
+          "answer": "remorse",
+          "alternatives": ["embarrassment", "submission", "anxiety"],
+          "example": "The letter expressed genuine contrition for the careless remark.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "meticulous",
+          "word": "meticulous",
+          "answer": "painstaking",
+          "alternatives": ["resourceful", "consistent", "highly skilled"],
+          "example": "Her meticulous notes recorded even the colour of the thread.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "tenuous",
+          "word": "tenuous",
+          "answer": "flimsy",
+          "alternatives": ["temporary", "unfamiliar", "unproven in court"],
+          "example": "A single shared surname made a tenuous link between the families.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "susceptible",
+          "word": "susceptible",
+          "answer": "vulnerable",
+          "alternatives": ["already damaged", "easy to find", "inexperienced"],
+          "example": "The earliest seedlings are susceptible to a late frost.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inadvertent",
+          "word": "inadvertent",
+          "answer": "unintentional",
+          "alternatives": ["unobserved", "innocent of all harm", "unavoidable"],
+          "example": "An inadvertent change of sign doubled the result.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "specious",
+          "word": "specious",
+          "answer": "misleadingly plausible",
+          "alternatives": ["deliberately obscure", "merely incomplete", "openly hostile"],
+          "example": "The figures gave a specious air of precision to her guess.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "conciliatory",
+          "word": "conciliatory",
+          "answer": "intended to ease hostility",
+          "alternatives": ["ready to surrender", "unwilling to intervene", "eager to impress"],
+          "example": "His conciliatory opening line bought them time to talk.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "allay",
+          "word": "allay",
+          "answer": "ease",
+          "alternatives": ["expose", "anticipate", "ignore"],
+          "example": "The survey helped allay fears about the foundations.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "complacent",
+          "word": "complacent",
+          "answer": "smugly satisfied",
+          "alternatives": ["calm under pressure", "quietly pleased for others", "unaware of the rules"],
+          "example": "Success made the team complacent about its checks.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "spurious",
+          "word": "spurious",
+          "answer": "not genuine",
+          "alternatives": ["not current", "not complete", "not public"],
+          "example": "A spurious signature had been added beneath the dedication.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "volatile",
+          "word": "volatile",
+          "answer": "liable to change rapidly",
+          "alternatives": ["dangerous to touch", "short-lived", "unusually strong"],
+          "example": "The market for second-hand presses remains volatile.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "expedient",
+          "word": "expedient",
+          "answer": "convenient in the circumstances",
+          "alternatives": ["necessary in principle", "correct in every detail", "beneficial to everyone"],
+          "example": "For one afternoon a borrowed marquee was an expedient solution.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "redoubtable",
+          "word": "redoubtable",
+          "answer": "formidable",
+          "alternatives": ["dependable", "stubborn", "celebrated"],
+          "example": "The village team faced a redoubtable opening pair.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "latent",
+          "word": "latent",
+          "answer": "present but inactive",
+          "alternatives": ["hidden on purpose", "delayed by accident", "unlikely to occur"],
+          "example": "The exercise brought out a latent talent for mimicry.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ambivalence",
+          "word": "ambivalence",
+          "answer": "mixed feelings",
+          "alternatives": ["lack of interest", "uncertainty about facts", "reluctance to speak"],
+          "example": "Her ambivalence about moving surprised even her closest friend.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "superannuated",
+          "word": "superannuated",
+          "answer": "outmoded",
+          "alternatives": ["underused", "poorly documented", "hand-built"],
+          "example": "A superannuated ticket machine stood in the corner.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "reticent",
+          "word": "reticent",
+          "answer": "disinclined to speak",
+          "alternatives": ["unwilling to listen", "quick to judge", "calm in danger"],
+          "example": "The normally reticent porter volunteered an account of the evening.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-17"
+        },
+        {
+          "id": "perfunctory",
+          "word": "perfunctory",
+          "answer": "done with little care",
+          "alternatives": ["done without authority", "done in secret", "done ahead of time"],
+          "example": "A perfunctory glance at the label missed the warning.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-18"
+        },
+        {
+          "id": "obdurate",
+          "word": "obdurate",
+          "answer": "stubbornly unyielding",
+          "alternatives": ["slow to understand", "bluntly honest", "habitually silent"],
+          "example": "Even the extra evidence left the landlord obdurate.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-19"
+        },
+        {
+          "id": "prescient",
+          "word": "prescient",
+          "answer": "foreseeing what happens",
+          "alternatives": ["recalling events vividly", "reasoning from figures", "judging fairly"],
+          "example": "Her warning about the floodplain proved prescient.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-20"
+        },
+        {
+          "id": "ephemeral",
+          "word": "ephemeral",
+          "answer": "short-lived",
+          "alternatives": ["weightless", "unpredictable", "barely visible"],
+          "example": "The exhibition recorded the ephemeral patterns left by the tide.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-21"
+        },
+        {
+          "id": "parsimonious",
+          "word": "parsimonious",
+          "answer": "sparing with resources",
+          "alternatives": ["careful with details", "strict about dates", "unwilling to compromise"],
+          "example": "The famously parsimonious treasurer reused every envelope.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-22"
+        },
+        {
+          "id": "pellucid",
+          "word": "pellucid",
+          "answer": "exceptionally clear",
+          "alternatives": ["quietly persuasive", "elegantly restrained", "unusually brief"],
+          "example": "Her pellucid explanation turned the proof into three simple steps.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-23"
+        },
+        {
+          "id": "impugn",
+          "word": "impugn",
+          "answer": "challenge the validity of",
+          "alternatives": ["violate the terms of", "misrepresent the scope of", "delay the release of"],
+          "example": "Nobody sought to impugn the quality of the measurements.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-24"
+        },
+        {
+          "id": "promulgate",
+          "word": "promulgate",
+          "answer": "make formally known",
+          "alternatives": ["approve in private", "frame provisionally", "apply retrospectively"],
+          "example": "The council must promulgate each new by-law before enforcing it.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-25"
+        },
+        {
+          "id": "ameliorate",
+          "word": "ameliorate",
+          "answer": "improve",
+          "alternatives": ["replace", "disguise", "prevent"],
+          "example": "Opening the shutters did something to ameliorate the stuffy conditions.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-26"
+        },
+        {
+          "id": "attenuate",
+          "word": "attenuate",
+          "answer": "reduce in strength",
+          "alternatives": ["speed up", "spread out evenly", "bring to a halt"],
+          "example": "Two layers of felt should attenuate the sound of the motor.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-27"
+        },
+        {
+          "id": "discerning",
+          "word": "discerning",
+          "answer": "perceptive",
+          "alternatives": ["selective by chance", "qualified by training", "critical by default"],
+          "example": "A discerning listener noticed the slight change of key.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-28"
+        },
+        {
+          "id": "rescind",
+          "word": "rescind",
+          "answer": "revoke",
+          "alternatives": ["amend", "question", "suspend briefly"],
+          "example": "The committee voted to rescind the parking order.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-29"
+        },
+        {
+          "id": "diffidence",
+          "word": "diffidence",
+          "answer": "lack of self-confidence",
+          "alternatives": ["lack of interest", "unwillingness to compromise", "hesitation about the facts"],
+          "example": "Her diffidence vanished the moment she took up the violin.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-11-30"
+        },
+        {
+          "id": "incongruous",
+          "word": "incongruous",
+          "answer": "out of place",
+          "alternatives": ["irregular in shape", "unfamiliar to visitors", "sharply divided"],
+          "example": "The plastic sign looked incongruous in the old chapel.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-01"
+        },
+        {
+          "id": "verisimilitude",
+          "word": "verisimilitude",
+          "answer": "appearance of truth",
+          "alternatives": ["certainty of origin", "accuracy of measurement", "consistency of tone"],
+          "example": "A scratched ticket stub lent the invented journey verisimilitude.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-02"
+        },
+        {
+          "id": "conjecture",
+          "word": "conjecture",
+          "answer": "supposition",
+          "alternatives": ["verified deduction", "deliberate invention", "indirect admission"],
+          "example": "Without the final page the ending remained a matter of conjecture.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-03"
+        },
+        {
+          "id": "scrupulous",
+          "word": "scrupulous",
+          "answer": "conscientious",
+          "alternatives": ["conventional", "talented", "hesitant"],
+          "example": "She was scrupulous about crediting even the smallest contribution.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-04"
+        },
+        {
+          "id": "indelible",
+          "word": "indelible",
+          "answer": "impossible to erase",
+          "alternatives": ["impossible to trace", "impossible to mend", "impossible to repeat"],
+          "example": "The flood left an indelible line across the plaster.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-05"
+        },
+        {
+          "id": "audacious",
+          "word": "audacious",
+          "answer": "bold",
+          "alternatives": ["careless", "unexpected", "flamboyant"],
+          "example": "Restoring the whole pier in one winter was an audacious plan.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-06"
+        },
+        {
+          "id": "equivocal",
+          "word": "equivocal",
+          "answer": "open to different readings",
+          "alternatives": ["opposed to change", "difficult to verify", "deliberately untrue"],
+          "example": "Both parties claimed the director's equivocal remark as support.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-07"
+        },
+        {
+          "id": "sine-qua-non",
+          "word": "sine qua non",
+          "answer": "essential condition",
+          "alternatives": ["underlying motive", "final objective", "unwritten exception"],
+          "example": "Public access was a sine qua non of the donor's offer.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-08"
+        },
+        {
+          "id": "assiduous",
+          "word": "assiduous",
+          "answer": "diligent",
+          "alternatives": ["inquisitive", "obedient", "inventive"],
+          "example": "Her assiduous tending turned the courtyard into an orchard.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-09"
+        },
+        {
+          "id": "dissonance",
+          "word": "dissonance",
+          "answer": "lack of harmony",
+          "alternatives": ["shift in emphasis", "loss of clarity", "division of labour"],
+          "example": "There was a curious dissonance between the cheerful poster and the empty hall.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-10"
+        },
+        {
+          "id": "ostensible",
+          "word": "ostensible",
+          "answer": "professed",
+          "alternatives": ["secret", "verified", "underlying"],
+          "example": "The ostensible reason for the visit was to inspect the chimney.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-11"
+        },
+        {
+          "id": "deference",
+          "word": "deference",
+          "answer": "respectful submission",
+          "alternatives": ["affection", "discretion", "quiet gratitude"],
+          "example": "Out of deference to the host, the guests waited to sit down.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-12"
+        },
+        {
+          "id": "laconic",
+          "word": "laconic",
+          "answer": "using few words",
+          "alternatives": ["speaking without warmth", "choosing words carefully", "speaking without emphasis"],
+          "example": "Her laconic review consisted of a single memorable sentence.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-13"
+        },
+        {
+          "id": "intractable",
+          "word": "intractable",
+          "answer": "hard to manage",
+          "alternatives": ["hard to describe", "hard to locate", "hard to replace"],
+          "example": "The last leak proved intractable despite three visits from the plumber.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-14"
+        },
+        {
+          "id": "sardonic",
+          "word": "sardonic",
+          "answer": "grimly mocking",
+          "alternatives": ["politely sceptical", "openly furious", "merely playful"],
+          "example": "His sardonic toast thanked the leaking roof for providing indoor rain.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-15"
+        },
+        {
+          "id": "vindicate",
+          "word": "vindicate",
+          "answer": "show to be justified",
+          "alternatives": ["recommend for promotion", "protect from criticism", "forgive an error"],
+          "example": "The later survey would vindicate her choice of site.",
+          "origin": "ai-drafted",
+          "status": "pilot",
+          "dailyOn": "2026-12-16"
+        }
+      ]
+    }
+  ]
+}
