@@ -1,6 +1,7 @@
 package pt.matiz.game;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,16 @@ public class MainActivity extends Activity {
         game.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
+                if (request.isForMainFrame() && "matiz-share".equals(request.getUrl().getScheme())) {
+                    String text = request.getUrl().getQueryParameter("text");
+                    if (editionUrls.contains(view.getUrl()) && text != null && !text.isEmpty()) {
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, text);
+                        startActivity(Intent.createChooser(share, null));
+                    }
+                    return true;
+                }
                 if (!request.isForMainFrame() || !editionUrls.contains(url)) return true;
                 getPreferences(MODE_PRIVATE).edit().putString("edition", url).apply();
                 return false;

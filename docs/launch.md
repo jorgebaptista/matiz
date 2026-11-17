@@ -6,6 +6,8 @@ Run `npm ci` and `npm run build:site`. Serve `site-dist` with `python -m http.se
 
 The English home page targets searches such as *synonym game for fluent speakers*. Every playable pack gets a link there and a localised page at `editions/<locale>/`. Its title and description come from the pack’s locale file. For example, the Portuguese edition targets *jogo de sinónimos em português europeu*.
 
+Daily results share the date, language, score and four result squares. The play link opens today's daily in that language. Set `SITE_URL` when building for another host, including offline and Android builds, so shared links point to your site.
+
 ## Launch when ready
 
 1. Merge the reviewed contribution and game changes onto the default branch. Check repository history, release attachments and credits for public distribution. Keep Android test builds clearly marked.

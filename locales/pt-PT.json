@@ -5,6 +5,9 @@
   "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco perguntas.",
   "strings": {
     "brand": "Matiz",
+    "shareResult": "Partilhar resultado",
+    "resultCopied": "Resultado copiado",
+    "copyResult": "Copia este resultado para o partilhares.",
     "switchLanguage": "Língua do jogo",
     "editionHeading": "Jogo de sinónimos em português europeu",
     "editionPlay": "Jogar em português",

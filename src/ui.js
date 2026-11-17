@@ -15,6 +15,7 @@ import { locale } from "./pack.js";
 import { dailyDay } from "./daily.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
+import { dailyShareText } from "./share.js";
 
 const t = (key, values) => esc(translate(key, values));
 
@@ -80,13 +81,13 @@ function reviewTime(word) {
     "</p>"
   );
 }
-function action(id, label) {
+function action(id, label, symbol = "→") {
   return (
     '<button class="primary" data-action="' +
     id +
     '">' +
     esc(label) +
-    '<span aria-hidden="true">→</span></button>'
+    '<span aria-hidden="true">' + symbol + '</span></button>'
   );
 }
 const dailyButton = () =>
@@ -243,10 +244,45 @@ function summary(s) {
     "<span> / " +
     s.cards.length +
     '</span></div><p>' + t("correctAnswers") + '</p></section>' +
-    (state.dailyActive ? action("home", translate("backHome")) :
+    (state.dailyActive ? action("share", translate("shareResult"), "↗") +
+      '<p class="share-status" role="status"></p>' +
+      '<textarea class="share-text" hidden readonly aria-label="' + t("shareResult") + '"></textarea>' +
+      '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
     action("continue", translate("playAgain")) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
   );
+}
+async function shareDaily(button) {
+  const text = dailyShareText(state.daily, document.querySelector('meta[name="matiz-play-url"]').content);
+  if (bundledApp) {
+    location.assign("matiz-share://result?text=" + encodeURIComponent(text));
+    return;
+  }
+  const status = root.querySelector(".share-status");
+  const fallback = root.querySelector(".share-text");
+  status.textContent = "";
+  fallback.hidden = true;
+  button.disabled = true;
+  try {
+    if (navigator.share) {
+      try {
+        await navigator.share({ text });
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+    await navigator.clipboard.writeText(text);
+    status.textContent = translate("resultCopied");
+  } catch {
+    status.textContent = translate("copyResult");
+    fallback.value = text;
+    fallback.hidden = false;
+    fallback.focus();
+    fallback.select();
+  } finally {
+    button.disabled = false;
+  }
 }
 function render(focus = false) {
   const s = activeSession(state);
@@ -293,6 +329,10 @@ root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
+  if (id === "share" && state.dailyActive) {
+    shareDaily(target);
+    return;
+  }
   if (id === "home") {
     goHome();
     return;
