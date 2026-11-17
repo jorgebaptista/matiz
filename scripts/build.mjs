@@ -1,7 +1,9 @@
 import { build } from "esbuild";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { checkContent, readContent } from "./content.mjs";
 process.chdir(fileURLToPath(new URL("..", import.meta.url)));
+checkContent(await readContent("packs"), null, { reviewedOnly: process.argv.includes("--reviewed") });
 const [script, style, template] = await Promise.all([
   build({
     entryPoints: ["src/ui.js"],

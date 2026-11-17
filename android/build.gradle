@@ -16,7 +16,7 @@ android {
 def packGame = tasks.register('packGame', Exec) {
     workingDir '..'
     commandLine 'node', 'scripts/build.mjs'
-    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../vendor'), '../scripts/build.mjs', '../package-lock.json', '../LICENSE')
+    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../vendor'), fileTree('../scripts'), '../package-lock.json', '../LICENSE')
     outputs.file '../dist/index.html'
 }
 tasks.named('preBuild').configure { dependsOn packGame }

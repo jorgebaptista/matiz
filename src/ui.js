@@ -52,7 +52,7 @@ const over = (level) =>
   '<div class="eyebrow">Nível ' +
   level.id +
   " <span>·</span> " +
-  level.name +
+  esc(level.name) +
   "</div>";
 function action(id, label) {
   return (
@@ -101,7 +101,7 @@ function home() {
           '><span class="number">' +
           l.id +
           '</span><span class="level-text"><strong>' +
-          l.name +
+          esc(l.name) +
           "</strong><small>" +
           status +
           '</small></span><span class="quantity">' +
@@ -228,7 +228,7 @@ function summary(level, s) {
     " de " +
     level.words.length +
     ' palavras fixadas</p><p class="description">' +
-    subtitle +
+    esc(subtitle) +
     "</p>" +
     action(
       "continue",

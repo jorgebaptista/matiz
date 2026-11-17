@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "content:check": "node scripts/content.mjs",
     "build": "node scripts/build.mjs",
+    "build:reviewed": "node scripts/build.mjs --reviewed",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:browser": "node --experimental-strip-types tests/browser.mjs"
   },

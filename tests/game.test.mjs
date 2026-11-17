@@ -11,25 +11,26 @@ import {
   unlocked,
 } from "../src/game.js";
 
-test("pack has 60 distinct targets, four distinct choices and a PT-PT usage example each", () => {
-  assert.deepEqual(
-    levels.map((l) => l.words.length),
-    [10, 20, 30],
-  );
-  const ids = new Set();
-  for (const w of levels.flatMap((l) => l.words)) {
-    assert.equal(ids.has(w.id), false);
-    ids.add(w.id);
-    assert.equal(
-      new Set(w.choices.map((v) => v.toLocaleLowerCase("pt-PT"))).size,
-      4,
-    );
-    const forms = [w.word, w.word.replace(/o$/, "a")];
-    assert.ok(
-      forms.some((form) => w.example.toLocaleLowerCase("pt-PT").includes(form)),
-      w.word,
-    );
-  }
+test("a round saved before the editorial pack format resumes with its original word and choices", () => {
+  const state = fresh();
+  state.active = "1";
+  state.sessions["1"] = {
+    cards: [
+      {
+        id: "renitente",
+        options: ["impaciente", "relutante", "distraído", "indeciso"],
+      },
+    ],
+    answers: [],
+    cursor: 0,
+    replay: false,
+  };
+  start(state, levels[0]);
+  answer(state, levels[0], "relutante");
+  assert.equal(state.progress.renitente.box, 1);
+  next(state, levels[0]);
+  finish(state, levels[0]);
+  assert.equal(state.active, null);
 });
 test("misses and skips return, a saved answer counts once, and review preserves mastery", () => {
   const state = fresh(),
@@ -55,12 +56,12 @@ test("misses and skips return, a saved answer counts once, and review preserves 
       answer(state, level, word.key);
       assert.deepEqual(state.progress, before);
       next(state, level);
-      assert.ok(++answered < 50);
+      assert.ok(++answered < level.words.length * 3 + 5);
     }
     finish(state, level);
   }
   assert.ok(seenAgain);
-  assert.equal(fixedCount(state, level), 10);
+  assert.equal(fixedCount(state, level), level.words.length);
   const before = structuredClone(state.progress);
   start(state, level);
   assert.ok(state.sessions[level.id].replay);

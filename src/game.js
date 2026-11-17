@@ -6,14 +6,14 @@ import {
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import pack from "../packs/pt-PT.json" with { type: "json" };
 
-export const levels = pack.levels.map(({ name, rows }, index) => ({
+export const levels = pack.levels.map(({ id, name, words }) => ({
   name,
-  id: String(index + 1),
-  words: rows.map(([word, key, a, b, c, example]) => ({
-    id: word,
+  id,
+  words: words.map(({ id, word, answer, alternatives, example }) => ({
+    id,
     word,
-    key,
-    choices: [key, a, b, c],
+    key: answer,
+    choices: [answer, ...alternatives],
     example,
   })),
 }));

@@ -19,7 +19,14 @@ For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME
 
 ## Content and reuse
 
-Edit `packs/pt-PT.json` to change the words. Each row holds the target, the best match, three alternatives and an example. The content and game UI are original, released under MIT. PT-PT is the first playable pack and UI language.
+Matiz starts with 60 AI-drafted pilot questions. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The first suggestion is *alvitrar*. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
+
+## Roadmap
+
+1. Review the pilot in small batches with native speakers. Ask testers which choices also seemed correct and which words they would actually use.
+2. Try a fourth level of more demanding, useful words. Use Portuguese frequency and register as starting points, then adjust the difficulty based on playtests. Keep rounds at up to five words. Later, test whether players can use a word in a fresh sentence.
+3. Open the MIT repository with the credits and contribution guide. For the public game, run `npm run build:reviewed` and share the mobile web version first. Prepare a signed Android release and a way for pilot players to carry their progress across signing or platform changes before distributing it. [Android app signing](https://developer.android.com/studio/publish/app-signing)
+4. For a second language, add its own editorial queue, native reviewers, playable pack, translated interface and separate saved progress. Reuse the game engine.
 
 ## Credits
 

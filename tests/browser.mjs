@@ -41,7 +41,10 @@ try {
     }
   }
   await page.locator(".hero").waitFor();
-  assert.equal(await page.locator(".level:disabled").count(), 2);
+  assert.equal(
+    await page.locator(".level:disabled").count(),
+    levels.length - 1,
+  );
   await capture("levels");
   await page.locator(".hero .primary").click();
   await page.locator(".choice").first().waitFor();
@@ -78,12 +81,18 @@ try {
     await page.locator(".choice").filter({ hasText: word.key }).first().click();
     assert.equal(await page.locator(".result").innerText(), "Certo!");
     await page.locator(".primary").click();
-    assert.ok(++lastScore < 45, "Level must be completable");
+    assert.ok(
+      ++lastScore < levels[0].words.length * 3 + 5,
+      "Level must be completable",
+    );
   }
   await page.locator(".primary").click();
   assert.match(await page.locator(".eyebrow").innerText(), /Nível 2/i);
   await page.locator(".back").click();
-  assert.equal(await page.locator(".level:disabled").count(), 1);
+  assert.equal(
+    await page.locator(".level:disabled").count(),
+    levels.length - 2,
+  );
   console.log(
     (remote ? "Android WebView" : "Mobile browser") +
       ": skip, feedback, reload, resume, full first level and unlock passed.",
