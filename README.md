@@ -1,10 +1,6 @@
-# Matiz · Jogo de sinónimos em português europeu
+# Matiz
 
-Um jogo de vocabulário para quem já fala português e quer encontrar a palavra certa. Se alguém está *renitente*, dirias que está *relutante* ou *indeciso*? Escolhe um sinónimo e vê a palavra numa frase.
-
-Matiz is an open-source vocabulary game for native and fluent speakers. European Portuguese is the first edition. Contributors can write an original word pack, translate the interface or improve the shared game. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
-
-An offline synonym game for fluent speakers, starting with European Portuguese. Open the game and play a round of up to five words. Each word has four choices, a skip option and an original example sentence. Tap **Jogar** to let Matiz choose the words. Open a difficulty band under **As tuas palavras** to see each word and its learning status.
+An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. European Portuguese is the first playable edition. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
 The pack contains 68 words. Its eight-word introductory band precedes Precisão, Subtileza and Argúcia. Band sizes can vary with the material. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
 

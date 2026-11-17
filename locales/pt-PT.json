@@ -1,7 +1,7 @@
 {
   "locale": "pt-PT",
   "languageName": "Português europeu",
-  "title": "Matiz · Sinónimos",
+  "title": "Matiz · Jogo de sinónimos em português europeu",
   "description": "Palavras novas e revisões em rondas de até cinco.",
   "strings": {
     "brand": "Matiz",
@@ -43,6 +43,7 @@
     "playAgain": "Jogar outra ronda",
     "backHome": "Voltar ao início",
     "credits": "Créditos e licenças",
+    "downloadGame": "Descarregar para jogar offline",
     "openquizLabel": "OpenQuiz.",
     "openquizCredit": "Agradecemos aos colaboradores do OpenQuiz pelo código que baralha as opções e acompanha os acertos e os erros. O projeto é distribuído sob a licença MIT.",
     "magooshLabel": "Magoosh Vocabulary Builder.",

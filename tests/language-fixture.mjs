@@ -32,7 +32,7 @@ export const fixtureLocale = {
     yourAnswer: "You chose “{answer}”.", result: "View result", nextWord: "Next word",
     prompt: "Which meaning is closest?", unsure: "I don't know", roundComplete: "Round complete",
     correctAnswers: "correct answers", playAgain: "Play another round", backHome: "Back home",
-    credits: "Credits and licences", openquizLabel: "OpenQuiz.",
+    credits: "Credits and licences", downloadGame: "Download for offline play", openquizLabel: "OpenQuiz.",
     openquizCredit: "Thanks to OpenQuiz contributors for option shuffling and answer tracking. Distributed under MIT.",
     magooshLabel: "Magoosh Vocabulary Builder.",
     magooshCredit: "Inspired the rounds and level progression. These English questions are test fixtures.",

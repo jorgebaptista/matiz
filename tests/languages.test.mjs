@@ -49,7 +49,7 @@ test("convention discovery builds two offline files, preserves legal notices and
     assert.match(english, /<title>Matiz · Synonyms<\/title>/);
     assert.match(english, /Which meaning is closest/);
     assert.doesNotMatch(english, /draft-only|Qual é o sentido|renitente/);
-    assert.ok(portuguese.includes("<title>Matiz · Sinónimos</title>"));
+    assert.ok(portuguese.includes(`<title>${languages[1].locale.title}</title>`));
     assert.doesNotMatch(english, /<(?:script|link)[^>]+(?:src|href)=/);
     assert.doesNotMatch(english, /url\((?!data:)/);
     const expected = await readContent("locales");

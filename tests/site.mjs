@@ -45,19 +45,18 @@ try {
     viewport: { width: 390, height: 800 },
   });
   await staticPage.goto(url);
-  assert.match(await staticPage.title(), /sinónimos em português europeu/i);
-  await staticPage.getByText("Revelar o sinónimo").click();
-  assert.ok(await staticPage.locator("aside strong").isVisible());
+  assert.match(await staticPage.title(), /synonym game for fluent speakers/i);
+  assert.equal(await staticPage.locator("html").getAttribute("lang"), "en");
+  const info = staticPage.getByRole("link", {
+    name: "About Português europeu",
+  });
+  assert.equal(await info.getAttribute("href"), "./editions/pt-PT/");
   assert.equal(
     await staticPage.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
     true,
   );
-  const game = await staticPage
-    .getByRole("link", { name: "Jogar em português" })
-    .getAttribute("href");
-  assert.ok((await staticPage.request.get(new URL(game, url).href)).ok());
   assert.ok((await staticPage.request.get(url + "matiz.png")).ok());
   if (process.env.SITE_URL) {
     const base = new URL(process.env.SITE_URL.replace(/\/+$/, "") + "/");
@@ -79,9 +78,30 @@ try {
       ),
     );
   }
+  await info.click();
+  assert.match(await staticPage.title(), /sinónimos em português europeu/i);
+  assert.equal(await staticPage.locator("html").getAttribute("lang"), "pt-PT");
+  if (process.env.SITE_URL) {
+    const canonical = await staticPage
+      .locator('link[rel="canonical"]')
+      .getAttribute("href");
+    const sitemap = await (
+      await staticPage.request.get(url + "sitemap.xml")
+    ).text();
+    assert.ok(canonical.endsWith("/editions/pt-PT/"));
+    assert.ok(sitemap.includes("<loc>" + canonical + "</loc>"));
+  }
+  await staticPage.getByText("Ver resultado").click();
+  assert.ok(await staticPage.locator("aside strong").isVisible());
+  const localPlay = await staticPage
+    .getByRole("link", { name: "Jogar", exact: true })
+    .getAttribute("href");
+  assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
-  await play.getByRole("link", { name: "Jogar em português" }).click();
+  await play
+    .getByRole("link", { name: "Português europeu", exact: true })
+    .click();
   await play.getByRole("button", { name: "Jogar", exact: true }).click();
   assert.equal(await play.locator(".choice").count(), 4);
   console.log(

@@ -28,9 +28,21 @@ if (
   );
 }
 const absolute = (relative) => esc(new URL(relative, base).href);
+function publicLinks(route) {
+  if (!base) return "";
+  const url = absolute(route);
+  return [
+    '<link rel="canonical" href="' + url + '">',
+    '<meta property="og:url" content="' + url + '">',
+    '<meta property="og:image" content="' + absolute("matiz.png") + '">',
+    '<meta name="twitter:card" content="summary_large_image">',
+  ].join("\n  ");
+}
+
 const editions = [];
 const output = await mkdtemp(at(".matiz-site-"));
 try {
+  const template = await read("site", "edition.html");
   for (const { pack, locale: copy } of await readLanguages()) {
     const locale = pack.locale;
     const isDefault = locale === defaultLocale;
@@ -46,48 +58,50 @@ try {
     const dest = path.join(output, route);
     await mkdir(dest, { recursive: true });
     await writeFile(path.join(dest, "index.html"), game);
-    editions.push({ locale, route, name, pack });
+    const info = "editions/" + locale + "/";
+    const word = (
+      pack.levels.find((level) => level.id === "1") ?? pack.levels[0]
+    ).words[0];
+    const fields = {
+      ...copy.strings,
+      ...copy,
+      route,
+      word: word.word,
+      answer: word.answer,
+      sentence: word.example,
+    };
+    const page = template
+      .replace("<!-- public-links -->", () => publicLinks(info))
+      .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(fields[key]));
+    const dir = path.join(output, info);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, "index.html"), page);
+    editions.push({ locale, route, info, name });
   }
-  const pt = editions.find((e) => e.locale === defaultLocale);
-  const word =
-    pt.pack.levels
-      .flatMap((level) => level.words)
-      .find((w) => w.id === "renitente") ?? pt.pack.levels[0].words[0];
-  const extra = editions.filter((e) => e !== pt);
-  const links = extra
+  const links = editions
     .map(
-      (e) =>
-        '<a lang="' +
-        esc(e.locale) +
+      ({ locale, route, info, name }) =>
+        '<p><a class="play" lang="' +
+        esc(locale) +
+        '" hreflang="' +
+        esc(locale) +
         '" href="./' +
-        esc(e.route) +
+        esc(route) +
         '">' +
-        esc(e.name) +
-        "</a>",
+        esc(name) +
+        ' <span aria-hidden="true">→</span></a>' +
+        '<a hreflang="' +
+        esc(locale) +
+        '" href="./' +
+        esc(info) +
+        '" aria-label="About ' +
+        esc(name) +
+        '">About this edition</a></p>',
     )
-    .join(" ");
-  const replacements = {
-    "sample-word": esc(word.word),
-    "sample-answer": esc(word.answer),
-    "sample-example": esc(word.example),
-    languages: extra.length
-      ? '<section><h2>Outras línguas</h2><p class="links">' +
-        links +
-        "</p></section>"
-      : "",
-    "public-links": base
-      ? '<link rel="canonical" href="' +
-        absolute("") +
-        '">\n  <meta property="og:url" content="' +
-        absolute("") +
-        '">\n  <meta property="og:image" content="' +
-        absolute("matiz.png") +
-        '">\n  <meta property="og:image:alt" content="Matiz, jogo de sinónimos em português europeu">\n  <meta name="twitter:card" content="summary_large_image">'
-      : "",
-  };
-  let html = await read("site", "index.html");
-  for (const [key, value] of Object.entries(replacements))
-    html = html.replace("<!-- " + key + " -->", () => value);
+    .join("\n");
+  let html = (await read("site", "index.html"))
+    .replace("<!-- languages -->", () => links)
+    .replace("<!-- public-links -->", () => publicLinks(""));
   if (process.env.GOOGLE_SITE_VERIFICATION) {
     html = html.replace(
       "</head>",
@@ -103,7 +117,7 @@ try {
   for (const file of ["dm-sans.woff2", "dmsans-OFL.txt"])
     await copyFile(at("vendor", "fonts", file), path.join(output, file));
   if (base) {
-    const urls = ["", ...editions.map((e) => e.route)].map(
+    const urls = ["", ...editions.flatMap((e) => [e.info, e.route])].map(
       (route) => "<url><loc>" + absolute(route) + "</loc></url>",
     );
     await writeFile(

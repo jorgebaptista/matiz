@@ -117,7 +117,7 @@ The checker validates every discovered locale, metadata identity, nonempty UI va
 | `pt-PT` | `dist/index.html` | `jogar/index.html` |
 | `en-GB` (when contributed) | `dist/en-GB/index.html` | `jogar/en-GB/index.html` |
 
-Each HTML file includes its own vocabulary, translated UI, JavaScript, CSS, fonts and notices. Open the file directly and play with networking disabled. No runtime locale fetch or language service is needed. The separate site generator can discover `packs/*.json`, read matching `locales/*.json` metadata, and copy/link these outputs. Use a fresh build output directory when retiring a locale; builds overwrite current files without purging old output folders.
+Each HTML file includes its own vocabulary, translated UI, JavaScript, CSS, fonts and notices. Open the file directly and play with networking disabled. No runtime locale fetch or language service is needed. The English home page lists each playable pack automatically. The site builder also creates `editions/<locale>/` with the translated title, description, sample question and play link. Use a fresh build output directory when retiring a locale; builds overwrite current files without purging old output folders.
 
 PT-PT keeps `matiz.pt-PT.v1` as its storage key. Other locales use `matiz.<locale>.v1`, so even matching word IDs cannot share progress on the same web origin. Storage still belongs to the browser origin or local file; moving a file or switching between the website and Android does not transfer a save. Android continues opening `dist/index.html` through its existing asset entry point, with PT-PT as the default. Its build task tracks locale and draft changes.
 
