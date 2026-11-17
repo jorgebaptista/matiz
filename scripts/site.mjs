@@ -95,7 +95,7 @@ try {
       ...copy.strings,
       ...copy,
       route,
-      word: word.word,
+      word: word.phrase ?? word.word,
       answer: word.answer,
       sentence: word.example,
     };
@@ -133,7 +133,7 @@ try {
     )
     .join("\n");
   const featured = editions.find((edition) => edition.locale.startsWith("en-")) ?? editions[0];
-  const example = { locale: featured.locale, name: featured.name, word: featured.word.word, answer: featured.word.answer, sentence: featured.word.example };
+  const example = { locale: featured.locale, name: featured.name, word: featured.word.phrase ?? featured.word.word, answer: featured.word.answer, sentence: featured.word.example };
   let html = (await read("site", "index.html"))
     .replace("<!-- theme-button -->", () => themeButton.replaceAll("{{darkMode}}", "Dark mode"))
     .replace("/* THEME_JS */", () => theme)

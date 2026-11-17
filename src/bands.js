@@ -4,8 +4,9 @@ export const dailyBandIds = ["0", "1", "2", "3"];
 export function gameLevels(pack) {
   return pack.levels.map(({ id, name, words }) => ({
     id, name,
-    words: words.map(({ id: wordId, word, answer, alternatives, example, dailyOn }) => ({
+    words: words.map(({ id: wordId, word, answer, alternatives, example, phrase, dailyOn }) => ({
       id: wordId, word, key: answer, choices: [answer, ...alternatives], example, levelId: id,
+      ...(phrase ? { phrase } : {}),
       ...(dailyOn ? { debutDay: Date.parse(dailyOn) / 86_400_000 } : {}),
     })),
   }));

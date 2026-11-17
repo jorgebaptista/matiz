@@ -86,6 +86,7 @@ export function checkContent(pack, drafts, { reviewedOnly = false } = {}) {
       [card.word, card.answer, card.example].every(filled),
       "supply the word, answer and an original example",
     );
+    if (card.phrase !== undefined) check(filled(card.phrase), "phrase must be nonempty text");
     const target = fold(card.word, pack.locale);
     check(
       !targets.has(target),

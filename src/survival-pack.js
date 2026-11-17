@@ -9,7 +9,7 @@ export function survivalPool(levels) {
 /** Identify the question content and Survival draw rules used by a link. */
 export function survivalVersion(levels) {
   const content = survivalPool(levels).map(level => [level.id, level.words.map(word =>
-    [word.id, word.word, word.key, word.choices, word.example])]);
+    [word.id, word.word, word.key, word.choices, word.example, ...(word.phrase ? [word.phrase] : [])])]);
   let hash = 2166136261;
   for (const character of JSON.stringify(content)) {
     hash = Math.imul(hash ^ character.codePointAt(0), 16777619) >>> 0;

@@ -54,11 +54,7 @@
           "id": "cativar",
           "word": "cativar",
           "answer": "encantar",
-          "alternatives": [
-            "convencer pela força",
-            "surpreender por acaso",
-            "explicar em pormenor"
-          ],
+          "alternatives": ["surpreender", "instruir", "acalmar"],
           "example": "Bastou-lhe contar a primeira história para cativar a sala inteira.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -104,8 +100,9 @@
         {
           "id": "reparar",
           "word": "reparar",
+          "phrase": "reparar uma fivela partida",
           "answer": "consertar",
-          "alternatives": ["montar", "examinar", "medir"],
+          "alternatives": ["montar", "pesar", "medir"],
           "example": "O sapateiro conseguiu reparar a fivela sem trocar a correia.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -194,6 +191,7 @@
         {
           "id": "acabado",
           "word": "acabado",
+          "phrase": "dar o trabalho por acabado",
           "answer": "terminado",
           "alternatives": ["previsto", "marcado", "iniciado"],
           "example": "Só deram o trabalho por acabado ao fechar a última caixa.",
@@ -225,7 +223,7 @@
           "id": "sossegado",
           "word": "sossegado",
           "answer": "tranquilo",
-          "alternatives": ["calado por obrigação", "atento", "indeciso"],
+          "alternatives": ["iluminado", "apertado", "isolado"],
           "example": "Escolhemos um café sossegado para conversar.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -264,6 +262,7 @@
         {
           "id": "concluir",
           "word": "concluir",
+          "phrase": "concluir a montagem",
           "answer": "terminar",
           "alternatives": ["preparar", "comparar", "rever"],
           "example": "Falta apertar um parafuso para concluir a montagem.",
@@ -365,7 +364,7 @@
           "id": "barulhento",
           "word": "barulhento",
           "answer": "ruidoso",
-          "alternatives": ["estranho", "agitado por dentro", "apertado"],
+          "alternatives": ["estranho", "pesado", "apertado"],
           "example": "Mudou de mesa porque o ventilador era barulhento.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -375,7 +374,7 @@
           "id": "limpo",
           "word": "limpo",
           "answer": "asseado",
-          "alternatives": ["ordenado por tamanho", "recente", "brilhante"],
+          "alternatives": ["recente", "estreito", "irregular"],
           "example": "Deixou o balcão limpo antes de sair.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -427,7 +426,7 @@
           "id": "inócuo",
           "word": "inócuo",
           "answer": "inofensivo",
-          "alternatives": ["ineficaz", "insípido", "invisível"],
+          "alternatives": ["prematuro", "insípido", "invisível"],
           "example": "O comentário parecia inócuo, mas acabou por magoar quem o ouviu.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -444,6 +443,7 @@
         {
           "id": "parco",
           "word": "parco",
+          "phrase": "um orçamento parco",
           "answer": "escasso",
           "alternatives": ["vago", "brusco", "frágil"],
           "example": "Com um orçamento parco, a associação deu prioridade à reparação do telhado.",
@@ -490,9 +490,9 @@
         {
           "id": "escasso",
           "word": "escasso",
-          "answer": "insuficiente",
+          "answer": "pouco abundante",
           "alternatives": ["instável", "incerto", "irregular"],
-          "example": "O tempo disponível era escasso para rever todas as provas.",
+          "example": "Naquela encosta, o solo fértil era escasso entre os afloramentos de granito.",
           "origin": "ai-drafted",
           "status": "pilot",
           "dailyOn": "2026-11-18"
@@ -560,6 +560,7 @@
         {
           "id": "ameno",
           "word": "ameno",
+          "phrase": "um inverno ameno",
           "answer": "suave",
           "alternatives": ["húmido", "seco", "frio"],
           "example": "O inverno ameno deixou as amendoeiras floridas mais cedo.",
@@ -570,6 +571,7 @@
         {
           "id": "admitir",
           "word": "admitir",
+          "phrase": "admitir um erro",
           "answer": "reconhecer",
           "alternatives": ["prometer", "sugerir", "contestar"],
           "example": "Teve de admitir que tinha trocado os bilhetes.",
@@ -580,6 +582,7 @@
         {
           "id": "suceder",
           "word": "suceder",
+          "phrase": "o que poderá suceder amanhã?",
           "answer": "acontecer",
           "alternatives": ["começar", "durar", "repetir"],
           "example": "Ninguém previa o que ia suceder naquela noite.",
@@ -590,6 +593,7 @@
         {
           "id": "ceder",
           "word": "ceder",
+          "phrase": "ceder o lugar a alguém",
           "answer": "abrir mão",
           "alternatives": ["tomar conta", "dar conta", "ter em conta"],
           "example": "Aceitou ceder o seu lugar junto à janela.",
@@ -660,6 +664,7 @@
         {
           "id": "acessível",
           "word": "acessível",
+          "phrase": "uma prateleira acessível",
           "answer": "fácil de alcançar",
           "alternatives": ["fácil de perder", "difícil de ver", "longe de tudo"],
           "example": "O armário mais baixo é acessível às crianças.",
@@ -721,7 +726,7 @@
           "id": "convicto",
           "word": "convicto",
           "answer": "convencido",
-          "alternatives": ["animado", "interessado", "surpreendido"],
+          "alternatives": ["animado", "interessado", "perplexo"],
           "example": "Estava convicto de que encontraria uma solução.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -730,8 +735,8 @@
         {
           "id": "duradouro",
           "word": "duradouro",
-          "answer": "que perdura",
-          "alternatives": ["que começa cedo", "que custa pouco", "que surge de novo"],
+          "answer": "de longa duração",
+          "alternatives": ["volumoso", "barato", "recente"],
           "example": "Procurava um material duradouro para os bancos do jardim.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -751,7 +756,7 @@
           "id": "desistir",
           "word": "desistir",
           "answer": "abandonar a tentativa",
-          "alternatives": ["adiar o começo", "mudar de opinião sobre o preço", "esquecer o prazo"],
+          "alternatives": ["adiar o começo", "repetir a tentativa", "acelerar o passo"],
           "example": "Após três tentativas decidiu desistir da chamada.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -760,6 +765,7 @@
         {
           "id": "contornar",
           "word": "contornar",
+          "phrase": "contornar o quarteirão",
           "answer": "dar a volta a",
           "alternatives": ["andar ao longo de", "parar junto de", "ficar aquém de"],
           "example": "O autocarro teve de contornar o quarteirão.",
@@ -770,6 +776,7 @@
         {
           "id": "perceber",
           "word": "perceber",
+          "phrase": "perceber uma piada",
           "answer": "compreender",
           "alternatives": ["decorar", "adivinhar", "acreditar"],
           "example": "Precisou de reler a frase para perceber a piada.",
@@ -786,6 +793,7 @@
         {
           "id": "reticente",
           "word": "reticente",
+          "phrase": "reticente quanto ao desfecho",
           "answer": "reservado",
           "alternatives": ["inconstante", "perplexo", "indiferente"],
           "example": "O realizador foi reticente quanto ao desfecho e só revelou o título do filme.",
@@ -795,8 +803,9 @@
         {
           "id": "demover",
           "word": "demover",
+          "phrase": "demover alguém de um plano",
           "answer": "dissuadir",
-          "alternatives": ["desviar", "desmentir", "desaprovar"],
+          "alternatives": ["advertir", "desmentir", "desaprovar"],
           "example": "Nem a previsão de chuva a conseguiu demover da ideia de ir a pé.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -813,6 +822,7 @@
         {
           "id": "inadvertido",
           "word": "inadvertido",
+          "phrase": "um lapso que passou inadvertido",
           "answer": "despercebido",
           "alternatives": ["súbito", "persistente", "insólito"],
           "example": "O lapso passou inadvertido até à segunda leitura.",
@@ -854,7 +864,7 @@
           "id": "convergir",
           "word": "convergir",
           "answer": "confluir",
-          "alternatives": ["coincidir por acaso", "alternar", "suceder"],
+          "alternatives": ["bifurcar-se", "alternar", "suceder"],
           "example": "Os dois caminhos acabam por convergir junto à antiga estação.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -925,8 +935,9 @@
         {
           "id": "austero",
           "word": "austero",
+          "phrase": "um gabinete austero",
           "answer": "sóbrio",
-          "alternatives": ["sombrio", "rústico", "rude"],
+          "alternatives": ["simétrico", "iluminado", "espaçoso"],
           "example": "O gabinete era austero: uma mesa sem adornos e duas cadeiras.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -953,7 +964,7 @@
           "id": "discordância",
           "word": "discordância",
           "answer": "divergência",
-          "alternatives": ["disputa", "suspeita", "dispersão"],
+          "alternatives": ["demora", "suspeita", "dispersão"],
           "example": "A discordância entre os dois dizia respeito ao método, não ao objetivo.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1010,6 +1021,7 @@
         {
           "id": "ressalva",
           "word": "ressalva",
+          "phrase": "aprovar com uma ressalva",
           "answer": "reserva",
           "alternatives": ["garantia", "elogio", "promessa"],
           "example": "Aprovou o plano com uma ressalva quanto ao prazo.",
@@ -1040,8 +1052,8 @@
         {
           "id": "aleatório",
           "word": "aleatório",
-          "answer": "ao acaso",
-          "alternatives": ["por acordo", "por engano", "com antecedência"],
+          "answer": "dependente do acaso",
+          "alternatives": ["obrigatório", "periódico", "antecipado"],
           "example": "O programa fez um sorteio aleatório entre os inscritos.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1061,7 +1073,7 @@
           "id": "inibir",
           "word": "inibir",
           "answer": "refrear",
-          "alternatives": ["desviar", "induzir", "forçar"],
+          "alternatives": ["preparar", "induzir", "forçar"],
           "example": "O medo de falhar pode inibir a participação na aula.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1081,7 +1093,7 @@
           "id": "imparcial",
           "word": "imparcial",
           "answer": "isento",
-          "alternatives": ["distante", "indiferente", "invisível"],
+          "alternatives": ["inseguro", "impaciente", "inflexível"],
           "example": "Pedimos a uma pessoa imparcial que avaliasse as propostas.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1091,7 +1103,7 @@
           "id": "minucioso",
           "word": "minucioso",
           "answer": "pormenorizado",
-          "alternatives": ["rigoroso no horário", "curto", "severo"],
+          "alternatives": ["sucinto", "severo", "imparcial"],
           "example": "O relatório trazia um relato minucioso da viagem.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1131,7 +1143,7 @@
           "id": "provisório",
           "word": "provisório",
           "answer": "temporário",
-          "alternatives": ["incerto", "urgente", "incompleto"],
+          "alternatives": ["frequente", "urgente", "incompleto"],
           "example": "Instalaram um balcão provisório enquanto duravam as obras.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1160,6 +1172,7 @@
         {
           "id": "desempenho",
           "word": "desempenho",
+          "phrase": "o desempenho da equipa",
           "answer": "prestação",
           "alternatives": ["vocação", "esforço", "tarefa"],
           "example": "A treinadora elogiou o desempenho da equipa na final.",
@@ -1181,7 +1194,7 @@
           "id": "incompatível",
           "word": "incompatível",
           "answer": "inconciliável",
-          "alternatives": ["desigual", "incomum", "impraticável sozinho"],
+          "alternatives": ["intermitente", "incerto", "irregular"],
           "example": "O novo turno era incompatível com o horário das aulas.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1220,6 +1233,7 @@
         {
           "id": "consequente",
           "word": "consequente",
+          "phrase": "a chuva e a consequente cheia",
           "answer": "que decorre de algo",
           "alternatives": ["que chega primeiro", "que coincide por acaso", "que se repete"],
           "example": "A quebra de energia e a consequente paragem das máquinas atrasaram a entrega.",
@@ -1231,7 +1245,7 @@
           "id": "conciso",
           "word": "conciso",
           "answer": "sucinto",
-          "alternatives": ["direto no trato", "pouco claro", "rígido"],
+          "alternatives": ["formal", "ambíguo", "rígido"],
           "example": "O parecer foi conciso e coube numa página.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1261,7 +1275,7 @@
           "id": "restringir",
           "word": "restringir",
           "answer": "limitar",
-          "alternatives": ["proibir por completo", "dividir ao meio", "adiar sem data"],
+          "alternatives": ["adiar", "repor", "repartir"],
           "example": "A seca obrigou a restringir a rega dos jardins.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1286,11 +1300,7 @@
           "id": "tergiversar",
           "word": "tergiversar",
           "answer": "responder com evasivas",
-          "alternatives": [
-            "ceder sob protesto",
-            "mudar de convicção",
-            "responder sem hesitar"
-          ],
+          "alternatives": ["pedir esclarecimentos", "responder de imediato", "reconhecer um erro"],
           "example": "Pedimos-lhe uma data concreta, mas preferiu tergiversar e falar do orçamento.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1299,7 +1309,7 @@
           "id": "perfunctório",
           "word": "perfunctório",
           "answer": "superficial",
-          "alternatives": ["provisório", "protocolar", "inconclusivo"],
+          "alternatives": ["provisório", "exaustivo", "inconclusivo"],
           "example": "O exame foi tão perfunctório que deixou passar um erro logo na primeira linha.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1316,8 +1326,9 @@
         {
           "id": "contumaz",
           "word": "contumaz",
+          "phrase": "um infrator contumaz",
           "answer": "reincidente",
-          "alternatives": ["irredutível", "impetuoso", "insolente"],
+          "alternatives": ["arrependido", "impetuoso", "insolente"],
           "example": "Era um infrator contumaz: repetia a mesma infração apesar dos avisos.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1352,6 +1363,7 @@
         {
           "id": "tibieza",
           "word": "tibieza",
+          "phrase": "a tibieza dos aplausos",
           "answer": "falta de ardor",
           "alternatives": [
             "falta de rigor",
@@ -1374,6 +1386,7 @@
         {
           "id": "latente",
           "word": "latente",
+          "phrase": "uma rivalidade latente",
           "answer": "ainda não manifesto",
           "alternatives": [
             "já ultrapassado",
@@ -1388,7 +1401,7 @@
           "id": "obliterar",
           "word": "obliterar",
           "answer": "apagar",
-          "alternatives": ["omitir", "repudiar", "velar"],
+          "alternatives": ["polir", "reproduzir", "acentuar"],
           "example": "O desgaste acabou por obliterar a inscrição na pedra.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1405,6 +1418,7 @@
         {
           "id": "acerbo",
           "word": "acerbo",
+          "phrase": "um comentário acerbo",
           "answer": "mordaz",
           "alternatives": ["franco", "solene", "impetuoso"],
           "example": "O crítico reservou o comentário mais acerbo para a encenação, que apelidou de fiasco.",
@@ -1415,11 +1429,7 @@
           "id": "redarguir",
           "word": "redarguir",
           "answer": "replicar",
-          "alternatives": [
-            "reprovar",
-            "rebater com provas",
-            "repetir por outras palavras"
-          ],
+          "alternatives": ["reprovar", "indagar", "repetir por distração"],
           "example": "Quando lhe disseram que o prazo era curto, limitou-se a redarguir que fora a direção a escolhê-lo.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1462,12 +1472,9 @@
         {
           "id": "frugal",
           "word": "frugal",
+          "phrase": "um almoço frugal",
           "answer": "sóbrio e moderado",
-          "alternatives": [
-            "insuficiente e pobre",
-            "austero e severo",
-            "simples e apressado"
-          ],
+          "alternatives": ["requintado e caro", "farto e variado", "demorado e cerimonioso"],
           "example": "Preparou um almoço frugal: sopa, pão e uma peça de fruta.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1484,6 +1491,7 @@
         {
           "id": "apócrifo",
           "word": "apócrifo",
+          "phrase": "um bilhete atribuído ao poeta, mas apócrifo",
           "answer": "de autenticidade duvidosa",
           "alternatives": [
             "de autoria desconhecida",
@@ -1497,8 +1505,9 @@
         {
           "id": "inexorável",
           "word": "inexorável",
+          "phrase": "um juiz inexorável",
           "answer": "implacável",
-          "alternatives": ["inabalável", "irrevogável", "intemporal"],
+          "alternatives": ["inexperiente", "imparcial", "indeciso"],
           "example": "Nem os pedidos de clemência comoveram aquele juiz inexorável.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1550,8 +1559,9 @@
         {
           "id": "ínvio",
           "word": "ínvio",
+          "phrase": "um caminho ínvio",
           "answer": "intransitável",
-          "alternatives": ["longínquo", "sinuoso", "deserto"],
+          "alternatives": ["longínquo", "estreito", "deserto"],
           "example": "As derrocadas tinham tornado ínvio o antigo caminho da serra.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1573,11 +1583,7 @@
           "id": "aquiescer",
           "word": "aquiescer",
           "answer": "anuir",
-          "alternatives": [
-            "ceder à força",
-            "aprovar com entusiasmo",
-            "resignar-se em silêncio"
-          ],
+          "alternatives": ["impor condições", "pedir esclarecimentos", "adiar a resposta"],
           "example": "Após ouvir as garantias, acabou por aquiescer ao pedido de adiamento.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1586,7 +1592,7 @@
           "id": "fleumático",
           "word": "fleumático",
           "answer": "imperturbável",
-          "alternatives": ["indiferente", "introvertido", "lento a decidir"],
+          "alternatives": ["indeciso", "introvertido", "desconfiado"],
           "example": "Mesmo com toda a gente a falar ao mesmo tempo, manteve o seu ar fleumático.",
           "origin": "ai-drafted",
           "status": "pilot"
@@ -1634,6 +1640,7 @@
         {
           "id": "sibilino",
           "word": "sibilino",
+          "phrase": "um aviso sibilino",
           "answer": "enigmático",
           "alternatives": ["incisivo", "minucioso", "irónico"],
           "example": "O bilhete terminava com um aviso sibilino que ninguém soube interpretar.",
@@ -1654,6 +1661,7 @@
         {
           "id": "obtemperar",
           "word": "obtemperar",
+          "phrase": "obtemperar que o prazo é curto",
           "answer": "contrapor razões",
           "alternatives": ["ocultar intenções", "retirar acusações", "apurar factos"],
           "example": "Quando anunciaram o corte, a tesoureira obtemperou que as contas ainda eram provisórias.",
@@ -1705,7 +1713,7 @@
           "id": "incisivo",
           "word": "incisivo",
           "answer": "contundente",
-          "alternatives": ["minucioso", "irónico", "severo no tom de voz"],
+          "alternatives": ["minucioso", "evasivo", "hesitante"],
           "example": "Com um comentário incisivo expôs a falha do argumento.",
           "origin": "ai-drafted",
           "status": "pilot",
@@ -1734,6 +1742,7 @@
         {
           "id": "elidir",
           "word": "elidir",
+          "phrase": "elidir uma oração do texto",
           "answer": "suprimir",
           "alternatives": ["contornar", "transferir", "disfarçar"],
           "example": "Por economia de espaço, a revisora propôs elidir a última oração.",
@@ -1744,7 +1753,7 @@
         {
           "id": "abster-se",
           "word": "abster-se",
-          "answer": "privar-se voluntariamente",
+          "answer": "optar por não fazer algo",
           "alternatives": ["opor-se em público", "adiar por obrigação", "ignorar por engano"],
           "example": "Preferiu abster-se de fazer comentários enquanto decorria a votação.",
           "origin": "ai-drafted",
@@ -1754,6 +1763,7 @@
         {
           "id": "incumbir",
           "word": "incumbir",
+          "phrase": "incumbir alguém de uma tarefa",
           "answer": "encarregar",
           "alternatives": ["aconselhar", "convocar", "autorizar"],
           "example": "A direção decidiu incumbir a equipa de rever o regulamento.",
@@ -1885,7 +1895,7 @@
           "id": "consentâneo",
           "word": "consentâneo",
           "answer": "condizente",
-          "alternatives": ["simultâneo", "suficiente", "conveniente no preço"],
+          "alternatives": ["simultâneo", "suficiente", "recente"],
           "example": "Procuravam uma solução consentânea com o orçamento da escola.",
           "origin": "ai-drafted",
           "status": "pilot",

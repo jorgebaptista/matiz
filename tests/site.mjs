@@ -114,8 +114,10 @@ try {
   assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
   const dailyLink = await staticPage.getByRole("link", { name: "Palavras do dia" }).getAttribute("href");
   const daily = await browser.newPage({ viewport: { width: 390, height: 800 } });
-  await daily.clock.install({ time: new Date("2026-11-17T12:00:00Z") });
+  await daily.clock.install({ time: new Date("2026-11-19T12:00:00Z") });
   await daily.goto(new URL(dailyLink, staticPage.url()).href);
+  assert.equal(await daily.locator(".question h1").innerText(), "reparar");
+  assert.equal(await daily.locator(".question i").innerText(), "reparar uma fivela partida");
   const dailyButton = daily.getByRole("button", { name: "Palavras do dia", exact: true });
   await daily.getByRole("button", { name: "Início", exact: true }).click();
   assert.equal(await dailyButton.getAttribute("data-status"), "dailyUnplayed");
