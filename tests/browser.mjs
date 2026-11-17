@@ -81,7 +81,7 @@ try {
     assert.ok(++lastScore < 45, "Level must be completable");
   }
   await page.locator(".primary").click();
-  assert.ok((await page.locator(".eyebrow").innerText()).includes("02"));
+  assert.match(await page.locator(".eyebrow").innerText(), /Nível 2/i);
   await page.locator(".back").click();
   assert.equal(await page.locator(".level:disabled").count(), 1);
   console.log(

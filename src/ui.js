@@ -47,9 +47,9 @@ const badge =
 const header = () =>
   '<header><span class="brand">' +
   badge +
-  'Matiz</span><span class="locale">Português · PT</span></header>';
+  'Matiz</span><span class="locale">Português europeu</span></header>';
 const over = (level) =>
-  '<div class="eyebrow">Nível 0' +
+  '<div class="eyebrow">Nível ' +
   level.id +
   " <span>·</span> " +
   level.name +
@@ -71,7 +71,7 @@ function home() {
   return (
     header() +
     '<section class="hero"><div class="art" aria-hidden="true"><i>ã</i><i>á</i><i>a</i></div>' +
-    '<div class="eyebrow pale">Jogo de palavras</div><h1>Sinónimos</h1><p>Descobre a palavra de sentido<br>mais próximo.</p>' +
+    '<h1>Sinónimos</h1><p>Até cinco palavras por ronda.</p>' +
     action(
       "start-" + focus.id,
       complete(state, focus)
@@ -98,7 +98,7 @@ function home() {
           l.id +
           '" ' +
           (open ? "" : "disabled") +
-          '><span class="number">0' +
+          '><span class="number">' +
           l.id +
           '</span><span class="level-text"><strong>' +
           l.name +
@@ -118,8 +118,7 @@ function home() {
 function roundTop(level, s) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
   return (
-    header() +
-    '<div class="nav"><button class="back" data-action="home">‹ &nbsp; Níveis</button><span>' +
+    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> Níveis</button><span>Palavra ' +
     pos +
     " de " +
     s.cards.length +
@@ -160,9 +159,9 @@ function play(level, s) {
       esc(word.word) +
       '</h1><p class="meaning">' +
       esc(word.key) +
-      "</p><blockquote>" +
+      '</p><div class="example"><h2>Exemplo</h2><blockquote>' +
       esc(word.example) +
-      "</blockquote>" +
+      "</blockquote></div>" +
       (value && !correct
         ? '<p class="your">Escolheste «' + esc(value) + "».</p>"
         : "") +
@@ -247,11 +246,12 @@ function summary(level, s) {
 function render(focus = false) {
   const level = current(),
     s = level && state.sessions[level.id];
+  root.classList.toggle("in-round", Boolean(s && s.cursor < s.cards.length));
   root.innerHTML = s ? play(level, s) : home();
   if (!s) root.append(document.querySelector("#credits").content.cloneNode(true));
   window.scrollTo(0, 0);
   if (focus) {
-    const h = root.querySelector("h1");
+    const h = root.querySelector(".result") ?? root.querySelector("h1");
     h.tabIndex = -1;
     h.focus({ preventScroll: true });
   }
