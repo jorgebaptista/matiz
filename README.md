@@ -4,7 +4,7 @@
 
 A free, open-source synonym game for a richer vocabulary in a language you already speak. Short rounds, daily words and challenges with friends.
 
-European Portuguese · British English · Web & Android
+`PT-PT` · `en-GB` · `Web` · `Android`
 
 No account. Progress stays on your device.
 
