@@ -31,6 +31,8 @@ if (
 }
 const absolute = (relative) => esc(new URL(relative, base).href);
 const languages = await readLanguages();
+const theme = await read("src", "theme.js");
+const themeButton = await read("src", "theme-button.html");
 const editionPath = locale => "editions/" + locale + "/";
 function publicLinks(route) {
   if (!base) return "";
@@ -78,6 +80,8 @@ try {
       sentence: word.example,
     };
     const page = template
+      .replace("<!-- theme-button -->", () => themeButton)
+      .replace("/* THEME_JS */", () => theme)
       .replace("<!-- daily-link -->", () => dailyBandsFor(pack.levels).length ? '<a href="../../' + esc(route) + '?mode=daily">' + esc(copy.strings.daily) + '</a>' : '')
       .replace("<!-- public-links -->", () => publicLinks(info))
       .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(fields[key]));
@@ -110,6 +114,8 @@ try {
   const featured = editions.find((edition) => edition.locale.startsWith("en-")) ?? editions[0];
   const example = { locale: featured.locale, name: featured.name, word: featured.word.word, answer: featured.word.answer, sentence: featured.word.example };
   let html = (await read("site", "index.html"))
+    .replace("<!-- theme-button -->", () => themeButton.replaceAll("{{darkMode}}", "Dark mode"))
+    .replace("/* THEME_JS */", () => theme)
     .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(example[key]))
     .replace("<!-- languages -->", () => links)
     .replace("<!-- public-links -->", () => publicLinks(""));
@@ -124,7 +130,8 @@ try {
   }
   await writeFile(path.join(output, "index.html"), html);
   await cp(at("archives", "survival"), path.join(output, "challenges"), { recursive: true });
-  for (const file of ["site.css", "matiz.png"])
+  await writeFile(path.join(output, "site.css"), (await read("src", "theme.css")) + "\n" + (await read("site", "site.css")));
+  for (const file of ["matiz.png"])
     await copyFile(at("site", file), path.join(output, file));
   for (const file of ["dm-sans.woff2", "dmsans-OFL.txt"])
     await copyFile(at("vendor", "fonts", file), path.join(output, file));

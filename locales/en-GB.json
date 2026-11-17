@@ -4,6 +4,7 @@
   "title": "Matiz · A British English synonym game",
   "description": "Find a more precise word in rounds of up to five questions.",
   "strings": {
+    "darkMode": "Dark mode",
     "currentScore": "Score",
     "yourBest": "Best",
     "challenger": "Rival",

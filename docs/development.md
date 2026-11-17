@@ -9,6 +9,8 @@ npm run build
 
 Open `dist/index.html` for European Portuguese or `dist/en-GB/index.html` for British English. Each file includes the game, fonts and notices. On the website and Android, switch editions from the home screen. Each language keeps its own progress.
 
+Theme colours and the light/dark switch are shared in `src/theme.css` and `src/theme.js`. The device theme is used until the player chooses one; `matiz.theme` stores that choice separately from progress and across editions on the same origin. If storage is blocked, the switch still works for the current page.
+
 ## Checks
 
 ```sh

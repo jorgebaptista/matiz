@@ -12,7 +12,7 @@ import { gameLevels } from "../src/bands.js";
 export async function buildGames({ root = projectRoot, outdir = path.join(projectRoot, "dist"), reviewedOnly = false } = {}) {
   const languages = await readLanguages({ root, reviewedOnly });
   const archives = await Promise.all(languages.map(({ pack }) => survivalArchives(pack, { root, reviewedOnly })));
-  const [style, template, licenses] = await Promise.all([
+  const [style, template, licenses, theme, themeButton] = await Promise.all([
     build({
       absWorkingDir: projectRoot, entryPoints: ["src/style.css"], bundle: true,
       write: false, minify: true, loader: { ".woff2": "dataurl" },
@@ -25,6 +25,8 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
       ["licenseInstrumentSerif", "vendor/fonts/instrumentserif-OFL.txt"],
       ["licenseAndroidX", "vendor/androidx/LICENSE"],
     ].map(async ([key, file]) => [key, escapeHTML(await readFile(path.join(projectRoot, file), "utf8"))])),
+    readFile(path.join(projectRoot, "src/theme.js"), "utf8"),
+    readFile(path.join(projectRoot, "src/theme-button.html"), "utf8"),
   ]);
   // Bundle everything before writing, so an invalid translation never partially ships.
   const outputs = await Promise.all(languages.map(async ({ pack, locale }, index) => {
@@ -58,9 +60,11 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
       return `<option value="${escapeHTML(route)}" lang="${escapeHTML(edition.locale)}"${selected}>${escapeHTML(edition.languageName)}</option>`;
     });
     const html = template
+      .replace("<!-- theme-button -->", () => themeButton)
       .replace("<!-- edition-options -->", () => editionOptions.join(""))
       .replace(/\{\{([a-zA-Z]+)\}\}/g, (_, key) => escapeHTML(metadata[key] ?? locale.strings[key]))
       .replace("/* GAME_CSS */", () => style.outputFiles[0].text)
+      .replace("/* THEME_JS */", () => theme)
       .replace("/* GAME_JS */", () => script.outputFiles[0].text.replace(/<\/script/gi, "<\\/script"))
       .replace("<!-- LICENSES -->", () => notices.join("\n"));
     const file = path.join(outdir, ...(locale.locale === defaultLocale ? [] : [locale.locale]), "index.html");
