@@ -1,6 +1,6 @@
 # Matiz
 
-<a href="https://jorgebaptista.github.io/matiz/"><img src="https://img.shields.io/badge/Play%20Matiz%20%E2%86%92-174f42?style=for-the-badge" alt="Play Matiz" height="40"></a> [![MIT licence](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
+<a href="https://jorgebaptista.github.io/matiz/"><img src="https://img.shields.io/badge/Play%20Matiz%20%E2%86%92-174f42?style=for-the-badge" alt="Play Matiz" height="40"></a>
 
 A free, open-source synonym game for a richer vocabulary in a language you already speak. Short rounds, daily words and challenges with friends.
 
