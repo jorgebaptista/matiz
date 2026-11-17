@@ -21,7 +21,13 @@ For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME
 
 Edit `packs/pt-PT.json` to change the words. Each row holds the target, the best match, three alternatives and an example. The content and game UI are original, released under MIT. PT-PT is the first playable pack and UI language.
 
-Matiz uses the MIT-licensed [OpenQuiz scheduler and shuffle](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib). `vendor/openquiz` preserves its source and licence at that revision. Matiz uses the upstream answer update and round selection, with five-question rounds and its own two-hit level progression. DM Sans and Instrument Serif are distributed under the SIL Open Font License. The font notices live in `vendor/fonts` and are bundled in the game.
+## Credits
+
+Thank you to the [OpenQuiz contributors](https://github.com/ndunl075/OpenQuiz). Matiz uses their code to select practice words, shuffle answer choices and update progress after each answer. The [upstream revision](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib) and [MIT copyright notice](vendor/openquiz/LICENSE) identify the code included in this build.
+
+[Magoosh Vocabulary Builder](https://magoosh.com/vocabulary-builder/) inspired the short rounds and unlockable levels. The European Portuguese questions and examples were written for Matiz.
+
+The typefaces are [DM Sans](https://github.com/googlefonts/dm-fonts) and [Instrument Serif](https://github.com/Instrument/instrument-serif). Their authors' [DM Sans](vendor/fonts/dmsans-OFL.txt) and [Instrument Serif](vendor/fonts/instrumentserif-OFL.txt) licence notices are included. Players can read all bundled notices offline under **Créditos e licenças** on the levels screen.
 
 ## Verify
 

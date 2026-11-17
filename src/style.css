@@ -464,3 +464,17 @@ h2,
     margin-top: 15px;
   }
 }
+:where(.credits) {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.credits summary {
+  padding: 11px 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.credits p { margin: 6px 0 14px; }
+.credits details details { border-top: 1px solid var(--line); }
+.credits pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }

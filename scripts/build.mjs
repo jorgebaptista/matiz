@@ -22,23 +22,21 @@ const [script, style, template] = await Promise.all([
 ]);
 const notices = await Promise.all(
   [
-    "LICENSE",
-    "vendor/openquiz/LICENSE",
-    "vendor/fonts/dmsans-OFL.txt",
-    "vendor/fonts/instrumentserif-OFL.txt",
-  ].map((f) => readFile(f, "utf8")),
+    ["Matiz · MIT", "LICENSE"],
+    ["OpenQuiz · MIT", "vendor/openquiz/LICENSE"],
+    ["DM Sans · SIL OFL", "vendor/fonts/dmsans-OFL.txt"],
+    ["Instrument Serif · SIL OFL", "vendor/fonts/instrumentserif-OFL.txt"],
+  ].map(async ([title, file]) => {
+    const content = await readFile(file, "utf8");
+    const escaped = content.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    return `<details><summary>${title}</summary><pre lang="en">${escaped}</pre></details>`;
+  }),
 );
 const html = template
   .replace("/* GAME_CSS */", () => style.outputFiles[0].text)
   .replace("/* GAME_JS */", () =>
     script.outputFiles[0].text.replace(/<\/script/gi, "<\\/script"),
   )
-  .replace(
-    "<!-- LICENSES -->",
-    () =>
-      '<script type="text/plain" id="licencas">' +
-      notices.join("\n\n") +
-      "</script>",
-  );
+  .replace("<!-- LICENSES -->", () => notices.join("\n"));
 await mkdir("dist", { recursive: true });
 await writeFile("dist/index.html", html);

@@ -248,6 +248,7 @@ function render(focus = false) {
   const level = current(),
     s = level && state.sessions[level.id];
   root.innerHTML = s ? play(level, s) : home();
+  if (!s) root.append(document.querySelector("#credits").content.cloneNode(true));
   window.scrollTo(0, 0);
   if (focus) {
     const h = root.querySelector("h1");
