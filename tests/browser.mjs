@@ -7,7 +7,7 @@ import { chromium } from "@playwright/test";
 import { practiceLevels, wordsById } from "../src/game.js";
 import { testLanguages } from "./languages-browser.mjs";
 import { testDailySharing } from "./share-browser.mjs";
-import { testSurvival } from "./survival-browser.mjs";
+import { testSurvival, testArchivedSurvival } from "./survival-browser.mjs";
 
 const remote = process.env.MATIZ_CDP;
 const browser = remote
@@ -173,6 +173,7 @@ try {
     await testLanguages(browser);
     await testDailySharing(browser);
     await testSurvival(browser);
+    await testArchivedSurvival(browser);
   }
 } finally {
   await browser.close();

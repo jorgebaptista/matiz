@@ -4,10 +4,14 @@ import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { defaultLocale, projectRoot, readLanguages } from "./content.mjs";
 import { escapeHTML } from "../src/html.js";
+import { survivalArchives } from "./survival-archives.mjs";
+import { survivalVersion } from "../src/survival-pack.js";
+import { gameLevels } from "../src/bands.js";
 
 /** Build every validated pack as a self-contained HTML file using the shared engine. */
 export async function buildGames({ root = projectRoot, outdir = path.join(projectRoot, "dist"), reviewedOnly = false } = {}) {
   const languages = await readLanguages({ root, reviewedOnly });
+  const archives = await Promise.all(languages.map(({ pack }) => survivalArchives(pack, { root, reviewedOnly })));
   const [style, template, licenses] = await Promise.all([
     build({
       absWorkingDir: projectRoot, entryPoints: ["src/style.css"], bundle: true,
@@ -22,7 +26,9 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
     ].map(async ([key, file]) => [key, escapeHTML(await readFile(path.join(projectRoot, file), "utf8"))])),
   ]);
   // Bundle everything before writing, so an invalid translation never partially ships.
-  const outputs = await Promise.all(languages.map(async ({ pack, locale }) => {
+  const outputs = await Promise.all(languages.map(async ({ pack, locale }, index) => {
+    const previous = { ...archives[index] };
+    delete previous[survivalVersion(gameLevels(pack))];
     const script = await build({
       absWorkingDir: projectRoot, entryPoints: ["src/ui.js"], bundle: true,
       write: false, minify: true, target: "es2020", format: "iife",
@@ -30,7 +36,7 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
         name: "language-pack",
         setup(builder) {
           builder.onLoad({ filter: /[/\\]src[/\\]pack\.js$/ }, () => ({
-            contents: `export const pack = ${JSON.stringify(pack)}; export const locale = ${JSON.stringify(locale)};`,
+            contents: `export const pack = ${JSON.stringify(pack)}; export const locale = ${JSON.stringify(locale)}; export const survivalArchives = ${JSON.stringify(previous)};`,
             loader: "js",
           }));
         },

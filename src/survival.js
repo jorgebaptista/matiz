@@ -1,29 +1,13 @@
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import { seededRandom } from "./daily.js";
-
-function pool(levels) {
-  return levels.map(level => ({ ...level, words: level.words
-    .filter(word => word.debutDay == null)
-    .sort((a, b) => a.id < b.id ? -1 : Number(a.id > b.id)),
-  })).filter(level => level.words.length);
-}
-
-/** Identify both the question content and the Survival rules used by a link. */
-export function survivalVersion(levels) {
-  const content = pool(levels).map(level => [level.id, level.words.map(word =>
-    [word.id, word.word, word.key, word.choices, word.example])]);
-  let hash = 2166136261;
-  for (const character of JSON.stringify(content)) {
-    hash = Math.imul(hash ^ character.codePointAt(0), 16777619) >>> 0;
-  }
-  return "s1-" + hash.toString(16).padStart(8, "0");
-}
+import { survivalPool, survivalVersion } from "./survival-pack.js";
+export { survivalVersion } from "./survival-pack.js";
 
 /** Draw three words per introductory band, then all words in the hardest band. */
 export function createSurvival(levels, seed, target = null) {
   if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
     throw new Error("Invalid challenge seed.");
-  const bands = pool(levels);
+  const bands = survivalPool(levels);
   const random = seededRandom(seed);
   const cards = bands.flatMap((band, index) => {
     const words = shuffle(band.words, random);
@@ -59,14 +43,52 @@ export function restoreSurvival(saved) {
   return { ...saved, target, cards: saved.cards.map(card => ({ ...card, options: [...card.options] })), answers: [...saved.answers] };
 }
 
+/** Index first attempts independently of whichever challenge is currently open. */
+export const survivalId = run => `${run.version}:${run.seed}`;
+
+/** Store only answers and position; archived packs supply the question snapshots. */
+export function survivalAttempt(run) {
+  const score = run.answers.filter((answer, index) => answer === run.cards[index].key).length;
+  return { answers: [...run.answers], cursor: run.cursor, total: run.cards.length, score };
+}
+
+/** Discard malformed attempt records without losing valid results or ordinary progress. */
+export function restoreAttempts(saved) {
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) return {};
+  return Object.fromEntries(Object.entries(saved).filter(([key, attempt]) => {
+    if (!/^s1-[a-f0-9]{8}:(0|[1-9]\d{0,9})$/.test(key) || Number(key.split(":")[1]) > 0xffffffff ||
+      !attempt || !Array.isArray(attempt.answers) || !attempt.answers.every(value => value === null || typeof value === "string") ||
+      !Number.isSafeInteger(attempt.total) || attempt.total <= 0 || attempt.answers.length > attempt.total ||
+      !Number.isInteger(attempt.cursor) || attempt.cursor < 0 || attempt.cursor > attempt.total ||
+      !Number.isInteger(attempt.score) || attempt.score < Math.max(0, attempt.answers.length - 1) ||
+      attempt.score > attempt.answers.length) return false;
+    if (attempt.cursor === attempt.total)
+      return attempt.answers.length > 0 && (attempt.score < attempt.answers.length || attempt.answers.length === attempt.total);
+    return attempt.answers.length === attempt.cursor || attempt.answers.length === attempt.cursor + 1;
+  }));
+}
+
+/** Extend the first saved answer sequence; conflicting later answers cannot replace it. */
+export function mergeAttempts(current, saved) {
+  const merged = { ...current };
+  for (const [key, previous] of Object.entries(saved)) {
+    const next = merged[key];
+    const extendsPrevious = next && next.total === previous.total && next.cursor >= previous.cursor &&
+      next.answers.length >= previous.answers.length && previous.answers.every((answer, index) => next.answers[index] === answer);
+    if (previous.cursor === previous.total || !extendsPrevious) merged[key] = previous;
+  }
+  return merged;
+}
+
 /** Validate an invitation before starting or replacing a saved run. */
-export function readChallenge(params, levels) {
+export function readChallenge(params, levels, archives = {}) {
   const seed = params.get("seed"), version = params.get("v"), score = params.get("score");
   if (!/^(0|[1-9]\d{0,9})$/.test(seed ?? "") || Number(seed) > 0xffffffff ||
     !/^s1-[a-f0-9]{8}$/.test(version ?? "") ||
     (score !== null && !/^(0|[1-9]\d{0,5})$/.test(score))) return { error: "invalidChallenge" };
-  if (version !== survivalVersion(levels)) return { error: "oldChallenge" };
-  const run = createSurvival(levels, Number(seed), score === null ? null : Number(score));
+  const selected = version === survivalVersion(levels) ? levels : archives[version];
+  if (!selected) return { error: "oldChallenge" };
+  const run = createSurvival(selected, Number(seed), score === null ? null : Number(score));
   if (run.target > run.cards.length) return { error: "invalidChallenge" };
-  return { run };
+  return { run, levels: selected };
 }

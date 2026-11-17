@@ -3,6 +3,7 @@ import {
   readFile,
   writeFile,
   copyFile,
+  cp,
   mkdtemp,
   rename,
   rm,
@@ -122,6 +123,7 @@ try {
     );
   }
   await writeFile(path.join(output, "index.html"), html);
+  await cp(at("archives", "survival"), path.join(output, "challenges"), { recursive: true });
   for (const file of ["site.css", "matiz.png"])
     await copyFile(at("site", file), path.join(output, file));
   for (const file of ["dm-sans.woff2", "dmsans-OFL.txt"])

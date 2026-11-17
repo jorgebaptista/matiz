@@ -23,7 +23,7 @@ def packGame = tasks.register('packGame', Exec) {
     workingDir '..'
     commandLine 'node', 'scripts/build.mjs'
     inputs.property 'siteUrl', siteUrl.toString()
-    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../locales'), fileTree('../editorial'), fileTree('../vendor'), fileTree('../scripts'), '../package-lock.json', '../LICENSE')
+    inputs.files(fileTree('../src'), fileTree('../packs'), fileTree('../locales'), fileTree('../editorial'), fileTree('../archives'), fileTree('../vendor'), fileTree('../scripts'), '../package-lock.json', '../LICENSE')
     outputs.dir '../dist'
 }
 tasks.named('preBuild').configure { dependsOn packGame }

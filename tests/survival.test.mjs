@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createSurvival, restoreSurvival, survivalVersion, readChallenge } from "../src/survival.js";
-import { fresh, levels, start, startDaily, startSurvival, answer, next, roundScore, restoreState } from "../src/game.js";
+import { createSurvival, restoreSurvival, survivalVersion, readChallenge, restoreAttempts } from "../src/survival.js";
+import { fresh, levels, start, startDaily, startSurvival, answer, next, roundScore, restoreState, reconcileSurvival } from "../src/game.js";
 import { survivalShareText } from "../src/share.js";
 
 test("a seed reproduces both question and choice order, with a gradual, unique deck", () => {
@@ -108,4 +108,66 @@ test("pack edits invalidate new invitations while saved runs retain their origin
     change(broken);
     assert.equal(restoreSurvival(broken), null);
   }
+});
+
+test("reopening a challenge keeps its first result after other runs and reloads", () => {
+  let state = fresh();
+  startSurvival(state, 42);
+  answer(state, state.survival.cards[0].key);
+  next(state);
+  answer(state, null);
+  next(state);
+  const original = structuredClone(state.survival);
+  startSurvival(state, 123);
+  answer(state, state.survival.cards[0].key);
+  next(state);
+  state = restoreState(JSON.parse(JSON.stringify(state)));
+  startSurvival(state, 42);
+  assert.deepEqual(state.survival, original);
+  answer(state, state.survival.cards[0].key);
+  assert.equal(roundScore(state.survival), 1);
+  startSurvival(state, 123);
+  assert.equal(state.survival.cursor, 1);
+  assert.equal(roundScore(state.survival), 1);
+});
+
+test("Play again draws a fresh seed even if the random source repeats", t => {
+  const state = fresh();
+  startSurvival(state, 42);
+  const original = structuredClone(state.survival.cards);
+  answer(state, null);
+  next(state);
+  t.mock.method(crypto, "getRandomValues", array => { array[0] = 42; return array; });
+  state.survival = null;
+  startSurvival(state);
+  assert.equal(state.survival.seed, 43);
+  assert.notDeepEqual(state.survival.cards, original);
+});
+
+test("older saves migrate their current run into the first-attempt history", () => {
+  const state = fresh();
+  startSurvival(state, 19);
+  answer(state, null);
+  next(state);
+  delete state.survivalAttempts;
+  const restored = restoreState(state);
+  startSurvival(restored, 20);
+  startSurvival(restored, 19);
+  assert.equal(restored.survival.cursor, restored.survival.cards.length);
+  assert.equal(roundScore(restored.survival), 0);
+  assert.deepEqual(restoreAttempts({ bad: null }), {});
+});
+
+test("a stale tab cannot replace the first answer, finished score or best", () => {
+  const first = fresh();
+  startSurvival(first, 3);
+  const stale = structuredClone(first);
+  answer(first, null);
+  next(first);
+  answer(stale, stale.survival.cards[0].key);
+  next(stale);
+  reconcileSurvival(stale, first);
+  assert.equal(roundScore(stale.survival), 0);
+  assert.equal(stale.survival.cursor, stale.survival.cards.length);
+  assert.equal(stale.survivalBests[stale.survival.version], 0);
 });

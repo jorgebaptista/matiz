@@ -1,0 +1,913 @@
+{
+  "locale": "pt-PT",
+  "levels": [
+    {
+      "id": "0",
+      "name": "Primeiros passos",
+      "words": [
+        {
+          "id": "ponderar",
+          "word": "ponderar",
+          "answer": "considerar",
+          "alternatives": [
+            "confirmar",
+            "esquecer",
+            "prometer"
+          ],
+          "example": "Antes de responder à proposta, a Rita quis ponderar as duas opções.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "nítido",
+          "word": "nítido",
+          "answer": "claro",
+          "alternatives": [
+            "baço",
+            "distante",
+            "discreto"
+          ],
+          "example": "Depois de limpar os óculos, viu o contorno nítido das letras.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "sereno",
+          "word": "sereno",
+          "answer": "tranquilo",
+          "alternatives": [
+            "atento",
+            "curioso",
+            "decidido"
+          ],
+          "example": "Mesmo quando o comboio parou no túnel, o miúdo manteve-se sereno.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "salientar",
+          "word": "salientar",
+          "answer": "destacar",
+          "alternatives": [
+            "resumir",
+            "corrigir",
+            "comparar"
+          ],
+          "example": "Na reunião, a Leonor quis salientar uma passagem que tinha escapado aos colegas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "breve",
+          "word": "breve",
+          "answer": "curto",
+          "alternatives": [
+            "urgente",
+            "simples",
+            "raro"
+          ],
+          "example": "Houve uma breve pausa para café antes da última conversa da tarde.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "cativar",
+          "word": "cativar",
+          "answer": "encantar",
+          "alternatives": [
+            "convencer pela força",
+            "surpreender por acaso",
+            "explicar em pormenor"
+          ],
+          "example": "Bastou-lhe contar a primeira história para cativar a sala inteira.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "invulgar",
+          "word": "invulgar",
+          "answer": "pouco comum",
+          "alternatives": [
+            "pouco claro",
+            "pouco útil",
+            "pouco visível"
+          ],
+          "example": "Era invulgar nevar naquela vila tão perto do mar.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "abrandar",
+          "word": "abrandar",
+          "answer": "desacelerar",
+          "alternatives": [
+            "parar",
+            "recuar",
+            "desviar"
+          ],
+          "example": "Ao aproximar-se da passadeira, o ciclista começou a abrandar.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "Precisão",
+      "words": [
+        {
+          "id": "renitente",
+          "word": "renitente",
+          "answer": "relutante",
+          "alternatives": [
+            "distraído",
+            "impaciente",
+            "indeciso"
+          ],
+          "example": "Estava renitente em aceitar uma proposta que ainda não tinha lido.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "sagaz",
+          "word": "sagaz",
+          "answer": "perspicaz",
+          "alternatives": [
+            "prudente",
+            "sincero",
+            "tenaz"
+          ],
+          "example": "Foi uma observação sagaz: reparou na contradição que tinha escapado ao resto da sala.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fugaz",
+          "word": "fugaz",
+          "answer": "passageiro",
+          "alternatives": [
+            "fortuito",
+            "ilusório",
+            "instável"
+          ],
+          "example": "Houve um instante fugaz de silêncio entre os dois trovões.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "tácito",
+          "word": "tácito",
+          "answer": "implícito",
+          "alternatives": [
+            "incerto",
+            "discreto",
+            "provisório"
+          ],
+          "example": "Sem trocarem uma palavra, chegaram a um acordo tácito sobre quem falaria primeiro.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inócuo",
+          "word": "inócuo",
+          "answer": "inofensivo",
+          "alternatives": [
+            "ineficaz",
+            "insípido",
+            "invisível"
+          ],
+          "example": "O comentário parecia inócuo, mas acabou por magoar quem o ouviu.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "comedido",
+          "word": "comedido",
+          "answer": "moderado",
+          "alternatives": [
+            "resignado",
+            "tímido",
+            "austero"
+          ],
+          "example": "Respondeu num tom comedido, mesmo quando a discussão aqueceu.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "parco",
+          "word": "parco",
+          "answer": "escasso",
+          "alternatives": [
+            "vago",
+            "brusco",
+            "frágil"
+          ],
+          "example": "Com um orçamento parco, a associação deu prioridade à reparação do telhado.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "solícito",
+          "word": "solícito",
+          "answer": "prestável",
+          "alternatives": [
+            "curioso",
+            "vaidoso",
+            "receoso"
+          ],
+          "example": "O vizinho mostrou-se solícito e ofereceu-se logo para carregar as caixas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "protelar",
+          "word": "protelar",
+          "answer": "adiar",
+          "alternatives": [
+            "abreviar",
+            "interromper",
+            "anular"
+          ],
+          "example": "Para protelar a decisão, pediu mais uma semana de consultas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fortuito",
+          "word": "fortuito",
+          "answer": "casual",
+          "alternatives": [
+            "fugaz",
+            "inevitável",
+            "invulgar"
+          ],
+          "example": "Foi um encontro fortuito: nenhum dos dois sabia que o outro estava no Porto.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Subtileza",
+      "words": [
+        {
+          "id": "reticente",
+          "word": "reticente",
+          "answer": "reservado",
+          "alternatives": [
+            "inconstante",
+            "perplexo",
+            "indiferente"
+          ],
+          "example": "O realizador foi reticente quanto ao desfecho e só revelou o título do filme.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "demover",
+          "word": "demover",
+          "answer": "dissuadir",
+          "alternatives": [
+            "desviar",
+            "desmentir",
+            "desaprovar"
+          ],
+          "example": "Nem a previsão de chuva a conseguiu demover da ideia de ir a pé.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "atenuar",
+          "word": "atenuar",
+          "answer": "mitigar",
+          "alternatives": [
+            "ocultar",
+            "sanar",
+            "contrariar"
+          ],
+          "example": "Os toldos ajudaram a atenuar o calor, embora a praça continuasse abafada.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inadvertido",
+          "word": "inadvertido",
+          "answer": "despercebido",
+          "alternatives": [
+            "súbito",
+            "persistente",
+            "insólito"
+          ],
+          "example": "O lapso passou inadvertido até à segunda leitura.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "intransigente",
+          "word": "intransigente",
+          "answer": "inflexível",
+          "alternatives": [
+            "insistente",
+            "inquieto",
+            "inconstante"
+          ],
+          "example": "Aceitou discutir os prazos, mas foi intransigente quanto à segurança.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "cauteloso",
+          "word": "cauteloso",
+          "answer": "circunspecto",
+          "alternatives": [
+            "hesitante",
+            "complacente",
+            "evasivo"
+          ],
+          "example": "Foi cauteloso na resposta, porque ainda faltava ouvir uma das testemunhas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "omitir",
+          "word": "omitir",
+          "answer": "deixar de mencionar",
+          "alternatives": [
+            "mencionar por alto",
+            "disfarçar o sentido",
+            "trocar a ordem"
+          ],
+          "example": "Na leitura pública, decidiu omitir o último parágrafo da carta.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "convergir",
+          "word": "convergir",
+          "answer": "confluir",
+          "alternatives": [
+            "coincidir por acaso",
+            "alternar",
+            "suceder"
+          ],
+          "example": "Os dois caminhos acabam por convergir junto à antiga estação.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "lacónico",
+          "word": "lacónico",
+          "answer": "conciso",
+          "alternatives": [
+            "brusco",
+            "vago",
+            "austero"
+          ],
+          "example": "Às três perguntas respondeu com um lacónico «talvez».",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "capcioso",
+          "word": "capcioso",
+          "answer": "enganador",
+          "alternatives": [
+            "enigmático",
+            "incisivo",
+            "absurdo"
+          ],
+          "example": "A pergunta era capciosa: qualquer das respostas parecia admitir uma culpa inexistente.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "persistente",
+          "word": "persistente",
+          "answer": "tenaz",
+          "alternatives": [
+            "pertinente",
+            "perentório",
+            "sereno"
+          ],
+          "example": "Foi persistente na procura do manuscrito e voltou ao arquivo mês após mês.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "hesitação",
+          "word": "hesitação",
+          "answer": "vacilação",
+          "alternatives": [
+            "prudência",
+            "embaraço",
+            "suspeita"
+          ],
+          "example": "Antes de assinar, teve um momento de hesitação e voltou a ler a última linha.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "efusivo",
+          "word": "efusivo",
+          "answer": "expansivo",
+          "alternatives": [
+            "excessivo",
+            "eloquente",
+            "eufórico"
+          ],
+          "example": "Receberam-na com um abraço efusivo e uma salva de palmas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "hostil",
+          "word": "hostil",
+          "answer": "adverso",
+          "alternatives": [
+            "distante",
+            "austero",
+            "intenso"
+          ],
+          "example": "Encontrou um ambiente hostil: mal começou a falar, ouviu protestos.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "discernir",
+          "word": "discernir",
+          "answer": "distinguir",
+          "alternatives": [
+            "deduzir",
+            "adivinhar",
+            "confirmar"
+          ],
+          "example": "No nevoeiro, mal se conseguia discernir o farol da torre da igreja.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "austero",
+          "word": "austero",
+          "answer": "sóbrio",
+          "alternatives": [
+            "sombrio",
+            "rústico",
+            "rude"
+          ],
+          "example": "O gabinete era austero: uma mesa sem adornos e duas cadeiras.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "desalento",
+          "word": "desalento",
+          "answer": "desânimo",
+          "alternatives": [
+            "desdém",
+            "desleixo",
+            "desconforto"
+          ],
+          "example": "A terceira recusa trouxe-lhe desalento, mas voltou a enviar o conto.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "exequível",
+          "word": "exequível",
+          "answer": "realizável",
+          "alternatives": [
+            "provável",
+            "previsível",
+            "razoável"
+          ],
+          "example": "Com mais uma semana e duas pessoas, o plano tornou-se exequível.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "discordância",
+          "word": "discordância",
+          "answer": "divergência",
+          "alternatives": [
+            "disputa",
+            "suspeita",
+            "dispersão"
+          ],
+          "example": "A discordância entre os dois dizia respeito ao método, não ao objetivo.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "presságio",
+          "word": "presságio",
+          "answer": "prenúncio",
+          "alternatives": [
+            "palpite",
+            "ameaça",
+            "vestígio"
+          ],
+          "example": "Na aldeia, o céu cor de chumbo era tido como presságio de temporal.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Argúcia",
+      "words": [
+        {
+          "id": "pusilânime",
+          "word": "pusilânime",
+          "answer": "timorato",
+          "alternatives": [
+            "circunspecto",
+            "taciturno",
+            "fleumático"
+          ],
+          "example": "Pareceu-lhe pusilânime calar a objeção só por receio de desagradar ao diretor.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "tergiversar",
+          "word": "tergiversar",
+          "answer": "responder com evasivas",
+          "alternatives": [
+            "ceder sob protesto",
+            "mudar de convicção",
+            "responder sem hesitar"
+          ],
+          "example": "Pedimos-lhe uma data concreta, mas preferiu tergiversar e falar do orçamento.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "perfunctório",
+          "word": "perfunctório",
+          "answer": "superficial",
+          "alternatives": [
+            "provisório",
+            "protocolar",
+            "inconclusivo"
+          ],
+          "example": "O exame foi tão perfunctório que deixou passar um erro logo na primeira linha.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "parcimónia",
+          "word": "parcimónia",
+          "answer": "comedimento",
+          "alternatives": [
+            "prudência",
+            "paciência",
+            "privação"
+          ],
+          "example": "Usou o açafrão com parcimónia: bastaram três fios para perfumar o arroz.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "contumaz",
+          "word": "contumaz",
+          "answer": "reincidente",
+          "alternatives": [
+            "irredutível",
+            "impetuoso",
+            "insolente"
+          ],
+          "example": "Era um infrator contumaz: repetia a mesma infração apesar dos avisos.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "vitupério",
+          "word": "vitupério",
+          "answer": "injúria",
+          "alternatives": [
+            "intriga",
+            "ironia",
+            "insinuação"
+          ],
+          "example": "Recusou responder ao vitupério e exigiu que a discussão voltasse aos factos.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inépcia",
+          "word": "inépcia",
+          "answer": "inaptidão",
+          "alternatives": [
+            "indolência",
+            "incúria",
+            "indigência"
+          ],
+          "example": "O restauro falhou por inépcia técnica, apesar do empenho da equipa.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "incúria",
+          "word": "incúria",
+          "answer": "negligência",
+          "alternatives": [
+            "imperícia",
+            "apatia",
+            "insensatez"
+          ],
+          "example": "A infiltração agravou-se por incúria: ninguém tratou do cano, apesar dos avisos.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "tibieza",
+          "word": "tibieza",
+          "answer": "falta de ardor",
+          "alternatives": [
+            "falta de rigor",
+            "falta de engenho",
+            "falta de clareza"
+          ],
+          "example": "A tibieza dos aplausos revelou o pouco entusiasmo da plateia.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "dirimir",
+          "word": "dirimir",
+          "answer": "resolver",
+          "alternatives": [
+            "refutar",
+            "adiar",
+            "esclarecer em parte"
+          ],
+          "example": "Chamaram uma mediadora para dirimir o conflito entre os dois clubes.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "latente",
+          "word": "latente",
+          "answer": "ainda não manifesto",
+          "alternatives": [
+            "já ultrapassado",
+            "apenas aparente",
+            "deliberadamente simulado"
+          ],
+          "example": "A rivalidade estava latente muito antes de os dois discutirem em público.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "obliterar",
+          "word": "obliterar",
+          "answer": "apagar",
+          "alternatives": [
+            "omitir",
+            "repudiar",
+            "velar"
+          ],
+          "example": "O desgaste acabou por obliterar a inscrição na pedra.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inópia",
+          "word": "inópia",
+          "answer": "penúria",
+          "alternatives": [
+            "incúria",
+            "inércia",
+            "inépcia"
+          ],
+          "example": "Após anos de inópia, a família conseguiu finalmente voltar a comprar livros.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "acerbo",
+          "word": "acerbo",
+          "answer": "mordaz",
+          "alternatives": [
+            "franco",
+            "solene",
+            "impetuoso"
+          ],
+          "example": "O crítico reservou o comentário mais acerbo para a encenação, que apelidou de fiasco.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "redarguir",
+          "word": "redarguir",
+          "answer": "replicar",
+          "alternatives": [
+            "reprovar",
+            "rebater com provas",
+            "repetir por outras palavras"
+          ],
+          "example": "Quando lhe disseram que o prazo era curto, limitou-se a redarguir que fora a direção a escolhê-lo.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "abúlico",
+          "word": "abúlico",
+          "answer": "sem vontade de agir",
+          "alternatives": [
+            "sem meios de decidir",
+            "sem razões para insistir",
+            "sem tempo para reagir"
+          ],
+          "example": "Deixou-se ficar no sofá, abúlico, sem vontade sequer de escolher um livro.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ilação",
+          "word": "ilação",
+          "answer": "inferência",
+          "alternatives": [
+            "analogia",
+            "conjetura sem fundamento",
+            "associação livre"
+          ],
+          "example": "De duas cartas sem data seria arriscado tirar uma ilação sobre a ordem dos acontecimentos.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "indelével",
+          "word": "indelével",
+          "answer": "inapagável",
+          "alternatives": [
+            "inimitável",
+            "irreparável",
+            "imutável"
+          ],
+          "example": "A primeira atuação deixou uma marca indelével na memória da pianista.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "frugal",
+          "word": "frugal",
+          "answer": "sóbrio e moderado",
+          "alternatives": [
+            "insuficiente e pobre",
+            "austero e severo",
+            "simples e apressado"
+          ],
+          "example": "Preparou um almoço frugal: sopa, pão e uma peça de fruta.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "insidioso",
+          "word": "insidioso",
+          "answer": "ardiloso",
+          "alternatives": [
+            "incisivo",
+            "inoportuno",
+            "inconsequente"
+          ],
+          "example": "Era um argumento insidioso: parecia defender a proposta enquanto lançava dúvidas sobre quem a fizera.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "apócrifo",
+          "word": "apócrifo",
+          "answer": "de autenticidade duvidosa",
+          "alternatives": [
+            "de autoria desconhecida",
+            "de circulação restrita",
+            "de publicação póstuma"
+          ],
+          "example": "O catálogo classificava como apócrifo o bilhete atribuído ao poeta.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "inexorável",
+          "word": "inexorável",
+          "answer": "implacável",
+          "alternatives": [
+            "inabalável",
+            "irrevogável",
+            "intemporal"
+          ],
+          "example": "Nem os pedidos de clemência comoveram aquele juiz inexorável.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "dissensão",
+          "word": "dissensão",
+          "answer": "discórdia",
+          "alternatives": [
+            "dispersão",
+            "dissimulação",
+            "desconfiança"
+          ],
+          "example": "A escolha da nova sede abriu uma dissensão no seio da associação.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "prolixo",
+          "word": "prolixo",
+          "answer": "demasiado palavroso",
+          "alternatives": [
+            "difícil de seguir",
+            "cheio de apartes irónicos",
+            "rico em pormenores técnicos"
+          ],
+          "example": "O relatório era prolixo: gastava três páginas a explicar o que cabia num parágrafo.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "vituperar",
+          "word": "vituperar",
+          "answer": "censurar com dureza",
+          "alternatives": [
+            "insinuar uma crítica",
+            "contestar com argumentos",
+            "desmentir em público"
+          ],
+          "example": "O cronista preferiu vituperar os dirigentes a discutir as medidas que tinham tomado.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ignaro",
+          "word": "ignaro",
+          "answer": "ignorante",
+          "alternatives": [
+            "indiferente",
+            "ilhado",
+            "inexperiente"
+          ],
+          "example": "Era um leitor culto, mas confessava-se ignaro em matéria de astronomia.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "ínvio",
+          "word": "ínvio",
+          "answer": "intransitável",
+          "alternatives": [
+            "longínquo",
+            "sinuoso",
+            "deserto"
+          ],
+          "example": "As derrocadas tinham tornado ínvio o antigo caminho da serra.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "escamotear",
+          "word": "escamotear",
+          "answer": "ocultar com artifício",
+          "alternatives": [
+            "retirar por engano",
+            "desviar por acaso",
+            "confundir por distração"
+          ],
+          "example": "Mudou a escala do gráfico para escamotear a quebra nas vendas.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "aquiescer",
+          "word": "aquiescer",
+          "answer": "anuir",
+          "alternatives": [
+            "ceder à força",
+            "aprovar com entusiasmo",
+            "resignar-se em silêncio"
+          ],
+          "example": "Após ouvir as garantias, acabou por aquiescer ao pedido de adiamento.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        },
+        {
+          "id": "fleumático",
+          "word": "fleumático",
+          "answer": "imperturbável",
+          "alternatives": [
+            "indiferente",
+            "introvertido",
+            "lento a decidir"
+          ],
+          "example": "Mesmo com toda a gente a falar ao mesmo tempo, manteve o seu ar fleumático.",
+          "origin": "ai-drafted",
+          "status": "pilot"
+        }
+      ]
+    }
+  ]
+}

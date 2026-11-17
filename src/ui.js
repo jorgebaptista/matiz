@@ -9,14 +9,14 @@ import {
   next,
   finish,
   roundScore,
-  hasDaily, startDaily, activeSession, practiceLevels, startSurvival,
+  hasDaily, startDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
 } from "./game.js";
-import { locale } from "./pack.js";
+import { locale, survivalArchives } from "./pack.js";
 import { dailyDay } from "./daily.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
 import { dailyShareText, survivalShareText } from "./share.js";
-import { readChallenge, survivalVersion } from "./survival.js";
+import { readChallenge, survivalVersion, survivalId } from "./survival.js";
 
 const t = (key, values) => esc(translate(key, values));
 
@@ -39,6 +39,12 @@ let state = restore();
 let invitation = null;
 function save() {
   try {
+    if (state.survivalAttempts) {
+      let previous;
+      try { previous = JSON.parse(localStorage.getItem(storageKey)); }
+      catch { previous = null; }
+      reconcileSurvival(state, previous);
+    }
     localStorage.setItem(storageKey, JSON.stringify(state));
   } catch {
     alert.hidden = false;
@@ -277,10 +283,11 @@ function survivalInvitation() {
     t(invitation.error) + '</p></section>' + action("home", translate("backHome"));
   const replacesRun = state.survival && state.survival.cursor < state.survival.cards.length &&
     (!invitation.run || state.survival.seed !== invitation.run.seed || state.survival.version !== invitation.run.version);
+  const completed = invitation.run && state.survivalAttempts?.[survivalId(invitation.run)]?.cursor === invitation.run.cards.length;
   return header() + '<section class="summary"><h1>' + t("survival") + '</h1><p class="survival-rules">' +
     t("survivalRules") + '</p>' + (invitation.run?.target != null ? '<p class="challenge-target">' +
       t("scoreToBeat", { count: invitation.run.target }) + '</p>' : '') + '</section>' +
-    action("accept-survival", translate(replacesRun ? "replaceRun" : "startSurvival")) +
+    action("accept-survival", translate(completed ? "result" : replacesRun ? "replaceRun" : "startSurvival")) +
     '<button class="unsure" data-action="home">' + t("backHome") + '</button>';
 }
 async function shareResult(button) {
@@ -379,7 +386,7 @@ root.addEventListener("click", (e) => {
     state.survival = null;
     startSurvival(state);
   } else if (id === "accept-survival" && invitation && !invitation.error) {
-    startSurvival(state, invitation.run?.seed, invitation.run?.target ?? null);
+    startSurvival(state, invitation.run?.seed, invitation.run?.target ?? null, invitation.levels ?? levels);
     invitation = null;
     clearChallengeUrl();
   } else if (id === "start") start(state);
@@ -400,12 +407,12 @@ root.addEventListener("click", (e) => {
 });
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {
-  if (entry.protocol !== "http:" && entry.protocol !== "https:") return;
+  if (!["http:", "https:", "file:"].includes(entry.protocol)) return;
   for (const key of ["mode", "seed", "v", "score"]) entry.searchParams.delete(key);
   history.replaceState(null, "", entry.href);
 }
 if (entry.searchParams.get("mode") === "survival") {
-  invitation = readChallenge(entry.searchParams, levels);
+  invitation = readChallenge(entry.searchParams, levels, survivalArchives);
 } else if (hasDaily && entry.searchParams.get("mode") === "daily") {
   startDaily(state);
   save();

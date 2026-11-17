@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile, mkdir } from "node:fs/promises";
+import { readFile, mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { languageFixture, fixturePack } from "./language-fixture.mjs";
+import { buildGames } from "../scripts/build.mjs";
+import { gameLevels } from "../src/bands.js";
+import { survivalVersion } from "../src/survival.js";
 
 /** Play a run, send its link to a fresh player and compare their saved questions. */
 export async function testSurvival(browser) {
@@ -71,6 +76,7 @@ export async function testSurvival(browser) {
       }
       await other.locator('[data-action="new-survival"]').click();
       const pending = (await readSave(other)).survival;
+      assert.notEqual(pending.seed, survival.seed);
       const badLink = new URL(link);
       badLink.searchParams.set("v", "s1-00000000");
       await other.goto(badLink.href);
@@ -79,14 +85,60 @@ export async function testSurvival(browser) {
       assert.deepEqual((await readSave(other)).survival, pending);
       await other.goto(link);
       assert.equal(await other.locator('[data-action="accept-survival"]').innerText(),
-        locale === "pt-PT" ? "Substituir partida atual\n→" : "Replace current run\n→");
+        locale === "pt-PT" ? "Ver resultado\n→" : "View result\n→");
       await other.locator('[data-action="home"]').click();
       await other.locator('[data-action="survival"]').click();
       assert.deepEqual((await readSave(other)).survival, pending);
+      await other.goto(link);
+      await other.locator('[data-action="accept-survival"]').click();
+      assert.equal(await other.locator(".score").innerText(), "5");
+      assert.equal(await other.locator(".choice").count(), 0);
+      await other.locator('[data-action="share"]').click();
+      const originalShare = await other.evaluate(() => window.shared[0].text);
+      assert.equal(new URL(originalShare.split("\n").at(-1)).searchParams.get("score"), "5");
     } finally {
       await context.close();
       await friend.close();
     }
   }
   console.log("Survival: both languages, resume, failure, friend invitation, identical cards, score comparison and incompatible links passed.");
+}
+
+/** Open a retired question offline after its replacement has shipped. */
+export async function testArchivedSurvival(browser) {
+  const fixture = await languageFixture();
+  const context = await browser.newContext({ viewport: { width: 390, height: 800 } });
+  try {
+    await buildGames(fixture);
+    const oldVersion = survivalVersion(gameLevels(fixturePack));
+    const revised = structuredClone(fixturePack);
+    Object.assign(revised.levels[0].words[0], {
+      id: "reflect", word: "reflect", answer: "think", example: "She took a moment to reflect on the question.",
+    });
+    await writeFile(path.join(fixture.root, "packs/en-GB.json"), JSON.stringify(revised));
+    await buildGames(fixture);
+    await context.setOffline(true);
+    const page = await context.newPage();
+    const link = pathToFileURL(path.join(fixture.outdir, "en-GB/index.html")).href + `?mode=survival&seed=9&v=${oldVersion}&score=1`;
+    await page.goto(link);
+    await page.locator('[data-action="accept-survival"]').click();
+    assert.equal(new URL(page.url()).search, "");
+    assert.equal(await page.locator(".question h1").innerText(), "ponder");
+    await page.locator('[data-action="unsure"]').click();
+    assert.equal(await page.locator(".meaning").innerText(), "consider");
+    await page.locator('[data-action="next"]').click();
+    assert.equal(await page.locator(".score").innerText(), "0");
+    assert.equal(await page.locator('[data-action="new-survival"]').innerText(), "Play again");
+    await page.locator('[data-action="new-survival"]').click();
+    await page.reload();
+    assert.equal(await page.locator(".question h1").innerText(), "reflect");
+    await page.goto(link);
+    await page.locator('[data-action="accept-survival"]').click();
+    assert.equal(await page.locator(".score").innerText(), "0");
+    assert.equal(await page.locator(".choice").count(), 0);
+    console.log("Archived Survival: removed words remain playable and first results survive later runs.");
+  } finally {
+    await context.close();
+    await rm(fixture.root, { recursive: true, force: true });
+  }
 }
