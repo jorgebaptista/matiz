@@ -15,7 +15,7 @@ import { locale, survivalArchives } from "./pack.js";
 import { dailyDay } from "./daily.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
-import { dailyShareText, survivalShareText } from "./share.js";
+import { resultImage } from "./share-image.js";
 import { readChallenge, survivalVersion, survivalId } from "./survival.js";
 
 const t = (key, values) => esc(translate(key, values));
@@ -37,6 +37,8 @@ function restore() {
 }
 let state = restore();
 let invitation = null;
+let shareCard = null;
+let renderVersion = 0;
 function save() {
   try {
     if (state.survivalAttempts) {
@@ -174,7 +176,7 @@ function roundTop(s, card) {
   const caption = state.survivalActive ? t("survival") : state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><span>' +
-    (state.survivalActive ? t("survivalScore", { count: roundScore(s) }) : t("wordPosition", { count: pos, total: s.cards.length })) +
+    (state.survivalActive ? '' : t("wordPosition", { count: pos, total: s.cards.length })) +
     '</span></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
     s.cards
       .map(
@@ -185,8 +187,15 @@ function roundTop(s, card) {
       )
       .join("") +
     "</div>") + (caption ? '<div class="eyebrow">' + caption + "</div>" : "") +
-    (state.survivalActive && s.target !== null ? '<p class="challenge-target">' + t("scoreToBeat", { count: s.target }) + '</p>' : '')
+    (state.survivalActive ? survivalStats(s) : '')
   );
+}
+function survivalStats(s, summary = false) {
+  const stats = [["currentScore", roundScore(s)], ["yourBest", Math.max(roundScore(s), state.survivalBests?.[s.version] ?? 0)]];
+  if (s.target != null) stats.push(["challenger", s.target]);
+  return '<dl class="survival-stats' + (summary ? ' final-stats' : '') + '">' + stats.map(([key, value], index) =>
+    '<div><dt>' + t(key) + '</dt><dd data-stat="' + key + '"' +
+    (summary && index === 0 ? ' class="score"' : '') + '>' + value + '</dd></div>').join('') + '</dl>';
 }
 function play(s) {
   if (s.cursor >= s.cards.length) return summary(s);
@@ -257,9 +266,7 @@ function summary(s) {
     "<span> / " +
     s.cards.length +
     '</span></div><p>' + t("correctAnswers") + '</p></section>' +
-    (state.dailyActive ? action("share", translate("shareResult"), "↗") +
-      '<p class="share-status" role="status"></p>' +
-      '<textarea class="share-text" hidden readonly aria-label="' + t("shareResult") + '"></textarea>' +
+    (state.dailyActive ? shareControls("shareResult") +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
     action("continue", translate("playAgain")) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
@@ -269,12 +276,9 @@ function survivalSummary(s) {
   const score = roundScore(s);
   const comparison = score > s.target ? "challengeWon" : score === s.target ? "challengeTied" : "challengeLost";
   return header() + '<section class="summary"><h1>' + t(score === s.cards.length ? "survivalCleared" : "survivalOver") +
-    '</h1><div class="score">' + score + '</div><p>' + t("survivalScoreLabel") + '</p>' +
-    '<p class="challenge-target">' + t("personalBest", { count: state.survivalBests?.[s.version] ?? score }) + '</p>' +
+    '</h1>' + survivalStats(s, true) +
     (s.target !== null ? '<p class="challenge-target">' + t(comparison, { count: s.target }) + '</p>' : '') + '</section>' +
-    action("share", translate("challengeFriend"), "↗") +
-    '<p class="share-status" role="status"></p>' +
-    '<textarea class="share-text" hidden readonly aria-label="' + t("shareResult") + '"></textarea>' +
+    shareControls("challengeFriend") +
     '<button class="secondary" data-action="new-survival">' + t("newRun") + '</button>' +
     '<button class="unsure" data-action="home">' + t("backHome") + '</button>';
 }
@@ -290,43 +294,83 @@ function survivalInvitation() {
     action("accept-survival", translate(completed ? "result" : replacesRun ? "replaceRun" : "startSurvival")) +
     '<button class="unsure" data-action="home">' + t("backHome") + '</button>';
 }
+function shareControls(label) {
+  return action("share", translate(label), "↗") + '<p class="share-status" role="status"></p>' +
+    '<div class="share-fallback" hidden><img class="share-preview" alt="' + t("shareResult") + '">' +
+    '<div class="share-actions"><a class="secondary" data-download>' + t("saveImage") + '</a>' +
+    '<button class="secondary" data-action="copy-link">' + t("copyLink") + '</button></div></div>' +
+    '<textarea class="share-text" hidden readonly aria-label="' + t("copyLink") + '"></textarea>';
+}
+function showShareFallback() {
+  const fallback = root.querySelector(".share-fallback");
+  if (!shareCard || !fallback) return;
+  fallback.hidden = false;
+  fallback.querySelector("img").src = shareCard.dataUrl;
+  const download = fallback.querySelector("[data-download]");
+  download.href = shareCard.dataUrl;
+  download.download = shareCard.file.name;
+}
+// Android reads this only after a main-frame request from a bundled edition.
+window.matizSharePayload = () => shareCard ? { image: shareCard.dataUrl, text: shareCard.text } : null;
+window.matizShareFailed = () => {
+  const status = root.querySelector(".share-status");
+  if (status) status.textContent = translate("imageUnavailable");
+};
+async function copyShareLink() {
+  if (!shareCard) return;
+  const url = shareCard.url;
+  const status = root.querySelector(".share-status"), field = root.querySelector(".share-text");
+  try {
+    await navigator.clipboard.writeText(url);
+    status.textContent = translate("linkCopied");
+  } catch {
+    field.value = url;
+    field.hidden = false;
+    field.focus();
+    field.select();
+  }
+}
 async function shareResult(button) {
-  const formatter = state.survivalActive ? survivalShareText : dailyShareText;
-  const text = formatter(activeSession(state), document.querySelector('meta[name="matiz-play-url"]').content);
+  const version = renderVersion;
+  const status = root.querySelector(".share-status");
+  status.textContent = "";
+  root.querySelector(".share-text").hidden = true;
+  if (!shareCard) { render(); return; }
   if (bundledApp) {
-    location.assign("matiz-share://result?text=" + encodeURIComponent(text));
+    location.assign("matiz-share://result");
     return;
   }
-  const status = root.querySelector(".share-status");
-  const fallback = root.querySelector(".share-text");
-  status.textContent = "";
-  fallback.hidden = true;
   button.disabled = true;
   try {
-    if (navigator.share) {
-      try {
-        await navigator.share({ text });
-        return;
-      } catch (error) {
-        if (error.name === "AbortError") return;
-      }
+    if (navigator.share && navigator.canShare?.({ files: [shareCard.file] })) {
+      await navigator.share({ files: [shareCard.file], text: shareCard.text });
+      return;
     }
-    await navigator.clipboard.writeText(text);
-    status.textContent = translate("resultCopied");
-  } catch {
-    status.textContent = translate("copyResult");
-    fallback.value = text;
-    fallback.hidden = false;
-    fallback.focus();
-    fallback.select();
+    showShareFallback();
+  } catch (error) {
+    if (error.name !== "AbortError" && version === renderVersion) showShareFallback();
   } finally {
     button.disabled = false;
   }
 }
 function render(focus = false) {
+  const version = ++renderVersion;
+  shareCard = null;
   const s = activeSession(state);
   root.classList.toggle("in-round", Boolean(!invitation && s && s.cursor < s.cards.length));
   root.innerHTML = invitation ? survivalInvitation() : s ? play(s) : home();
+  const shareButton = root.querySelector('[data-action="share"]');
+  if (shareButton) {
+    shareButton.disabled = true;
+    resultImage(s, {
+      survival: state.survivalActive, best: state.survivalBests?.[s.version] ?? 0,
+      playUrl: document.querySelector('meta[name="matiz-play-url"]').content,
+    }).then(card => {
+      if (version === renderVersion) shareCard = card;
+    }).catch(() => {
+      if (version === renderVersion) root.querySelector(".share-status").textContent = translate("imageUnavailable");
+    }).finally(() => { if (version === renderVersion) shareButton.disabled = false; });
+  }
   if (!s && !invitation) {
     root.append(document.querySelector("#credits").content.cloneNode(true));
     refreshDailyButton();
@@ -371,6 +415,7 @@ root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
+  if (id === "copy-link") { copyShareLink(); return; }
   if (id === "share" && (state.dailyActive || state.survivalActive)) {
     shareResult(target);
     return;

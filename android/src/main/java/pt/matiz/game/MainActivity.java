@@ -2,6 +2,7 @@ package pt.matiz.game;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.ClipData;
 import android.net.Uri;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,11 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
+import android.util.Base64;
+import androidx.core.content.FileProvider;
+import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,13 +48,8 @@ public class MainActivity extends Activity {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 if (request.isForMainFrame() && "matiz-share".equals(request.getUrl().getScheme())) {
-                    String text = request.getUrl().getQueryParameter("text");
-                    if (view.getUrl() != null && editionUrls.contains(view.getUrl().split("\\?", 2)[0]) && text != null && !text.isEmpty()) {
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, text);
-                        startActivity(Intent.createChooser(share, null));
-                    }
+                    if (view.getUrl() != null && editionUrls.contains(view.getUrl().split("\\?", 2)[0]))
+                        view.evaluateJavascript("window.matizSharePayload ? window.matizSharePayload() : null", MainActivity.this::shareImage);
                     return true;
                 }
                 if (!request.isForMainFrame() || !editionUrls.contains(url)) return true;
@@ -58,6 +59,36 @@ public class MainActivity extends Activity {
         });
         setContentView(game);
         game.loadUrl(gameUrl(getIntent()));
+    }
+    private void shareImage(String payload) {
+        try {
+            JSONObject result = new JSONObject(payload);
+            String image = result.getString("image");
+            if (!image.startsWith("data:image/png;base64,") || image.length() > 4_000_000)
+                throw new IOException("Invalid result image");
+            byte[] png = Base64.decode(image.substring("data:image/png;base64,".length()), Base64.DEFAULT);
+            File directory = new File(getCacheDir(), "shares");
+            if (!directory.isDirectory() && !directory.mkdirs()) throw new IOException("Could not prepare image cache");
+            File[] older = directory.listFiles();
+            if (older != null) for (File file : older) {
+                if (file.getName().startsWith("matiz-") && file.lastModified() < System.currentTimeMillis() - 86_400_000L)
+                    file.delete();
+            }
+            // Unique files keep an earlier chooser's attachment intact.
+            File file = File.createTempFile("matiz-", ".png", directory);
+            try (FileOutputStream out = new FileOutputStream(file)) { out.write(png); }
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".shares", file);
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/png");
+            share.putExtra(Intent.EXTRA_STREAM, uri);
+            share.putExtra(Intent.EXTRA_TEXT, result.getString("text"));
+            share.setClipData(ClipData.newUri(getContentResolver(), "Matiz", uri));
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(share, null));
+        } catch (Exception e) {
+            android.util.Log.w("Matiz", "Could not share result image", e);
+            game.evaluateJavascript("window.matizShareFailed && window.matizShareFailed()", null);
+        }
     }
     private String gameUrl(Intent intent) {
         Uri link = intent.getData();
