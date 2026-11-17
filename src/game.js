@@ -1,6 +1,6 @@
 import { applyAnswer, emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import { shuffle } from "../vendor/openquiz/shuffle.ts";
-import pack from "../packs/pt-PT.json" with { type: "json" };
+import { pack } from "./pack.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;

@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f7f5ed"><title>Matiz · Sinónimos</title>
+<html lang="{{locale}}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5ed"><meta name="description" content="{{description}}"><title>{{title}}</title>
 <style>/* GAME_CSS */</style></head>
-<body><main id="game"></main><p hidden role="status" id="storage-alert">O progresso só fica guardado enquanto esta página estiver aberta.</p>
+<body><main id="game"></main><p hidden role="status" id="storage-alert">{{storageAlert}}</p>
 <template id="credits">
   <footer class="credits"><details>
-    <summary>Créditos e licenças</summary>
-    <p><strong>OpenQuiz.</strong> Agradecemos aos colaboradores do OpenQuiz pelo código que baralha as opções e acompanha os acertos e os erros. O projeto é distribuído sob a licença MIT.</p>
-    <p><strong>Magoosh Vocabulary Builder.</strong> Inspirou o formato das rondas e a progressão por níveis. As perguntas e os exemplos em português europeu foram escritos para o Matiz.</p>
-    <p><strong>Tipografia.</strong> DM Sans e Instrument Serif, dos autores dos respetivos projetos, sob a SIL Open Font License.</p>
+    <summary>{{credits}}</summary>
+    <p><strong>{{openquizLabel}}</strong> {{openquizCredit}}</p>
+    <p><strong>{{magooshLabel}}</strong> {{magooshCredit}}</p>
+    <p><strong>{{typographyLabel}}</strong> {{typographyCredit}}</p>
     <!-- LICENSES -->
   </details></footer>
 </template>

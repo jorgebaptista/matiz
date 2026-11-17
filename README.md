@@ -1,4 +1,8 @@
-# Matiz
+# Matiz · Jogo de sinónimos em português europeu
+
+Um jogo de vocabulário para quem já fala português e quer encontrar a palavra certa. Se alguém está *renitente*, dirias que está *relutante* ou *indeciso*? Escolhe um sinónimo e vê a palavra numa frase.
+
+Matiz is an open-source vocabulary game for native and fluent speakers. European Portuguese is the first edition. Contributors can write an original word pack, translate the interface or improve the shared game. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
 An offline synonym game for fluent speakers, starting with European Portuguese. Open the game and play a round of up to five words. Each word has four choices, a skip option and an original example sentence. Tap **Jogar** to let Matiz choose the words. Open a difficulty band under **As tuas palavras** to see each word and its learning status.
 
@@ -34,7 +38,9 @@ Matiz starts with 68 AI-drafted pilot questions. Each records its origin and rev
 1. Review the pilot in small batches with native speakers. Ask testers which choices also seemed correct and which words they would actually use.
 2. Try another band of more demanding, useful words. Use Portuguese frequency and register as starting points, then adjust the difficulty based on playtests. Keep rounds at up to five words. Later, test whether players can use a word in a fresh sentence.
 3. Open the MIT repository with the credits and contribution guide. For the public game, run `npm run build:reviewed` and share the mobile web version first. Prepare a signed Android release and a way for pilot players to carry their progress across signing or platform changes before distributing it. [Android app signing](https://developer.android.com/studio/publish/app-signing)
-4. For a second language, add its own editorial queue, native reviewers, playable pack, translated interface and separate saved progress. Reuse the game engine.
+4. Welcome a first contributor-led language pack and use the experience to improve the guide. [Language packs](docs/languages.md)
+
+For the playable website, run `npm run build:site`. The maintainer guide covers local preview, publication, search indexing and the first community posts. [Website and launch guide](docs/launch.md)
 
 ## Credits
 

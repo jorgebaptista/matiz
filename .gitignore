@@ -1,5 +1,7 @@
 node_modules/
 dist/
+site-dist/
+.matiz-site-*/
 android/.gradle/
 android/build/
 android/local.properties

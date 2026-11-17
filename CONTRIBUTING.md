@@ -1,6 +1,10 @@
-# Contributing words and levels
+# Contributing to Matiz
 
 Matiz helps fluent speakers find a more precise way to say something. A good candidate is a word you might use in a conversation, an essay or a letter. A rare word earns its place when its meaning or register adds something.
+
+**Add your language.** Start with an example that would interest someone who already speaks it. You can translate the interface, supply questions or review another contributor's pack. The guide walks through building a first playable edition locally. [Language-pack guide](docs/languages.md)
+
+**Contribute a feature.** Describe the player problem and a concrete example in an issue, or open a focused pull request with a test. For a change to game rules, start in `src/game.js` and `tests/game.test.mjs`. For an interface change, check it at phone width and include the necessary translation keys. Keep borrowed code and data traceable to their authors and licences. [Feature and word proposals](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
 ## Suggest a word
 

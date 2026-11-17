@@ -10,9 +10,13 @@ import {
   finish,
   roundScore,
 } from "./game.js";
+import { locale } from "./pack.js";
+import { translate, storageKey } from "./i18n.js";
+import { escapeHTML as esc } from "./html.js";
+
+const t = (key, values) => esc(translate(key, values));
 
 const root = document.querySelector("#game");
-const storageKey = "matiz.pt-PT.v1";
 const wordTotal = levels.reduce((sum, level) => sum + level.words.length, 0);
 const alert = document.querySelector("#storage-alert");
 function restore() {
@@ -31,43 +35,35 @@ function save() {
     alert.hidden = false;
   }
 }
-const esc = (x) =>
-  String(x).replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ],
-  );
 const badge =
   '<span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>';
 const header = () =>
   '<header><span class="brand">' +
   badge +
-  'Matiz</span><span class="locale">Português europeu</span></header>';
+  t("brand") + '</span><span class="locale">' + esc(locale.languageName) + '</span></header>';
 const bandName = (level) =>
-  level.id === "0" ? "Entrada" : "Nível " + level.id;
+  level.id === "0" ? t("entryBand") : t("level", { id: level.id });
 const bandById = new Map(levels.map((level) => [level.id, level]));
 function wordStatus(word) {
-  if (learned(state, word)) return "Aprendida";
-  return state.progress[word.id]?.seen ? "Em aprendizagem" : "Por descobrir";
+  if (learned(state, word)) return t("learned");
+  return t(state.progress[word.id]?.seen ? "learning" : "unseen");
 }
 function reviewTime(word) {
   const progress = state.progress[word.id];
   const due = progress?.dueAt;
   if (!Number.isFinite(due)) return "";
   if (due <= Date.now() || progress.questionsLeft === 0)
-    return '<p class="review-time">Revisão disponível.</p>';
-  const when = new Intl.DateTimeFormat("pt-PT", {
+    return '<p class="review-time">' + t("reviewAvailable") + '</p>';
+  const when = new Intl.DateTimeFormat(locale.locale, {
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
   }).format(due);
   return (
-    '<p class="review-time">Próxima revisão · ' +
-    esc(when) + (progress.questionsLeft > 0
-      ? " ou após " + progress.questionsLeft + (progress.questionsLeft === 1 ? " outra pergunta" : " outras perguntas") + ", se for mais cedo"
+    '<p class="review-time">' +
+    t("nextReview", { when }) + (progress.questionsLeft > 0
+      ? t("reviewAfter", { count: progress.questionsLeft })
       : "") +
     "</p>"
   );
@@ -88,14 +84,13 @@ function home() {
   );
   return (
     header() +
-    '<section class="hero"><div class="art" aria-hidden="true"><i>ã</i><i>á</i><i>a</i></div>' +
-    "<h1>Sinónimos</h1><p>Palavras novas e revisões em rondas de até cinco.</p>" +
-    action("start", state.session ? "Continuar a ronda" : "Jogar") +
-    '</section><div class="section-title"><h2>As tuas palavras</h2><span>' +
-    total +
-    " / " +
-    wordTotal +
-    ' aprendidas</span></div><div class="levels">' +
+    '<section class="hero"><div class="art" aria-hidden="true">' +
+    [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
+    '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
+    action("start", translate(state.session ? "resume" : "play")) +
+    '</section><div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
+    t("learnedTotal", { count: total, total: wordTotal }) +
+    '</span></div><div class="levels">' +
     levels
       .map((level) => {
         const seen = level.words.filter(
@@ -103,14 +98,12 @@ function home() {
         ).length;
         return (
           '<details class="band"><summary class="level"><span class="number">' +
-          (level.id === "0" ? "E" : level.id) +
+          (level.id === "0" ? t("entryBadge") : esc(level.id)) +
           '</span><span class="level-text"><strong>' +
           esc(level.name) +
           "</strong><small>" +
-          seen +
-          " de " +
-          level.words.length +
-          ' vistas</small></span><span class="trail" aria-hidden="true">›</span></summary><ul>' +
+          t("seenTotal", { count: seen, total: level.words.length }) +
+          '</small></span><span class="trail" aria-hidden="true">›</span></summary><ul>' +
           level.words
             .map(
               (w) =>
@@ -132,10 +125,8 @@ function home() {
 function roundTop(level, s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
   return (
-    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> Início</button><span>Palavra ' +
-    pos +
-    " de " +
-    s.cards.length +
+    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><span>' +
+    t("wordPosition", { count: pos, total: s.cards.length }) +
     '</span></div><div class="steps" aria-hidden="true">' +
     s.cards
       .map(
@@ -150,7 +141,7 @@ function roundTop(level, s, card) {
     bandName(level) +
     " · " +
     esc(level.name) +
-    (card.practice ? " · Prática livre" : "") +
+    (card.practice ? " · " + t("practice") : "") +
     "</div>"
   );
 }
@@ -164,10 +155,10 @@ function play(s) {
   const top = roundTop(bandById.get(word.levelId), s, card);
   if (answered) {
     const status = correct
-      ? "Certo!"
+      ? t("correct")
       : value === null
-        ? "Fica a saber"
-        : "Não foi desta";
+        ? t("skipped")
+        : t("incorrect");
     return (
       top +
       '<section class="feedback"><div class="result ' +
@@ -178,17 +169,17 @@ function play(s) {
       esc(word.word) +
       '</h1><p class="meaning">' +
       esc(card.key ?? word.key) +
-      '</p><div class="example"><h2>Exemplo</h2><blockquote>' +
+      '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
       reviewTime(word) +
       (value && !correct
-        ? '<p class="your">Escolheste «' + esc(value) + "».</p>"
+        ? '<p class="your">' + t("yourAnswer", { answer: value }) + '</p>'
         : "") +
       "</section>" +
       action(
         "next",
-        s.cursor === s.cards.length - 1 ? "Ver resultado" : "Próxima palavra",
+        translate(s.cursor === s.cards.length - 1 ? "result" : "nextWord"),
       )
     );
   }
@@ -196,7 +187,7 @@ function play(s) {
     top +
     '<section class="question"><h1>' +
     esc(word.word) +
-    "</h1><p>Qual é o sentido mais próximo?</p></section>" +
+    '</h1><p>' + t("prompt") + '</p></section>' +
     '<div class="choices">' +
     card.options
       .map(
@@ -211,19 +202,19 @@ function play(s) {
       )
       .join("") +
     "</div>" +
-    '<button class="unsure" data-action="unsure">Não sei</button>'
+    '<button class="unsure" data-action="unsure">' + t("unsure") + '</button>'
   );
 }
 function summary(s) {
   return (
     header() +
-    '<section class="summary"><h1>Ronda concluída</h1><div class="score">' +
+    '<section class="summary"><h1>' + t("roundComplete") + '</h1><div class="score">' +
     roundScore(s) +
     "<span> / " +
     s.cards.length +
-    "</span></div><p>respostas certas</p></section>" +
-    action("continue", "Jogar outra ronda") +
-    '<button class="unsure" data-action="close">Voltar ao início</button>'
+    '</span></div><p>' + t("correctAnswers") + '</p></section>' +
+    action("continue", translate("playAgain")) +
+    '<button class="unsure" data-action="close">' + t("backHome") + '</button>'
   );
 }
 function render(focus = false) {

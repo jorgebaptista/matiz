@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { chromium } from "@playwright/test";
 import { levels, wordsById } from "../src/game.js";
+import { testLanguages } from "./languages-browser.mjs";
 
 const remote = process.env.MATIZ_CDP;
 const browser = remote
@@ -164,6 +165,7 @@ try {
   console.log(
     "Mobile flow: collection, entry round, feedback, resume, score and next round passed.",
   );
+  if (!remote) await testLanguages(browser);
 } finally {
   await browser.close();
 }
