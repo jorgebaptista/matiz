@@ -1,27 +1,32 @@
 # Contributing to Matiz
 
-Matiz helps fluent speakers find a more precise way to say something. A good candidate is a word you might use in a conversation, an essay or a letter. A rare word earns its place when its meaning or register adds something.
+## Choose a difficulty
 
-**Add your language.** Start with an example that would interest someone who already speaks it. You can translate the interface, supply questions or review another contributor's pack. The guide walks through building a first playable edition locally. [Language-pack guide](docs/languages.md)
+Rate the question as a fluent speaker of that edition. Consider how familiar the word is **and** what the player must distinguish before seeing the example.
 
-**Contribute a feature.** Describe the player problem and a concrete example in an issue, or open a focused pull request with a test. For a change to game rules, start in `src/game.js` and `tests/game.test.mjs`. For an interface change, check it at phone width and include the necessary translation keys. Keep borrowed code and data traceable to their authors and licences. [Feature and word proposals](https://github.com/jorgebaptista/matiz/issues/new/choose)
+| Band | What earns this level | British English · European Portuguese |
+| --- | --- | --- |
+| 0 · Entry / Inicial | An everyday word with a direct, familiar synonym. | *mend* · *adiar* |
+| 1 · Easy / Fácil | A word common in conversation or general reading. The player recognises its usual sense among related choices. | *candid* · *prudente* |
+| 2 · Medium / Médio | A less familiar sense or a finer distinction. The closest wrong answer should make a fluent reader pause. | *tentative* · *tácito* |
+| 3 · Hard / Difícil | A precise or less common word worth using. A player must know the shade of meaning that rules out the strongest alternative. | *diffidence* · *perfunctório* |
 
-## Suggest a word
+For *diffidence*, offer *self-doubt*, *discretion*, *deference* and *indifference*. All four can explain someone's silence. Only *self-doubt* captures their lack of confidence. If length or grammar gives away the answer, rewrite the choices. If two answers fit a common sense, replace one. Pick the band separately in each language.
 
-Open an issue with a word, the sense you have in mind and an example. Or copy the *alvitrar* entry in `editorial/pt-PT.json` into a new entry and open a pull request. Drafts never enter the playable pack automatically.
+## Suggest or review a word
 
-- Give the entry a permanent ID, one best answer, three plausible alternatives and an original example in the edition’s language.
-- Check the intended sense against a reference and record the link. Write the example and explanation yourself. Use `origin: "ai-drafted"` for an AI draft, including after someone edits or reviews it, or `"human-written"` for an original human draft.
-- Set `status` to `draft` and suggest a numeric `targetLevel`. Run `npm run content:check`.
+Use the [word form](https://github.com/jorgebaptista/matiz/issues/new?template=word.yml) or the edition’s `editorial/<locale>.json` queue. The [PT-PT draft](editorial/pt-PT.json) shows the format.
 
-## Review and add a level
+- Give the word a stable ID, intended sense, suggested `targetLevel`, one best answer, three plausible alternatives, an original example and a dictionary link.
+- Mark suggestions `draft`. Keep the original `origin` credit (`human-written` or `ai-drafted`) after editing.
+- A fluent reviewer tries the choices before reading the example. Once approved, move the entry to its band in `packs/<locale>.json`, remove `targetLevel`, set `status` to `reviewed`, and add `reviewedBy` with the reviewer’s agreed public credit. Keep the sense and references. Review existing pilot entries in place.
 
-To schedule daily sets in a language pack, add one new question to each of bands 0 through 3 with the same `dailyOn` date in `YYYY-MM-DD` format. Submit a batch together and run `npm run content:check` to catch duplicate words, duplicate slots and incomplete dates. Ship the updated web bundle and APK before the first date. Existing installs can keep cycling through their bundled sets offline.
+## Daily sets
 
-A fluent reviewer of the edition’s language plays the question before looking at the example. Can they defend a second option for another common sense of the word? The player sees only the headword, so replace ambiguous alternatives. Check part of speech, register and idiomatic usage. Read the example aloud and consider where you would use the word yourself.
+Use the same `dailyOn` date (`YYYY-MM-DD`) for one new word in each band, 0–3. Ship the batch to web and Android before its first date. Preserve published IDs when moving words. If you edit published choices, check that a saved round still scores its original answer.
 
-When a question is ready, move it from the queue to the appropriate level in the edition’s pack, remove `targetLevel`, set `status` to `reviewed` and add `reviewedBy` with the reviewer's agreed public credit. Keep the original drafting credit, intended sense and references. For each existing `pilot` entry, add those review fields in place. A passing content check verifies the fields. People judge the language.
+## Other contributions
 
-Place each band in the pack in order of difficulty. Give it a unique, stable numeric string ID and a display name. Pick as many reviewed words as fit the band. The game calculates totals and deals up to five words per round across all bands. Preserve published IDs so existing players keep their word histories and saved rounds. Changes to a live answer or its choices need a saved-round compatibility check before release.
+[Add a language](docs/languages.md) or [suggest a feature](https://github.com/jorgebaptista/matiz/issues/new/choose). For game rules, start in `src/game.js` and `tests/game.test.mjs`. Check interface changes at phone width, translate player-facing text and credit borrowed material.
 
-Run `npm run content:check`, `npm test`, `npm run build` and `npm run test:browser` before submitting a pack change. To build a fully reviewed edition, use `npm run build:reviewed`. That command requires a review credit and a reference for every playable word. Opening the source repository can happen independently.
+Run `npm run content:check`, `npm test`, `npm run build` and `npm run test:browser`. Use `npm run build:reviewed` when all packs have passed editorial review.

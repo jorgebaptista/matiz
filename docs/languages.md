@@ -43,7 +43,7 @@ A minimal English pack has this shape:
 
 Write original questions for fluent speakers of the language. The player sees the headword before the example: check that only one option is defensible without that context. The correct answer and three alternatives must differ from one another and the target, ignoring case and surrounding whitespace. Duplicate targets and IDs are rejected across a locale's playable and draft entries.
 
-Level IDs are unique numeric strings; `"0"` is the optional introductory band. Array order controls difficulty order. Every level needs a name and at least one word. Rounds contain up to five words, so small starter packs work too. Keep published word and level IDs stable to preserve saves. Changes to published answers or choices require checking saved rounds.
+Give each level a name, a unique numeric string ID and at least one word. List levels in difficulty order and keep published IDs stable. Small packs can start with a single band. For daily challenges, use all [four difficulty bands](../CONTRIBUTING.md#choose-a-difficulty).
 
 `origin` is `human-written` or `ai-drafted`; preserve the original drafting credit after editing. Playable status is `pilot` or `reviewed`. For `reviewed`, also supply an original `sense`, one or more HTTPS `references`, and `reviewedBy` with the native-language reviewer's agreed public credit. Normal builds retain the current pilot policy. `npm run build:reviewed` rejects any playable pilot question in any locale. Field checks cannot establish translation quality or resolve ambiguous synonyms; a fluent speaker must play and review them.
 

@@ -4,7 +4,7 @@
 
 An open-source synonym game for people who want a richer vocabulary in a language they already speak. Choose the closest synonym, read an example and revisit words over time. Play in European Portuguese or British English. [Add a language](docs/languages.md) · [Suggest a word or feature](https://github.com/jorgebaptista/matiz/issues/new/choose)
 
-Each edition starts with 68 practice words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
+Both editions have four difficulty bands. Daily words join regular practice the day after they debut. Your browser and the Android app each save your progress and unfinished rounds.
 
 ## Practice schedule
 
@@ -31,7 +31,7 @@ For Android, install JDK 17 or 21 and Android SDK Platform 34. Set `ANDROID_HOME
 
 ## Content and reuse
 
-Each edition contains 188 original AI-drafted pilot questions, including its 120 daily debuts. Each records its origin and review status. New suggestions live in `editorial/pt-PT.json` until a European Portuguese speaker checks the sense, choices and example. The original content and game UI are licensed under MIT. [Contributing words and levels](CONTRIBUTING.md)
+Each question records its origin and review status. The current packs are AI-drafted pilots. The original content and game UI are licensed under MIT. [How we choose difficulty and review words](CONTRIBUTING.md#choose-a-difficulty)
 
 ## Roadmap
 

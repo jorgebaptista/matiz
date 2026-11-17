@@ -12,6 +12,6 @@ body:
     id: detail
     attributes:
       label: Suggestion or correction
-      description: What sense do you have in mind? Is another answer equally defensible? Include an original example and a dictionary link if available.
+      description: "Suggest a band using the [difficulty guide](https://github.com/jorgebaptista/matiz/blob/main/CONTRIBUTING.md#choose-a-difficulty), or tell us which answers both fit. An example or dictionary link helps."
     validations:
       required: true
