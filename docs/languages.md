@@ -1,6 +1,6 @@
 # Contribute a language
 
-Matiz uses one game engine and two JSON files per language. European Portuguese and British English ship with the game. The examples below show how the English files are structured; use your own locale tag when adding an edition.
+Each language needs a vocabulary pack and an interface translation. Use the shipped English files as examples, replacing `en-GB` with your locale tag.
 
 ## 1. Choose the locale and create the files
 
@@ -12,7 +12,7 @@ Add:
 - `locales/en-GB.json`: complete interface translation and page metadata.
 - Optionally, `editorial/en-GB.json`: suggestions still being drafted.
 
-No engine changes, build registration or package-script changes are needed. Every pack needs its matching locale file. Orphan locale or draft files fail validation. If a translation is still incomplete, keep it on a contribution branch until both files are ready; there is no automatic fallback to Portuguese.
+Packs are discovered automatically. Every pack needs a matching locale file; orphan locale or draft files fail validation. Finish the translation before submitting: there is no fallback language.
 
 ## 2. Write a playable pack
 
@@ -45,7 +45,7 @@ Write original questions for fluent speakers of the language. The player sees th
 
 Level IDs are unique numeric strings; `"0"` is the optional introductory band. Array order controls difficulty order. Every level needs a name and at least one word. Rounds contain up to five words, so small starter packs work too. Keep published word and level IDs stable to preserve saves. Changes to published answers or choices require checking saved rounds.
 
-`origin` is `human-written` or `ai-drafted`; preserve the original drafting credit after editing. Playable status is `pilot` or `reviewed`. For `reviewed`, also supply an original `sense`, one or more HTTPS `references`, and `reviewedBy` with the native-language reviewer's agreed public credit. Normal builds retain the current pilot policy. `npm run build:reviewed` rejects any playable pilot question in any locale. Field checks cannot establish translation quality or resolve ambiguous synonyms; a fluent speaker must play and review them.
+`origin` is `human-written` or `ai-drafted`; preserve it after editing. Playable status is `pilot` or `reviewed`. Reviewed entries also need an original `sense`, HTTPS `references`, and `reviewedBy` with the fluent reviewer's agreed public credit. Normal builds include pilot questions; `npm run build:reviewed` rejects them.
 
 ## 3. Translate every interface string
 
@@ -99,16 +99,7 @@ For each suggestion, use the same word fields, set `status` to `draft`, add an o
 
 ## 5. Check, build and play
 
-Use Node.js 22.14 or later and the repository's installed dependencies. Run from the repository root:
-
-```sh
-npm run content:check
-npm test
-npm run build
-npm run test:browser
-```
-
-The checker validates every discovered locale, metadata identity, nonempty UI values, exact UI keys, placeholder names/counts, plural variants and content records. The builder runs the same checks before writing any HTML. Missing or invalid locales fail the whole build; they are never skipped. This catches structural gaps, while fluent-speaker review catches untranslated or unsuitable wording.
+Follow the [setup and checks](development.md). Validation checks locale identity, UI keys, placeholders, plural variants and word records. Invalid locales fail the build.
 
 `npm run build` builds all `packs/*.json` using the shared engine:
 
@@ -121,6 +112,4 @@ Each HTML file includes its own vocabulary, translated UI, JavaScript, CSS, font
 
 Each edition keeps progress in `matiz.<locale>.v1` on the current device and browser. Android opens PT-PT on first launch, then remembers the language selected on the game's home screen. Downloaded HTML files open directly in their own language.
 
-The desktop browser check uses Playwright Chromium by default. Install it with `npx playwright install chromium`. Set `MATIZ_BROWSER` to an installed Chromium executable to override it; for example in PowerShell, `$env:MATIZ_BROWSER = 'C:\Program Files\Google\Chrome\Application\chrome.exe'`. The existing PT-PT play and save-migration checks still run. A second test creates a temporary English pack, builds both languages and verifies translated offline play, plural text, credits, resume and save isolation on one simulated origin. It does not add or ship an English edition. Browser fixtures are skipped in the existing Android CDP mode; that mode retains its PT-PT device checks.
-
-Before proposing a real locale, play its own `dist/<locale>/index.html` at phone width: finish a round, reload during feedback, return home, open the word collection, and read the credits. Have a fluent speaker check the wording and choices. The automated browser fixture proves the contribution mechanism; it does not certify each contributed language or Android device layout.
+Play your edition at phone width: finish a round, reload during feedback, return home, open the word collection and read the credits. Have a fluent speaker check the wording and choices; automated checks cannot judge them.
