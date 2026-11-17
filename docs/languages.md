@@ -62,7 +62,7 @@ Copy a shipped locale file to a new file named for your language, update its loc
 
 That snippet shows metadata only: your actual file must also contain the complete `strings` object copied from PT-PT. `languageName` is the language's own name (endonym); it appears in the game's header. `title` becomes the HTML title. `description` supplies both the HTML description and the game's introduction. Keep them plain text.
 
-Translate prompts, buttons, collection/status labels, feedback, review text, the storage warning and all visible credits labels and explanatory text. `heroArt` supplies the decorative letters; use three characters that fit the language. Credit the upstream projects accurately and adapt the sentence about who wrote the language's questions. The four original legal notice bodies remain bundled unchanged from the repository's licence files; translators change their visible headings only.
+Translate prompts, buttons, collection/status labels, feedback, review text, the storage warning and all visible credits labels and explanatory text. `heroArt` supplies the decorative letters; use three characters that fit the language. Credit the upstream projects accurately and adapt the sentence about who wrote the language's questions. Legal notice bodies remain bundled unchanged from the repository's licence files; translators change their visible headings only.
 
 Templates use named placeholders. Keep each name and its occurrence count exactly as in PT-PT; reorder them freely. For example:
 

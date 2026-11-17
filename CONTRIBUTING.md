@@ -1,5 +1,7 @@
 # Contributing to Matiz
 
+[Build and test locally](docs/development.md) · [Add a language](docs/languages.md)
+
 Matiz helps fluent speakers find a more precise way to say something. A good candidate is a word you might use in a conversation, an essay or a letter. A rare word earns its place when its meaning or register adds something.
 
 **Add your language.** Start with an example that would interest someone who already speaks it. You can translate the interface, supply questions or review another contributor's pack. The guide walks through building a first playable edition locally. [Language-pack guide](docs/languages.md)
@@ -25,3 +27,7 @@ When a question is ready, move it from the queue to the appropriate level in the
 Place each band in the pack in order of difficulty. Give it a unique, stable numeric string ID and a display name. Pick as many reviewed words as fit the band. The game calculates totals and deals up to five words per round across all bands. Preserve published IDs so existing players keep their word histories and saved rounds. Changes to a live answer or its choices need a saved-round compatibility check before release.
 
 Run `npm run content:check`, `npm test`, `npm run build` and `npm run test:browser` before submitting a pack change. To build a fully reviewed edition, use `npm run build:reviewed`. That command requires a review credit and a reference for every playable word. Opening the source repository can happen independently.
+
+## Pull requests
+
+Fork the repository and open a focused PR against `main`. Use a Conventional Commit title, such as `fix: restore a saved round`. Keep the branch up to date, pass the `check` job and resolve review conversations before merging. For content changes, commit the generated challenge archives along with the pack.
