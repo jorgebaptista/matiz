@@ -8,6 +8,19 @@ Choose words that help fluent speakers express themselves more precisely. Uncomm
 
 **Contribute a feature.** [Open an issue](https://github.com/jorgebaptista/matiz/issues/new/choose) with an example, or a focused PR with tests for changed behaviour. Practice rules live in `src/game.js` and `tests/game.test.mjs`. Check interface changes at phone width and update translations. Credit borrowed code and data, including their licences.
 
+## Choose a difficulty
+
+Rate the whole question for a fluent speaker of that edition. Consider the word, the sense being tested and how close the choices are.
+
+| Band | What the player needs to recognise | English · Português |
+| --- | --- | --- |
+| 0 · Entry / Inicial | An everyday word and a familiar synonym. | *mend* · *adiar* |
+| 1 · Easy / Fácil | The usual sense of a word common in conversation or general reading. | *candid* · *moroso* |
+| 2 · Medium / Médio | A less familiar sense or a distinction between related words. | *tentative* · *tácito* |
+| 3 · Hard / Difícil | A precise or uncommon meaning that separates the answer from a plausible alternative. | *equanimity* · *circunlóquio* |
+
+For example, *equanimity* means composure. Indifference can also look calm, but someone can care deeply and still show equanimity. Aim for that kind of distinction in a Hard question.
+
 ## Suggest a word
 
 Open an issue with a word, the sense you have in mind and an example. Or copy the *alvitrar* entry in `editorial/pt-PT.json` into a new entry and open a pull request. Drafts never enter the playable pack automatically.
