@@ -1,0 +1,16 @@
+{
+  "name": "matiz-synonyms",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:browser": "node --experimental-strip-types tests/browser.mjs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "esbuild": "0.28.2"
+  }
+}

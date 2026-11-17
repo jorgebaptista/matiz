@@ -1,0 +1,80 @@
+{
+  "locale": "pt-PT",
+  "levels": [
+    {
+      "name": "Precisão",
+      "rows": [
+        ["renitente","relutante","distraído","impaciente","indeciso","Estava renitente em aceitar uma proposta que ainda não tinha lido."],
+        ["sagaz","perspicaz","prudente","sincero","tenaz","Foi uma observação sagaz: reparou na contradição que tinha escapado ao resto da sala."],
+        ["fugaz","passageiro","fortuito","ilusório","instável","Houve um instante fugaz de silêncio entre os dois trovões."],
+        ["tácito","implícito","incerto","discreto","provisório","Sem trocarem uma palavra, chegaram a um acordo tácito sobre quem falaria primeiro."],
+        ["inócuo","inofensivo","ineficaz","insípido","invisível","O comentário parecia inócuo, mas acabou por magoar quem o ouviu."],
+        ["comedido","moderado","resignado","tímido","austero","Respondeu num tom comedido, mesmo quando a discussão aqueceu."],
+        ["parco","escasso","vago","brusco","frágil","Com um orçamento parco, a associação deu prioridade à reparação do telhado."],
+        ["solícito","prestável","curioso","vaidoso","receoso","O vizinho mostrou-se solícito e ofereceu-se logo para carregar as caixas."],
+        ["protelar","adiar","abreviar","interromper","anular","Para protelar a decisão, pediu mais uma semana de consultas."],
+        ["fortuito","casual","fugaz","inevitável","invulgar","Foi um encontro fortuito: nenhum dos dois sabia que o outro estava no Porto."]
+      ]
+    },
+    {
+      "name": "Subtileza",
+      "rows": [
+        ["reticente","reservado","inconstante","perplexo","indiferente","O realizador foi reticente quanto ao desfecho e só revelou o título do filme."],
+        ["demover","dissuadir","desviar","desmentir","desaprovar","Nem a previsão de chuva a conseguiu demover da ideia de ir a pé."],
+        ["atenuar","mitigar","ocultar","sanar","contrariar","Os toldos ajudaram a atenuar o calor, embora a praça continuasse abafada."],
+        ["inadvertido","despercebido","súbito","persistente","insólito","O lapso passou inadvertido até à segunda leitura."],
+        ["intransigente","inflexível","insistente","inquieto","inconstante","Aceitou discutir os prazos, mas foi intransigente quanto à segurança."],
+        ["cauteloso","circunspecto","hesitante","complacente","evasivo","Foi cauteloso na resposta, porque ainda faltava ouvir uma das testemunhas."],
+        ["omitir","deixar de mencionar","mencionar por alto","disfarçar o sentido","trocar a ordem","Na leitura pública, decidiu omitir o último parágrafo da carta."],
+        ["convergir","confluir","coincidir por acaso","alternar","suceder","Os dois caminhos acabam por convergir junto à antiga estação."],
+        ["lacónico","conciso","brusco","vago","austero","Às três perguntas respondeu com um lacónico «talvez»."],
+        ["capcioso","enganador","enigmático","incisivo","absurdo","A pergunta era capciosa: qualquer das respostas parecia admitir uma culpa inexistente."],
+        ["persistente","tenaz","pertinente","perentório","sereno","Foi persistente na procura do manuscrito e voltou ao arquivo mês após mês."],
+        ["hesitação","vacilação","prudência","embaraço","suspeita","Antes de assinar, teve um momento de hesitação e voltou a ler a última linha."],
+        ["efusivo","expansivo","excessivo","eloquente","eufórico","Receberam-na com um abraço efusivo e uma salva de palmas."],
+        ["hostil","adverso","distante","austero","intenso","Encontrou um ambiente hostil: mal começou a falar, ouviu protestos."],
+        ["discernir","distinguir","deduzir","adivinhar","confirmar","No nevoeiro, mal se conseguia discernir o farol da torre da igreja."],
+        ["austero","sóbrio","sombrio","rústico","rude","O gabinete era austero: uma mesa sem adornos e duas cadeiras."],
+        ["desalento","desânimo","desdém","desleixo","desconforto","A terceira recusa trouxe-lhe desalento, mas voltou a enviar o conto."],
+        ["exequível","realizável","provável","previsível","razoável","Com mais uma semana e duas pessoas, o plano tornou-se exequível."],
+        ["discordância","divergência","disputa","suspeita","dispersão","A discordância entre os dois dizia respeito ao método, não ao objetivo."],
+        ["presságio","prenúncio","palpite","ameaça","vestígio","Na aldeia, o céu cor de chumbo era tido como presságio de temporal."]
+      ]
+    },
+    {
+      "name": "Argúcia",
+      "rows": [
+        ["pusilânime","timorato","circunspecto","taciturno","fleumático","Pareceu-lhe pusilânime calar a objeção só por receio de desagradar ao diretor."],
+        ["tergiversar","responder com evasivas","ceder sob protesto","mudar de convicção","responder sem hesitar","Pedimos-lhe uma data concreta, mas preferiu tergiversar e falar do orçamento."],
+        ["perfunctório","superficial","provisório","protocolar","inconclusivo","O exame foi tão perfunctório que deixou passar um erro logo na primeira linha."],
+        ["parcimónia","comedimento","prudência","paciência","privação","Usou o açafrão com parcimónia: bastaram três fios para perfumar o arroz."],
+        ["contumaz","reincidente","irredutível","impetuoso","insolente","Era um infrator contumaz: repetia a mesma infração apesar dos avisos."],
+        ["vitupério","injúria","intriga","ironia","insinuação","Recusou responder ao vitupério e exigiu que a discussão voltasse aos factos."],
+        ["inépcia","inaptidão","indolência","incúria","indigência","O restauro falhou por inépcia técnica, apesar do empenho da equipa."],
+        ["incúria","negligência","imperícia","apatia","insensatez","A infiltração agravou-se por incúria: ninguém tratou do cano, apesar dos avisos."],
+        ["tibieza","falta de ardor","falta de rigor","falta de engenho","falta de clareza","A tibieza dos aplausos revelou o pouco entusiasmo da plateia."],
+        ["dirimir","resolver","refutar","adiar","esclarecer em parte","Chamaram uma mediadora para dirimir o conflito entre os dois clubes."],
+        ["latente","ainda não manifesto","já ultrapassado","apenas aparente","deliberadamente simulado","A rivalidade estava latente muito antes de os dois discutirem em público."],
+        ["obliterar","apagar","omitir","repudiar","velar","O desgaste acabou por obliterar a inscrição na pedra."],
+        ["inópia","penúria","incúria","inércia","inépcia","Após anos de inópia, a família conseguiu finalmente voltar a comprar livros."],
+        ["acerbo","mordaz","franco","solene","impetuoso","O crítico reservou o comentário mais acerbo para a encenação, que apelidou de fiasco."],
+        ["redarguir","replicar","reprovar","rebater com provas","repetir por outras palavras","Quando lhe disseram que o prazo era curto, limitou-se a redarguir que fora a direção a escolhê-lo."],
+        ["abúlico","sem vontade de agir","sem meios de decidir","sem razões para insistir","sem tempo para reagir","Deixou-se ficar no sofá, abúlico, sem vontade sequer de escolher um livro."],
+        ["ilação","inferência","analogia","conjetura sem fundamento","associação livre","De duas cartas sem data seria arriscado tirar uma ilação sobre a ordem dos acontecimentos."],
+        ["indelével","inapagável","inimitável","irreparável","imutável","A primeira atuação deixou uma marca indelével na memória da pianista."],
+        ["frugal","sóbrio e moderado","insuficiente e pobre","austero e severo","simples e apressado","Preparou um almoço frugal: sopa, pão e uma peça de fruta."],
+        ["insidioso","ardiloso","incisivo","inoportuno","inconsequente","Era um argumento insidioso: parecia defender a proposta enquanto lançava dúvidas sobre quem a fizera."],
+        ["apócrifo","de autenticidade duvidosa","de autoria desconhecida","de circulação restrita","de publicação póstuma","O catálogo classificava como apócrifo o bilhete atribuído ao poeta."],
+        ["inexorável","implacável","inabalável","irrevogável","intemporal","Nem os pedidos de clemência comoveram aquele juiz inexorável."],
+        ["dissensão","discórdia","dispersão","dissimulação","desconfiança","A escolha da nova sede abriu uma dissensão no seio da associação."],
+        ["prolixo","demasiado palavroso","difícil de seguir","cheio de apartes irónicos","rico em pormenores técnicos","O relatório era prolixo: gastava três páginas a explicar o que cabia num parágrafo."],
+        ["vituperar","censurar com dureza","insinuar uma crítica","contestar com argumentos","desmentir em público","O cronista preferiu vituperar os dirigentes a discutir as medidas que tinham tomado."],
+        ["ignaro","ignorante","indiferente","ilhado","inexperiente","Era um leitor culto, mas confessava-se ignaro em matéria de astronomia."],
+        ["ínvio","intransitável","longínquo","sinuoso","deserto","As derrocadas tinham tornado ínvio o antigo caminho da serra."],
+        ["escamotear","ocultar com artifício","retirar por engano","desviar por acaso","confundir por distração","Mudou a escala do gráfico para escamotear a quebra nas vendas."],
+        ["aquiescer","anuir","ceder à força","aprovar com entusiasmo","resignar-se em silêncio","Após ouvir as garantias, acabou por aquiescer ao pedido de adiamento."],
+        ["fleumático","imperturbável","indiferente","introvertido","lento a decidir","Mesmo com toda a gente a falar ao mesmo tempo, manteve o seu ar fleumático."]
+      ]
+    }
+  ]
+}
