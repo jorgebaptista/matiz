@@ -44,9 +44,14 @@ const header = () =>
   '<header><span class="brand">' +
   badge +
   t("brand") + '</span><span class="locale">' + esc(locale.languageName) + '</span></header>';
-const bandName = (level) =>
-  level.id === "0" ? t("entryBand") : t("level", { id: level.id });
 const bandById = new Map(levels.map((level) => [level.id, level]));
+const difficultyKeys = ["entryBand", "easyBand", "mediumBand", "hardBand"];
+function wordHeading(word) {
+  const key = difficultyKeys[word.levelId];
+  const label = key ? t(key) : esc(bandById.get(word.levelId).name);
+  return '<div class="word-heading"><h1>' + esc(word.word) + '</h1><span class="difficulty" data-band="' +
+    esc(word.levelId) + '">' + label + '</span></div>';
+}
 function wordStatus(word) {
   if (learned(state, word)) return t("learned");
   return t(state.progress[word.id]?.seen ? "learning" : "unseen");
@@ -80,6 +85,26 @@ function action(id, label) {
     '<span aria-hidden="true">→</span></button>'
   );
 }
+const dailyButton = () =>
+  '<button class="daily" data-action="daily" aria-describedby="daily-status">' +
+  '<svg class="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+  '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7.5 3v4m9-4v4M3 10h18"/>' +
+  '<circle class="calendar-dot" cx="12" cy="15.5" r="2" fill="currentColor" stroke="none"/>' +
+  '<path class="calendar-check" d="m8.5 15.5 2.4 2.3 4.8-5"/></svg>' +
+  '<strong>' + t("daily") + '</strong><span class="daily-arrow" aria-hidden="true">→</span></button>' +
+  '<span hidden id="daily-status"></span>';
+
+function refreshDailyButton() {
+  const button = root.querySelector(".daily");
+  if (!button) return;
+  const daily = state.daily;
+  let status = "dailyUnplayed";
+  if (daily?.day === dailyDay() && daily.answers.length)
+    status = daily.answers.length === daily.cards.length ? "dailyCompleted" : "dailyStarted";
+  if (button.dataset.status === status) return;
+  button.dataset.status = status;
+  root.querySelector("#daily-status").textContent = translate(status);
+}
 function home() {
   const available = practiceLevels();
   const wordTotal = available.reduce((sum, level) => sum + level.words.length, 0);
@@ -93,8 +118,7 @@ function home() {
     [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
-    '</section>' + (hasDaily ? '<button class="daily" data-action="daily"><strong>' + t("daily") +
-      '</strong><small>' + t("dailyHint") + '</small><span aria-hidden="true">→</span></button>' : '') +
+    '</section>' + (hasDaily ? dailyButton() : '') +
     '<div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
     t("learnedTotal", { count: total, total: wordTotal }) +
     '</span></div><div class="levels">' +
@@ -129,8 +153,9 @@ function home() {
     "</div>"
   );
 }
-function roundTop(level, s, card) {
+function roundTop(s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
+  const caption = state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><span>' +
     t("wordPosition", { count: pos, total: s.cards.length }) +
@@ -143,13 +168,7 @@ function roundTop(level, s, card) {
           '"></i>',
       )
       .join("") +
-    "</div>" +
-    '<div class="eyebrow">' +
-    (state.dailyActive ? dailyLabel(s) + " · " : "") + bandName(level) +
-    " · " +
-    esc(level.name) +
-    (card.practice ? " · " + t("practice") : "") +
-    "</div>"
+    "</div>" + (caption ? '<div class="eyebrow">' + caption + "</div>" : "")
   );
 }
 function play(s) {
@@ -159,7 +178,7 @@ function play(s) {
   const answered = s.answers.length > s.cursor,
     value = s.answers[s.cursor],
     correct = value === (card.key ?? word.key);
-  const top = roundTop(bandById.get(word.levelId), s, card);
+  const top = roundTop(s, card);
   if (answered) {
     const status = correct
       ? t("correct")
@@ -172,9 +191,7 @@ function play(s) {
       (correct ? "good" : "learn") +
       '">' +
       status +
-      "</div><h1>" +
-      esc(word.word) +
-      '</h1><p class="meaning">' +
+      "</div>" + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
@@ -192,9 +209,7 @@ function play(s) {
   }
   return (
     top +
-    '<section class="question"><h1>' +
-    esc(word.word) +
-    '</h1><p>' + t("prompt") + '</p></section>' +
+    '<section class="question">' + wordHeading(word) + '<p>' + t("prompt") + '</p></section>' +
     '<div class="choices">' +
     card.options
       .map(
@@ -214,7 +229,7 @@ function play(s) {
 }
 function dailyLabel(s) {
   const date = new Intl.DateTimeFormat(locale.locale, { day: "numeric", month: "short", timeZone: "UTC" });
-  return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + " · " + t(s.debut ? "dailyDebut" : "dailyEncore");
+  return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + (s.debut ? "" : " · " + t("dailyEncore"));
 }
 function summary(s) {
   return (
@@ -233,8 +248,10 @@ function render(focus = false) {
   const s = activeSession(state);
   root.classList.toggle("in-round", Boolean(s && s.cursor < s.cards.length));
   root.innerHTML = s ? play(s) : home();
-  if (!s)
+  if (!s) {
     root.append(document.querySelector("#credits").content.cloneNode(true));
+    refreshDailyButton();
+  }
   window.scrollTo(0, 0);
   if (focus) {
     const h = root.querySelector(".result") ?? root.querySelector("h1");
@@ -251,6 +268,13 @@ function goHome() {
   return true;
 }
 window.matizBack = goHome;
+if (hasDaily) {
+  // Refresh the indicator if the home screen stays open across Lisbon midnight.
+  window.setInterval(refreshDailyButton, 30_000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refreshDailyButton();
+  });
+}
 window.addEventListener("storage", (e) => {
   if (e.key === storageKey) {
     state = restore();

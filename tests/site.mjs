@@ -99,17 +99,35 @@ try {
   assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
   const dailyLink = await staticPage.getByRole("link", { name: "Desafio do dia" }).getAttribute("href");
   const daily = await browser.newPage({ viewport: { width: 390, height: 800 } });
+  await daily.clock.install({ time: new Date("2026-11-17T12:00:00Z") });
   await daily.goto(new URL(dailyLink, staticPage.url()).href);
+  const dailyButton = daily.getByRole("button", { name: "Desafio do dia", exact: true });
+  await daily.getByRole("button", { name: "Início", exact: true }).click();
+  assert.equal(await dailyButton.getAttribute("data-status"), "dailyUnplayed");
+  await dailyButton.click();
   for (let i = 0; i < 4; i++) {
-    assert.match(await daily.locator(".eyebrow").innerText(), /Desafio do dia/);
+    const difficulty = ["Inicial", "Fácil", "Médio", "Difícil"][i];
+    assert.equal(await daily.locator(".word-heading .difficulty").innerText(), difficulty);
+    assert.equal(await daily.locator(".eyebrow").innerText(), "Desafio do dia");
     await daily.getByRole("button", { name: "Não sei" }).click();
-    if (i === 0) await daily.reload();
+    if (i === 0) {
+      await daily.reload();
+      await daily.getByRole("button", { name: "Início", exact: true }).click();
+      assert.equal(await dailyButton.getAttribute("data-status"), "dailyStarted");
+      await dailyButton.click();
+    }
+    assert.equal(await daily.locator(".feedback .difficulty").innerText(), difficulty);
     await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
   }
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
-  await daily.getByRole("button", { name: /Desafio do dia/ }).click();
+  assert.equal(await dailyButton.getAttribute("data-status"), "dailyCompleted");
+  assert.ok(await dailyButton.locator(".calendar-check").isVisible());
+  await dailyButton.click();
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
+  await daily.getByRole("button", { name: "Voltar ao início" }).click();
+  await daily.clock.fastForward("24:00:00");
+  await daily.waitForSelector('.daily[data-status="dailyUnplayed"]');
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
   await play

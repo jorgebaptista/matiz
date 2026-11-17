@@ -159,7 +159,7 @@ try {
     await page.locator(".summary").waitFor();
     await page.locator(".primary").click();
     assert.equal(await h1.innerText(), later.word);
-    assert.match(await page.locator(".eyebrow").innerText(), /Argúcia/);
+    assert.equal(await page.locator(".difficulty").innerText(), "Difícil");
     console.log(
       "Upgrade: answered legacy card resumes and an older hard word returns before unseen entry words.",
     );
