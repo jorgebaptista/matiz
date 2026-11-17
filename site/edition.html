@@ -13,10 +13,14 @@
   <link rel="stylesheet" href="../../site.css">
 </head>
 <body>
-  <header><a class="brand" href="../../">Matiz</a><span>{{languageName}}</span></header>
-  <main class="intro">
-    <div><h1>{{heroTitle}}</h1><p>{{description}}</p><a class="play" href="../../{{route}}">{{play}} <span aria-hidden="true">→</span></a></div>
-    <aside lang="{{locale}}"><small>{{example}}</small><h2>{{word}}</h2><p>{{prompt}}</p><details><summary>{{result}}</summary><strong>{{answer}}</strong><p>{{sentence}}</p></details></aside>
+  <header><a class="brand" href="../../">Matiz</a><a href="https://github.com/jorgebaptista/matiz">GitHub</a></header>
+  <main>
+    <section class="intro">
+      <div><h1>{{editionHeading}}</h1><p>{{description}}</p><a class="play" href="../../{{route}}">{{editionPlay}} <span aria-hidden="true">→</span></a><small>{{editionNote}}</small></div>
+      <aside><small>{{sampleLabel}}</small><h2>{{word}}</h2><p>{{prompt}}</p><details><summary>{{revealSynonym}}</summary><strong>{{answer}}</strong><p>{{sentence}}</p></details></aside>
+    </section>
+    <section><h2>{{howToPlay}}</h2><p>{{howToPlayText}}</p></section>
+    <section><h2>{{contributionHeading}}</h2><p class="links"><a href="https://github.com/jorgebaptista/matiz/issues/new/choose">{{suggestWord}}</a><a href="https://github.com/jorgebaptista/matiz/blob/HEAD/docs/languages.md">{{addLanguage}}</a></p></section>
   </main>
-  <footer><a href="../../" lang="en">All languages</a><a href="../../{{route}}index.html" download="Matiz-{{locale}}.html">{{downloadGame}}</a><a href="https://github.com/jorgebaptista/matiz#credits">{{credits}}</a></footer>
+  <footer><a href="https://github.com/jorgebaptista/matiz#credits">{{credits}}</a><a href="../../{{route}}index.html" download="Matiz-{{locale}}.html">{{downloadGame}}</a><a href="../../" lang="en">All languages</a></footer>
 </body></html>

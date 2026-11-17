@@ -91,10 +91,10 @@ try {
     assert.ok(canonical.endsWith("/editions/pt-PT/"));
     assert.ok(sitemap.includes("<loc>" + canonical + "</loc>"));
   }
-  await staticPage.getByText("Ver resultado").click();
+  await staticPage.getByText("Revelar o sinónimo").click();
   assert.ok(await staticPage.locator("aside strong").isVisible());
   const localPlay = await staticPage
-    .getByRole("link", { name: "Jogar", exact: true })
+    .getByRole("link", { name: "Jogar em português", exact: true })
     .getAttribute("href");
   assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });

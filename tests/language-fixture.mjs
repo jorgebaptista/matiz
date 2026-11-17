@@ -17,6 +17,11 @@ export const fixtureLocale = {
   locale: "en-GB", languageName: "British English", title: "Matiz · Synonyms",
   description: "New words and reviews in rounds of up to five.",
   strings: {
+    editionHeading: "A synonym game in British English", editionPlay: "Play in English",
+    editionNote: "Free · No account · Progress saved on this device",
+    sampleLabel: "A word from the game", revealSynonym: "Reveal the synonym",
+    howToPlay: "How to play", howToPlayText: "Pick a synonym, then see the word in a sentence.",
+    contributionHeading: "Want to add a word or a language?", suggestWord: "Suggest a word", addLanguage: "Add a language",
     brand: "Matiz", storageAlert: "Progress is saved only while this page remains open.",
     entryBand: "Entry", entryBadge: "E", level: "Level {id}", learned: "Learned",
     learning: "Learning", unseen: "Undiscovered", reviewAvailable: "Review available.",

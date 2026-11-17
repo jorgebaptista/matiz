@@ -76,7 +76,7 @@ try {
     const dir = path.join(output, info);
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, "index.html"), page);
-    editions.push({ locale, route, info, name });
+    editions.push({ locale, route, info, name, word });
   }
   const links = editions
     .map(
@@ -99,7 +99,10 @@ try {
         '">About this edition</a></p>',
     )
     .join("\n");
+  const featured = editions.find((edition) => edition.locale === defaultLocale) ?? editions[0];
+  const example = { locale: featured.locale, name: featured.name, word: featured.word.word, answer: featured.word.answer, sentence: featured.word.example };
   let html = (await read("site", "index.html"))
+    .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(example[key]))
     .replace("<!-- languages -->", () => links)
     .replace("<!-- public-links -->", () => publicLinks(""));
   if (process.env.GOOGLE_SITE_VERIFICATION) {
