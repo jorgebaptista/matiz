@@ -53,9 +53,10 @@ function wordStatus(word) {
   return state.progress[word.id]?.seen ? "Em aprendizagem" : "Por descobrir";
 }
 function reviewTime(word) {
-  const due = state.progress[word.id]?.dueAt;
+  const progress = state.progress[word.id];
+  const due = progress?.dueAt;
   if (!Number.isFinite(due)) return "";
-  if (due <= Date.now())
+  if (due <= Date.now() || progress.questionsLeft === 0)
     return '<p class="review-time">Revisão disponível.</p>';
   const when = new Intl.DateTimeFormat("pt-PT", {
     day: "numeric",
@@ -65,7 +66,9 @@ function reviewTime(word) {
   }).format(due);
   return (
     '<p class="review-time">Próxima revisão · ' +
-    esc(when) +
+    esc(when) + (progress.questionsLeft > 0
+      ? " ou após " + progress.questionsLeft + (progress.questionsLeft === 1 ? " outra pergunta" : " outras perguntas") + ", se for mais cedo"
+      : "") +
     "</p>"
   );
 }

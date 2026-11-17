@@ -6,7 +6,7 @@ The pack contains 68 words. Its eight-word introductory band precedes Precisão,
 
 ## Practice schedule
 
-A round takes up to five due words, oldest due first, before filling spare places with new words from the easier bands. A miss or **Não sei** makes that word due again in ten minutes. Correct scheduled answers set intervals of 1, 3, 7, 14 and then 30 days. A word remains eligible for review after it is marked **Aprendida**. Extra practice between scheduled reviews is available when there are no due or eligible new words.
+A round contains up to five words. Due reviews take priority over new words. After a miss or **Não sei**, the word becomes eligible again after five other answers or ten minutes, whichever comes first. Both carry over between rounds and visits. Getting a scheduled retry right sets a review for the next day. Later successful scheduled reviews use intervals of 3, 7, 14 and 30 days. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked **Aprendida**.
 
 Repeated retrieval improved delayed vocabulary recall in an experiment with word pairs. A separate spacing experiment found that the best review gap depended on how long the material had to be remembered. Neither study tested Matiz's multiple-choice game, level sizes or exact intervals. Those are pilot settings. [Karpicke and Roediger](https://doi.org/10.1126/science.1152408) · [Cepeda et al.](https://doi.org/10.1111/j.1467-9280.2008.02209.x)
 

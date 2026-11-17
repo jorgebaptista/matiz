@@ -4,6 +4,7 @@ import pack from "../packs/pt-PT.json" with { type: "json" };
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;
+const RETRY_GAP = 5;
 const INTERVALS = [1, 3, 7, 14, 30];
 const SIZE = 5;
 
@@ -87,6 +88,8 @@ export function restoreState(saved) {
           : INTERVALS[Math.max(0, progress.reviewStep)] * DAY)
         : 0;
     }
+    if ((progress.retry || progress.scheduledDueAt != null) && progress.questionsLeft == null)
+      progress.questionsLeft = RETRY_GAP;
     state.progress[id] = progress;
   }
   if (saved.version === 1) {
@@ -146,39 +149,42 @@ export function start(state, now = Date.now(), rng = Math.random) {
     return state.session;
   }
   const words = [...wordsById.values()];
-  const overdue = words.filter((word) => seen(state, word) &&
-    dueAt(state.progress[word.id]) <= now);
-  overdue.sort((a, b) => dueAt(state.progress[a.id]) - dueAt(state.progress[b.id]));
-  const selected = overdue.slice(0, SIZE);
+  const reviews = words.filter((word) => {
+    const p = state.progress[word.id];
+    return p?.seen > 0 && (dueAt(p) <= now || p.questionsLeft != null);
+  }).sort((a, b) => dueAt(state.progress[a.id]) - dueAt(state.progress[b.id]));
   const difficultyPause = struggling(state);
   const pristine = !words.some((word) => seen(state, word));
-  const firstBand = levels.find((level) => level.words.length);
-  if (!difficultyPause && selected.length < SIZE) {
-    for (const level of levels) {
-      if (!level.words.length) continue;
-      if (pristine && level !== firstBand) break;
-      const unseen = level.words.filter((word) => !seen(state, word));
-      selected.push(...shuffle(unseen, rng).slice(0, SIZE - selected.length));
-      if (selected.length === SIZE) break;
+  const bands = pristine ? levels.slice(0, 1) : levels;
+  const unseen = bands.flatMap(level => shuffle(level.words.filter(w => !seen(state, w)), rng));
+  const practicePool = shuffle(words.filter(w => seen(state, w) && !reviews.includes(w)), rng);
+  if (difficultyPause) practicePool.sort((a, b) =>
+    Number(b.levelId === difficultyPause.id) - Number(a.levelId === difficultyPause.id));
+  const cards = [];
+  while (cards.length < SIZE) {
+    // Earlier slots in this round will each supply one intervening answer.
+    const i = reviews.findIndex(w => {
+      const p = state.progress[w.id];
+      return dueAt(p) <= now || p.questionsLeft <= cards.length;
+    });
+    let word = i >= 0 ? reviews.splice(i, 1)[0] : undefined;
+    let practice = false;
+    if (!word && !difficultyPause) word = unseen.shift();
+    if (!word && (reviews.length || cards.every(card => card.practice))) {
+      word = practicePool.shift();
+      practice = Boolean(word);
+      // A new word can bridge a gap when every familiar word is awaiting a retry.
+      if (!word && reviews.length) word = unseen.shift();
     }
+    if (!word) break;
+    cards.push({ id: word.id, key: word.key, options: shuffle(word.choices, rng), practice });
   }
-  const practice = selected.length === 0;
-  if (practice) {
-    const pool = (difficultyPause?.words ?? words)
-      .filter((word) => seen(state, word));
-    selected.push(...shuffle(pool, rng).slice(0, SIZE));
-  }
-  if (!selected.length) return null;
+  if (!cards.length) return null;
   state.session = {
-    cards: selected.map((word) => ({
-      id: word.id,
-      key: word.key,
-      options: shuffle(word.choices, rng),
-      practice,
-    })),
+    cards,
     cursor: 0,
     answers: [],
-    practice,
+    practice: cards.every(card => card.practice),
   };
   state.active = true;
   return state.session;
@@ -193,16 +199,21 @@ export function answer(state, value, now = Date.now()) {
   const word = wordsById.get(card.id);
   if (!word || (value !== null && !card.options.includes(value))) return;
   session.answers.push(value);
+  for (const p of Object.values(state.progress)) {
+    if (p.termId !== word.id && p.questionsLeft > 0) p.questionsLeft--;
+  }
   const correct = value === (card.key ?? word.key);
   const prior = state.progress[word.id] ?? emptyProgress(word.levelId, word.id);
-  const earlyRetry = prior.scheduledDueAt > now && dueAt(prior) <= now;
+  const ready = dueAt(prior) <= now || prior.questionsLeft === 0;
+  const earlyRetry = prior.scheduledDueAt > now && ready;
   const practice = card.practice || session.practice || session.replay ||
-    earlyRetry || (prior.seen > 0 && dueAt(prior) > now);
+    earlyRetry || (prior.seen > 0 && !ready);
   if (practice) {
     // Practice never promotes or postpones a review, including one now overdue.
     if (!correct) {
       state.progress[word.id] = {
         ...prior,
+        questionsLeft: RETRY_GAP,
         // Keep the real review separate from an optional, earlier retry.
         scheduledDueAt: prior.scheduledDueAt ?? dueAt(prior),
         dueAt: Math.min(dueAt(prior), now + RETRY),
@@ -212,11 +223,14 @@ export function answer(state, value, now = Date.now()) {
     } else if (earlyRetry && !card.practice && !session.practice && !session.replay) {
       state.progress[word.id] = { ...prior, dueAt: prior.scheduledDueAt };
       delete state.progress[word.id].scheduledDueAt;
+      delete state.progress[word.id].questionsLeft;
     }
     return;
   }
   const progress = applyAnswer(prior, correct, now);
   delete progress.scheduledDueAt;
+  if (correct) delete progress.questionsLeft;
+  else progress.questionsLeft = RETRY_GAP;
   progress.delayedReviews = prior.delayedReviews ?? 0;
   progress.reviewStep = correct
     ? Math.min(INTERVALS.length - 1, (prior.retry ? -1 : prior.reviewStep ?? -1) + 1)
