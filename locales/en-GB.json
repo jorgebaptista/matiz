@@ -35,7 +35,7 @@
     "challengeTied": "You matched {count}.",
     "challengeLost": "The score to beat was {count}.",
     "survivalShareScore": { "one": "I got {count} word right.", "other": "I got {count} words right." },
-    "survivalShareInvite": "Can you beat me?",
+    "survivalShareInvite": "Know more words than me?",
     "invalidChallenge": "This challenge link is invalid. Ask your friend to share it again.",
     "oldChallenge": "Update Matiz to open this challenge.",
     "resultCopied": "Result copied",

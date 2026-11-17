@@ -35,6 +35,7 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
   ctx.textAlign = "left";
   box(72, 158, 936, 2, "#d7dfd2");
   label(t(survival ? "survival" : "daily"), 72, 282, 60, { weight: 600 });
+  if (survival) label(t("survivalShareInvite"), 76, 340, 34, { colour: muted });
   if (!survival) label(new Intl.DateTimeFormat(locale.locale, {
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(session.day * 86_400_000), 76, 340, 30, { colour: muted });
@@ -44,11 +45,6 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
     box(72, 620, 280, 118, "#edf0e6", 20);
     label(t("yourBest"), 96, 660, 28, { colour: muted, width: 232 });
     label(Math.max(best, score), 96, 714, 48, { weight: 600 });
-    if (session.target != null) {
-      box(376, 620, 280, 118, "#edf0e6", 20);
-      label(t("challenger"), 400, 660, 28, { colour: muted, width: 232 });
-      label(session.target, 400, 714, 48, { weight: 600 });
-    }
   } else {
     session.cards.forEach((card, index) => {
       const correct = session.answers[index] === (card.key ?? wordsById.get(card.id)?.key);

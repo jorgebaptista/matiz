@@ -31,7 +31,7 @@
     "challengeTied": "Igualaste {count}.",
     "challengeLost": "A pontuação a bater era {count}.",
     "survivalShareScore": { "one": "Acertei {count} palavra.", "many": "Acertei {count} palavras.", "other": "Acertei {count} palavras." },
-    "survivalShareInvite": "Consegues fazer melhor?",
+    "survivalShareInvite": "Sabes mais palavras do que eu?",
     "invalidChallenge": "Esta ligação é inválida. Pede a quem te desafiou para a partilhar novamente.",
     "oldChallenge": "Atualiza o Matiz para abrir este desafio.",
     "resultCopied": "Resultado copiado",
