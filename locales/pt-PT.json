@@ -69,6 +69,8 @@
     "resume": "Continuar a ronda",
     "play": "Jogar",
     "daily": "Palavras do dia",
+    "dailyTitle": "Desafio diário de sinónimos",
+    "dailyDescription": "Escolhe o sinónimo mais próximo de cada uma das quatro palavras, da mais fácil à mais difícil. Quem joga em português recebe as mesmas quatro até à meia-noite de Lisboa.",
     "dailyUnplayed": "Por jogar",
     "dailyStarted": "Em curso",
     "dailyCompleted": "Concluído",

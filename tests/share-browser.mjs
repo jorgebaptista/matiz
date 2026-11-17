@@ -46,7 +46,7 @@ export async function testDailySharing(browser) {
       const text = await page.evaluate(() => window.shared[0].text);
       assert.equal(text, new URL(text).href); // Caption is just the playable link.
       const base = (process.env.SITE_URL || "https://jorgebaptista.github.io/matiz").replace(/\/+$/, "");
-      assert.ok(text.endsWith(base + "/jogar/" + suffix + "?mode=daily"));
+      assert.equal(text, base + "/daily/" + locale + "/");
       const stored = JSON.parse(saved).daily;
       for (const card of stored.cards) assert.ok(!text.includes(card.key));
       await checkSharedImage(page, "daily-card-" + locale);

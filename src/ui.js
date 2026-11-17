@@ -369,7 +369,7 @@ function render(focus = false) {
     shareButton.disabled = true;
     resultImage(s, {
       survival: state.survivalActive,
-      playUrl: document.querySelector('meta[name="matiz-play-url"]').content,
+      playUrl: document.querySelector(state.survivalActive ? 'meta[name="matiz-play-url"]' : 'meta[name="matiz-daily-url"]').content,
     }).then(card => {
       if (version === renderVersion) shareCard = card;
     }).catch(() => {
@@ -395,7 +395,8 @@ function goHome() {
   state.dailyActive = false;
   state.survivalActive = false;
   save();
-  render(true);
+  if (root.dataset.mode === "daily") location.replace(document.baseURI);
+  else render(true);
   return true;
 }
 window.matizBack = goHome;
@@ -463,7 +464,7 @@ function clearChallengeUrl() {
 }
 if (entry.searchParams.get("mode") === "survival") {
   invitation = readChallenge(entry.searchParams, levels, survivalArchives);
-} else if (hasDaily && entry.searchParams.get("mode") === "daily") {
+} else if (hasDaily && (root.dataset.mode === "daily" || entry.searchParams.get("mode") === "daily")) {
   startDaily(state);
   save();
   entry.searchParams.delete("mode");

@@ -16,11 +16,11 @@ test("daily sharing uses saved keys and date, counts skips as misses and hides a
     answers: ["older answer", "wrong", word.key, null],
   };
   const original = JSON.stringify(session);
-  const text = dailyShareText(session, "https://example.test/matiz/jogar/?old=1#fragment");
+  const text = dailyShareText(session, "https://example.test/matiz/daily/pt-PT/?old=1#fragment");
   assert.match(text, /Matiz · Palavras do dia · pt-PT/);
   assert.match(text, /17.*(?:nov|11).*2026/);
   assert.match(text, /🟩⬜🟩⬜ 2\/4/);
-  assert.ok(text.endsWith("https://example.test/matiz/jogar/?mode=daily"));
+  assert.ok(text.endsWith("https://example.test/matiz/daily/pt-PT/"));
   for (const spoiler of [word.word, word.key, "older answer", "correct"])
     assert.ok(!text.includes(spoiler));
   assert.equal(JSON.stringify(session), original);
