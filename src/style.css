@@ -216,9 +216,7 @@ h2,
   background: #d1dfac;
   color: #254839;
   border: 1px solid #123e31;
-  font:
-    40px/1 "Instrument Serif",
-    serif;
+  font: 40px/1 "DM Sans", sans-serif;
   border-radius: 7px;
 }
 .art i:first-child {
@@ -510,6 +508,16 @@ h2,
 }
 .share-status { text-align: center; color: var(--muted); margin-top: 10px; }
 .share-status:empty { display: none; }
+.survival-stats { display: flex; gap: 10px; margin: 14px 0; }
+.survival-stats > div { flex: 1; min-width: 0; padding: 10px 8px; border-radius: 10px; background: #edf0e6; }
+.survival-stats > div:first-child { background: var(--ink); color: var(--paper); }
+.survival-stats dt { font-size: .8rem; line-height: 1.3; }
+.survival-stats dd { margin: 5px 0 0; font-size: 1.65rem; font-weight: 600; line-height: 1.1; }
+.final-stats { margin: 22px 0 14px; }
+.final-stats dd { font-size: 2.5rem; }
+.share-preview { display: block; width: 100%; margin-top: 16px; border-radius: 12px; }
+.share-actions { display: flex; gap: 10px; }
+.share-actions .secondary { flex: 1; text-align: center; text-decoration: none; font-size: 1rem; }
 .share-text {
   width: 100%;
   min-height: 135px;

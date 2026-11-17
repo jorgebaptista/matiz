@@ -53,13 +53,13 @@ test("convention discovery builds two offline files, preserves legal notices and
     assert.doesNotMatch(english, /<(?:script|link)[^>]+(?:src|href)=/);
     assert.doesNotMatch(english, /url\((?!data:)/);
     const expected = await readContent("locales");
-    for (const key of ["licenseMatiz", "licenseOpenquiz", "licenseDMSans", "licenseInstrumentSerif"])
+    for (const key of ["licenseMatiz", "licenseOpenquiz", "licenseDMSans", "licenseInstrumentSerif", "licenseAndroidX"])
       assert.ok(portuguese.includes(`<summary>${expected.strings[key]}</summary>`));
     const notices = (html) => [...html.matchAll(/<pre lang="en">([\s\S]*?)<\/pre>/g)].map((match) => match[1]);
-    assert.equal(notices(english).length, 4);
+    assert.equal(notices(english).length, 5);
     assert.deepEqual(notices(english), notices(portuguese));
     const escape = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-    const files = ["LICENSE", "vendor/openquiz/LICENSE", "vendor/fonts/dmsans-OFL.txt", "vendor/fonts/instrumentserif-OFL.txt"];
+    const files = ["LICENSE", "vendor/openquiz/LICENSE", "vendor/fonts/dmsans-OFL.txt", "vendor/fonts/instrumentserif-OFL.txt", "vendor/androidx/LICENSE"];
     assert.deepEqual(notices(portuguese), await Promise.all(files.map(async (file) => escape(await readFile(path.join(projectRoot, file), "utf8")))));
   } finally {
     await rm(fixture.root, { recursive: true, force: true });

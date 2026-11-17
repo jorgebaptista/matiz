@@ -6,6 +6,7 @@ import { languageFixture, fixturePack } from "./language-fixture.mjs";
 import { buildGames } from "../scripts/build.mjs";
 import { gameLevels } from "../src/bands.js";
 import { survivalVersion } from "../src/survival.js";
+import { checkSharedImage } from "./share-image-helper.mjs";
 
 /** Play a run, send its link to a fresh player and compare their saved questions. */
 export async function testSurvival(browser) {
@@ -19,6 +20,7 @@ export async function testSurvival(browser) {
         await client.route("**/*", route => route.fulfill({ contentType: "text/html", body: html }));
         await client.addInitScript(() => {
           window.shared = [];
+          Object.defineProperty(navigator, "canShare", { value: () => true });
           Object.defineProperty(navigator, "share", { value: async data => window.shared.push(data) });
         });
       }
@@ -49,17 +51,22 @@ export async function testSurvival(browser) {
       assert.ok(await page.locator(".feedback").isVisible());
       await page.locator('[data-action="next"]').click();
       assert.equal(await page.locator(".score").innerText(), "4");
+      assert.equal(await page.locator('[data-stat="yourBest"]').innerText(), "4");
       assert.deepEqual((await readSave(page)).session, practice);
       assert.deepEqual((await readSave(page)).progress, {});
       await page.locator('[data-action="share"]').click();
       const text = await page.evaluate(() => window.shared[0].text);
       const link = text.split("\n").at(-1);
+      await checkSharedImage(page, "survival-card-" + locale);
       assert.equal(new URL(link).pathname.endsWith("/jogar/" + suffix), true);
       const other = await friend.newPage();
       await other.goto(link);
       assert.match(await other.locator(".challenge-target").innerText(), /4/);
       await other.reload();
       await other.locator('[data-action="accept-survival"]').click();
+      assert.equal(await other.locator('[data-stat="currentScore"]').innerText(), "0");
+      assert.equal(await other.locator('[data-stat="yourBest"]').innerText(), "0");
+      assert.equal(await other.locator('[data-stat="challenger"]').innerText(), "4");
       assert.deepEqual((await readSave(other)).survival.cards, cards);
       assert.equal(new URL(other.url()).search, "");
       for (let i = 0; i < 5; i++) await answerCorrectly(other);
@@ -68,6 +75,8 @@ export async function testSurvival(browser) {
       await other.locator(".choice").nth(card.options.findIndex(option => option !== card.key)).click();
       await other.locator('[data-action="next"]').click();
       assert.equal(await other.locator(".score").innerText(), "5");
+      assert.equal(await other.locator('[data-stat="yourBest"]').innerText(), "5");
+      assert.equal(await other.locator('[data-stat="challenger"]').innerText(), "4");
       assert.match(await other.locator(".summary").innerText(), locale === "pt-PT" ? /Superaste 4/ : /You beat 4/);
       assert.ok(await other.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       if (process.env.MATIZ_SCREENSHOTS) {
@@ -76,6 +85,9 @@ export async function testSurvival(browser) {
       }
       await other.locator('[data-action="new-survival"]').click();
       const pending = (await readSave(other)).survival;
+      assert.equal(await other.locator('[data-stat="currentScore"]').innerText(), "0");
+      assert.equal(await other.locator('[data-stat="yourBest"]').innerText(), "5");
+      assert.equal(await other.locator('[data-stat="challenger"]').count(), 0);
       assert.notEqual(pending.seed, survival.seed);
       const badLink = new URL(link);
       badLink.searchParams.set("v", "s1-00000000");
@@ -96,6 +108,15 @@ export async function testSurvival(browser) {
       await other.locator('[data-action="share"]').click();
       const originalShare = await other.evaluate(() => window.shared[0].text);
       assert.equal(new URL(originalShare.split("\n").at(-1)).searchParams.get("score"), "5");
+      await checkSharedImage(other, "challenged-card-" + locale);
+      // A later shorter run keeps the best and shares its own score, not the record.
+      await other.locator('[data-action="new-survival"]').click();
+      await other.locator('[data-action="unsure"]').click();
+      await other.locator('[data-action="next"]').click();
+      assert.equal(await other.locator('[data-stat="yourBest"]').innerText(), "5");
+      await other.locator('[data-action="share"]').click();
+      const lowerLink = await checkSharedImage(other, "lower-score-card-" + locale);
+      assert.equal(new URL(lowerLink).searchParams.get("score"), "0");
     } finally {
       await context.close();
       await friend.close();

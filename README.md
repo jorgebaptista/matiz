@@ -6,7 +6,7 @@ An open-source synonym game for people who want a richer vocabulary in a languag
 
 Each edition starts with 68 practice words across four bands. Daily words join their bands the day after they debut. Progress, shuffled choices and the current answer are saved on the device. Android and the standalone browser file have separate saves.
 
-Survival gives one point per correct answer and ends on the first mistake. Share the result to challenge someone to the same questions. [Rules and challenge links](docs/survival.md)
+Challenge gives one point per correct answer and ends on the first mistake. Share the result to challenge someone to the same questions. [Rules and challenge links](docs/survival.md)
 
 ## Practice schedule
 
@@ -49,6 +49,8 @@ For the playable website, run `npm run build:site`. The maintainer guide covers 
 Thank you to the [OpenQuiz contributors](https://github.com/ndunl075/OpenQuiz). Matiz uses their code to shuffle answer choices and track answers. The [upstream revision](https://github.com/ndunl075/OpenQuiz/tree/483bd789c2f27e9b457bd493d51125676b90b657/src/lib) and [MIT copyright notice](vendor/openquiz/LICENSE) identify the code included in this build.
 
 [Magoosh Vocabulary Builder](https://magoosh.com/vocabulary-builder/) inspired the short rounds and unlockable levels. The Portuguese and English questions and examples were written for Matiz.
+
+Android image attachments use [AndroidX Core](https://developer.android.com/jetpack/androidx/releases/core) 1.13.1 ([Apache 2.0](vendor/androidx/LICENSE)). The notice is bundled in the offline credits.
 
 The typefaces are [DM Sans](https://github.com/googlefonts/dm-fonts) and [Instrument Serif](https://github.com/Instrument/instrument-serif). Their authors' [DM Sans](vendor/fonts/dmsans-OFL.txt) and [Instrument Serif](vendor/fonts/instrumentserif-OFL.txt) licence notices are included. Players can read all bundled notices offline under **Créditos e licenças** on the levels screen.
 

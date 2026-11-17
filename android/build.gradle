@@ -11,14 +11,16 @@ android {
         applicationId 'pt.matiz.game'
         minSdk 26
         targetSdk 34
-        versionCode 7
-        versionName '0.4.0'
+        versionCode 8
+        versionName '0.5.0'
         manifestPlaceholders = [challengeHost: siteUrl.host, challengePath: challengePath]
         buildConfigField 'String', 'CHALLENGE_HOST', '"' + siteUrl.host + '"'
         buildConfigField 'String', 'CHALLENGE_PATH', '"' + challengePath + '"'
     }
     sourceSets.main.assets.srcDir '../dist'
 }
+
+dependencies { implementation 'androidx.core:core:1.13.1' }
 def packGame = tasks.register('packGame', Exec) {
     workingDir '..'
     commandLine 'node', 'scripts/build.mjs'

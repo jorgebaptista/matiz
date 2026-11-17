@@ -1,10 +1,14 @@
-# Survival
+# Challenge
 
 Each correct answer earns one point. A mistake or skip ends the run after showing the answer. Clearing every card wins. There is no timer.
 
-A run draws three regular words from each introductory band, then every regular word in the hardest band. Each word appears once. Daily words stay in the daily and practice pools. **Play again** draws a fresh challenge. Survival saves its own run and personal best per language and pack version.
+A run draws three regular words from each introductory band, then every regular word in the hardest band. Each word appears once. Daily words stay in the daily and practice pools. **Play again** draws a fresh challenge. Challenge saves its own run and personal best per language and pack version.
 
 Challenge links contain the seed, pack version and score to beat. The same seed and version produce the same cards and choices on web and Android. A link resumes the player's first attempt or shows its finished result, even after other runs. Scores and attempt history are stored on the device.
+
+During and after a run, see your score, personal best and rival's score. The shared image shows only your score and best, with a short invitation and the run's link alongside it. The recipient sees your score to beat when opening the link. The personal best never replaces the shared run's score to beat. Scores are self-reported, with no online leaderboard.
+
+Daily results also share as images. Browsers with file sharing use the system share sheet; other browsers offer **Save image** and **Copy link**. Android attaches the PNG through a private cache FileProvider.
 
 Builds automatically preserve regular words in `archives/survival/<locale>/<version>.json`. Commit newly generated archives with content changes. Keep earlier snapshots. The builder checks each snapshot against its version and includes it in that edition's offline game. The website also serves the JSON under `challenges/`. Older links keep their questions after words are edited or removed.
 

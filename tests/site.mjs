@@ -97,18 +97,18 @@ try {
     .getByRole("link", { name: "Jogar em português", exact: true })
     .getAttribute("href");
   assert.equal(new URL(localPlay, staticPage.url()).href, url + "jogar/");
-  const dailyLink = await staticPage.getByRole("link", { name: "Desafio do dia" }).getAttribute("href");
+  const dailyLink = await staticPage.getByRole("link", { name: "Palavras do dia" }).getAttribute("href");
   const daily = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await daily.clock.install({ time: new Date("2026-11-17T12:00:00Z") });
   await daily.goto(new URL(dailyLink, staticPage.url()).href);
-  const dailyButton = daily.getByRole("button", { name: "Desafio do dia", exact: true });
+  const dailyButton = daily.getByRole("button", { name: "Palavras do dia", exact: true });
   await daily.getByRole("button", { name: "Início", exact: true }).click();
   assert.equal(await dailyButton.getAttribute("data-status"), "dailyUnplayed");
   await dailyButton.click();
   for (let i = 0; i < 4; i++) {
     const difficulty = ["Inicial", "Fácil", "Médio", "Difícil"][i];
     assert.equal(await daily.locator(".word-heading .difficulty").innerText(), difficulty);
-    assert.equal(await daily.locator(".eyebrow").innerText(), "Desafio do dia");
+    assert.equal(await daily.locator(".eyebrow").innerText(), "Palavras do dia");
     await daily.getByRole("button", { name: "Não sei" }).click();
     if (i === 0) {
       await daily.reload();
@@ -139,7 +139,7 @@ try {
   const originalSave = await play.evaluate(() => localStorage.getItem("matiz.pt-PT.v1"));
   await play.getByRole("combobox").selectOption({ label: "British English" });
   await play.waitForURL(url + "jogar/en-GB/");
-  await play.getByRole("button", { name: "Daily challenge", exact: true }).click();
+  await play.getByRole("button", { name: "Daily words", exact: true }).click();
   for (const [i, label] of ["Entry", "Easy", "Medium", "Hard"].entries()) {
     assert.equal(await play.locator(".difficulty").innerText(), label);
     await play.getByRole("button", { name: "I don't know" }).click();
@@ -155,7 +155,7 @@ try {
   await staticPage.goto(url);
   await staticPage.getByRole("link", { name: "About British English" }).click();
   assert.equal(await staticPage.locator("html").getAttribute("lang"), "en-GB");
-  assert.match(await staticPage.getByRole("link", { name: "Daily challenge" }).getAttribute("href"), /en-GB\/\?mode=daily$/);
+  assert.match(await staticPage.getByRole("link", { name: "Daily words" }).getAttribute("href"), /en-GB\/\?mode=daily$/);
   console.log(
     "Crawlable mobile homepage, project path, share card and first question passed.",
   );
