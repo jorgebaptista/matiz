@@ -9,13 +9,14 @@ import {
   next,
   finish,
   roundScore,
-  hasDaily, startDaily, activeSession, practiceLevels,
+  hasDaily, startDaily, activeSession, practiceLevels, startSurvival,
 } from "./game.js";
 import { locale } from "./pack.js";
 import { dailyDay } from "./daily.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
-import { dailyShareText } from "./share.js";
+import { dailyShareText, survivalShareText } from "./share.js";
+import { readChallenge, survivalVersion } from "./survival.js";
 
 const t = (key, values) => esc(translate(key, values));
 
@@ -35,6 +36,7 @@ function restore() {
   }
 }
 let state = restore();
+let invitation = null;
 function save() {
   try {
     localStorage.setItem(storageKey, JSON.stringify(state));
@@ -100,7 +102,7 @@ const dailyButton = () =>
   '<span hidden id="daily-status"></span>';
 
 function refreshDailyButton() {
-  const button = root.querySelector(".daily");
+  const button = root.querySelector('[data-action="daily"]');
   if (!button) return;
   const daily = state.daily;
   let status = "dailyUnplayed";
@@ -124,6 +126,9 @@ function home() {
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
     '</section>' + (hasDaily ? dailyButton() : '') +
+    '<button class="survival" data-action="survival"><span class="survival-icon" aria-hidden="true">⚡</span><strong>' +
+    t(state.survival && state.survival.cursor < state.survival.cards.length ? "resumeSurvival" : "survival") +
+    '</strong><span class="survival-best">' + t("personalBest", { count: state.survivalBests?.[survivalVersion(levels)] ?? 0 }) + '</span></button>' +
     '<div class="section-title"><h2>' + t("yourWords") + '</h2><span>' +
     t("learnedTotal", { count: total, total: wordTotal }) +
     '</span></div><div class="levels">' +
@@ -160,11 +165,11 @@ function home() {
 }
 function roundTop(s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
-  const caption = state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
+  const caption = state.survivalActive ? t("survival") : state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><span>' +
-    t("wordPosition", { count: pos, total: s.cards.length }) +
-    '</span></div><div class="steps" aria-hidden="true">' +
+    (state.survivalActive ? t("survivalScore", { count: roundScore(s) }) : t("wordPosition", { count: pos, total: s.cards.length })) +
+    '</span></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
     s.cards
       .map(
         (_, i) =>
@@ -173,13 +178,14 @@ function roundTop(s, card) {
           '"></i>',
       )
       .join("") +
-    "</div>" + (caption ? '<div class="eyebrow">' + caption + "</div>" : "")
+    "</div>") + (caption ? '<div class="eyebrow">' + caption + "</div>" : "") +
+    (state.survivalActive && s.target !== null ? '<p class="challenge-target">' + t("scoreToBeat", { count: s.target }) + '</p>' : '')
   );
 }
 function play(s) {
   if (s.cursor >= s.cards.length) return summary(s);
   const card = s.cards[s.cursor],
-    word = wordsById.get(card.id);
+    word = state.survivalActive ? card : wordsById.get(card.id);
   const answered = s.answers.length > s.cursor,
     value = s.answers[s.cursor],
     correct = value === (card.key ?? word.key);
@@ -201,14 +207,14 @@ function play(s) {
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
-      (state.dailyActive ? "" : reviewTime(word)) +
+      (state.dailyActive || state.survivalActive ? "" : reviewTime(word)) +
       (value && !correct
         ? '<p class="your">' + t("yourAnswer", { answer: value }) + '</p>'
         : "") +
       "</section>" +
       action(
         "next",
-        translate(s.cursor === s.cards.length - 1 ? "result" : "nextWord"),
+        translate(s.cursor === s.cards.length - 1 || (state.survivalActive && !correct) ? "result" : "nextWord"),
       )
     );
   }
@@ -237,6 +243,7 @@ function dailyLabel(s) {
   return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + (s.debut ? "" : " · " + t("dailyEncore"));
 }
 function summary(s) {
+  if (state.survivalActive) return survivalSummary(s);
   return (
     header() +
     '<section class="summary"><h1>' + (state.dailyActive ? dailyLabel(s) : t("roundComplete")) + '</h1><div class="score">' +
@@ -252,8 +259,33 @@ function summary(s) {
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
   );
 }
-async function shareDaily(button) {
-  const text = dailyShareText(state.daily, document.querySelector('meta[name="matiz-play-url"]').content);
+function survivalSummary(s) {
+  const score = roundScore(s);
+  const comparison = score > s.target ? "challengeWon" : score === s.target ? "challengeTied" : "challengeLost";
+  return header() + '<section class="summary"><h1>' + t(score === s.cards.length ? "survivalCleared" : "survivalOver") +
+    '</h1><div class="score">' + score + '</div><p>' + t("survivalScoreLabel") + '</p>' +
+    '<p class="challenge-target">' + t("personalBest", { count: state.survivalBests?.[s.version] ?? score }) + '</p>' +
+    (s.target !== null ? '<p class="challenge-target">' + t(comparison, { count: s.target }) + '</p>' : '') + '</section>' +
+    action("share", translate("challengeFriend"), "↗") +
+    '<p class="share-status" role="status"></p>' +
+    '<textarea class="share-text" hidden readonly aria-label="' + t("shareResult") + '"></textarea>' +
+    '<button class="secondary" data-action="new-survival">' + t("newRun") + '</button>' +
+    '<button class="unsure" data-action="home">' + t("backHome") + '</button>';
+}
+function survivalInvitation() {
+  if (invitation.error) return header() + '<section class="summary"><h1>' + t("survival") + '</h1><p>' +
+    t(invitation.error) + '</p></section>' + action("home", translate("backHome"));
+  const replacesRun = state.survival && state.survival.cursor < state.survival.cards.length &&
+    (!invitation.run || state.survival.seed !== invitation.run.seed || state.survival.version !== invitation.run.version);
+  return header() + '<section class="summary"><h1>' + t("survival") + '</h1><p class="survival-rules">' +
+    t("survivalRules") + '</p>' + (invitation.run?.target != null ? '<p class="challenge-target">' +
+      t("scoreToBeat", { count: invitation.run.target }) + '</p>' : '') + '</section>' +
+    action("accept-survival", translate(replacesRun ? "replaceRun" : "startSurvival")) +
+    '<button class="unsure" data-action="home">' + t("backHome") + '</button>';
+}
+async function shareResult(button) {
+  const formatter = state.survivalActive ? survivalShareText : dailyShareText;
+  const text = formatter(activeSession(state), document.querySelector('meta[name="matiz-play-url"]').content);
   if (bundledApp) {
     location.assign("matiz-share://result?text=" + encodeURIComponent(text));
     return;
@@ -286,9 +318,9 @@ async function shareDaily(button) {
 }
 function render(focus = false) {
   const s = activeSession(state);
-  root.classList.toggle("in-round", Boolean(s && s.cursor < s.cards.length));
-  root.innerHTML = s ? play(s) : home();
-  if (!s) {
+  root.classList.toggle("in-round", Boolean(!invitation && s && s.cursor < s.cards.length));
+  root.innerHTML = invitation ? survivalInvitation() : s ? play(s) : home();
+  if (!s && !invitation) {
     root.append(document.querySelector("#credits").content.cloneNode(true));
     refreshDailyButton();
   }
@@ -300,9 +332,12 @@ function render(focus = false) {
   }
 }
 function goHome() {
-  if (!activeSession(state)) return false;
+  if (!activeSession(state) && !invitation) return false;
+  invitation = null;
+  clearChallengeUrl();
   state.active = false;
   state.dailyActive = false;
+  state.survivalActive = false;
   save();
   render(true);
   return true;
@@ -329,15 +364,25 @@ root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
-  if (id === "share" && state.dailyActive) {
-    shareDaily(target);
+  if (id === "share" && (state.dailyActive || state.survivalActive)) {
+    shareResult(target);
     return;
   }
   if (id === "home") {
     goHome();
     return;
   }
-  if (id === "start") start(state);
+  if (id === "survival") {
+    if (state.survival) startSurvival(state);
+    else invitation = {};
+  } else if (id === "new-survival") {
+    state.survival = null;
+    startSurvival(state);
+  } else if (id === "accept-survival" && invitation && !invitation.error) {
+    startSurvival(state, invitation.run?.seed, invitation.run?.target ?? null);
+    invitation = null;
+    clearChallengeUrl();
+  } else if (id === "start") start(state);
   else if (id === "daily") startDaily(state);
   else if (activeSession(state)) {
     const s = activeSession(state);
@@ -354,7 +399,14 @@ root.addEventListener("click", (e) => {
   render(true);
 });
 const entry = new URL(window.location.href);
-if (hasDaily && entry.searchParams.get("mode") === "daily") {
+function clearChallengeUrl() {
+  if (entry.protocol !== "http:" && entry.protocol !== "https:") return;
+  for (const key of ["mode", "seed", "v", "score"]) entry.searchParams.delete(key);
+  history.replaceState(null, "", entry.href);
+}
+if (entry.searchParams.get("mode") === "survival") {
+  invitation = readChallenge(entry.searchParams, levels);
+} else if (hasDaily && entry.searchParams.get("mode") === "daily") {
   startDaily(state);
   save();
   entry.searchParams.delete("mode");

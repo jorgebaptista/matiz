@@ -2,6 +2,7 @@ package pt.matiz.game;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
                 String url = request.getUrl().toString();
                 if (request.isForMainFrame() && "matiz-share".equals(request.getUrl().getScheme())) {
                     String text = request.getUrl().getQueryParameter("text");
-                    if (editionUrls.contains(view.getUrl()) && text != null && !text.isEmpty()) {
+                    if (view.getUrl() != null && editionUrls.contains(view.getUrl().split("\\?", 2)[0]) && text != null && !text.isEmpty()) {
                         Intent share = new Intent(Intent.ACTION_SEND);
                         share.setType("text/plain");
                         share.putExtra(Intent.EXTRA_TEXT, text);
@@ -56,8 +57,26 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(game);
+        game.loadUrl(gameUrl(getIntent()));
+    }
+    private String gameUrl(Intent intent) {
+        Uri link = intent.getData();
+        if (link != null && "https".equals(link.getScheme()) && BuildConfig.CHALLENGE_HOST.equals(link.getHost()) &&
+                link.getPath() != null && link.getPath().startsWith(BuildConfig.CHALLENGE_PATH)) {
+            String route = link.getPath().substring(BuildConfig.CHALLENGE_PATH.length());
+            String edition = ASSET_ROOT + route + "index.html";
+            if (editionUrls.contains(edition)) {
+                getPreferences(MODE_PRIVATE).edit().putString("edition", edition).apply();
+                return edition + (link.getEncodedQuery() == null ? "" : "?" + link.getEncodedQuery());
+            }
+        }
         String lastEdition = getPreferences(MODE_PRIVATE).getString("edition", DEFAULT_GAME);
-        game.loadUrl(editionUrls.contains(lastEdition) ? lastEdition : DEFAULT_GAME);
+        return editionUrls.contains(lastEdition) ? lastEdition : DEFAULT_GAME;
+    }
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        game.loadUrl(gameUrl(intent));
     }
     @Override public void onBackPressed() {
         game.evaluateJavascript("window.matizBack ? window.matizBack() : false", handled -> {

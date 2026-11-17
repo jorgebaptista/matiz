@@ -3,6 +3,7 @@ import { shuffle } from "../vendor/openquiz/shuffle.ts";
 import { pack } from "./pack.js";
 import { dailyCards, dailyDay } from "./daily.js";
 import { dailyBandsFor } from "./bands.js";
+import { createSurvival, restoreSurvival, survivalVersion } from "./survival.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 const RETRY = 10 * 60 * 1000;
@@ -39,6 +40,7 @@ export function practiceLevels(day = dailyDay()) {
 }
 export function startDaily(state, now = Date.now()) {
   if (!hasDaily) return;
+  state.survivalActive = false;
   const day = dailyDay(now);
   const released = debutCalendar.filter(date => date <= day);
   const latest = released[released.length - 1];
@@ -55,9 +57,21 @@ export function startDaily(state, now = Date.now()) {
   state.active = false;
 }
 
-export const activeSession = state => state.dailyActive ? state.daily : state.active ? state.session : null;
+export const activeSession = state => state.survivalActive ? state.survival : state.dailyActive ? state.daily : state.active ? state.session : null;
 
-/** Create an offline save with one resumable session. */
+/** Resume Survival, or accept a particular challenge without changing practice or daily saves. */
+export function startSurvival(state, seed, target = null) {
+  if (!state.survival || (seed !== undefined &&
+    (state.survival.seed !== seed || state.survival.version !== survivalVersion(levels))))
+    state.survival = createSurvival(levels, seed ?? crypto.getRandomValues(new Uint32Array(1))[0], target);
+  else if (seed !== undefined) state.survival.target = target;
+  state.survivalActive = true;
+  state.dailyActive = false;
+  state.active = false;
+  return state.survival;
+}
+
+/** Create local progress before any game mode has been played. */
 export const fresh = () => ({
   version: 2,
   progress: {},
@@ -151,6 +165,14 @@ export function restoreState(saved) {
         if (state.dailyActive) state.active = false;
       }
     }
+    if (saved.survival) state.survival = restoreSurvival(saved.survival);
+    if (Object.hasOwn(saved, "survivalActive")) state.survivalActive = Boolean(state.survival && saved.survivalActive);
+    if (saved.survivalBests) state.survivalBests = Object.fromEntries(Object.entries(saved.survivalBests)
+      .filter(([version, score]) => /^s1-[a-f0-9]{8}$/.test(version) && Number.isSafeInteger(score) && score >= 0));
+    if (state.survivalActive) {
+      state.active = false;
+      state.dailyActive = false;
+    }
   }
   return state;
 }
@@ -177,6 +199,7 @@ function struggling(state, available) {
 
 /** Resume, or draw overdue cards then easy-to-hard unseen cards; idle play is free practice. */
 export function start(state, now = Date.now(), rng = Math.random) {
+  state.survivalActive = false;
   if (state.dailyActive) state.dailyActive = false;
   if (state.session) {
     state.active = true;
@@ -237,9 +260,14 @@ export function answer(state, value, now = Date.now()) {
   if (!session || session.cursor >= session.cards.length ||
     session.answers.length !== session.cursor) return;
   const card = session.cards[session.cursor];
-  const word = wordsById.get(card.id);
+  const word = state.survivalActive ? card : wordsById.get(card.id);
   if (!word || (value !== null && !card.options.includes(value))) return;
   session.answers.push(value);
+  if (state.survivalActive) {
+    state.survivalBests ??= {};
+    state.survivalBests[session.version] = Math.max(state.survivalBests[session.version] ?? 0, roundScore(session));
+    return;
+  }
   if (state.dailyActive) return;
   for (const p of Object.values(state.progress)) {
     if (p.termId !== word.id && p.questionsLeft > 0) p.questionsLeft--;
@@ -287,8 +315,10 @@ export function answer(state, value, now = Date.now()) {
 /** Advance only past an answered card. */
 export function next(state) {
   const session = activeSession(state);
-  if (session && session.answers.length > session.cursor)
-    session.cursor++;
+  if (!session || session.answers.length <= session.cursor) return;
+  if (state.survivalActive && session.answers[session.cursor] !== session.cards[session.cursor].key)
+    session.cursor = session.cards.length;
+  else session.cursor++;
 }
 
 /** Clear only a fully completed round; exiting instead sets active to false. */

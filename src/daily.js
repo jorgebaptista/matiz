@@ -12,7 +12,7 @@ export function dailyDay(now = Date.now()) {
 }
 
 // A reproducible Fisher-Yates shuffle on every JS runtime.
-function random(seed) {
+export function seededRandom(seed) {
   return () => {
     seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
     return seed / 4294967296;
@@ -22,8 +22,8 @@ function random(seed) {
 /** Rotate through each band's entire shuffled deck before reusing a word. */
 export function dailyCards(bands, day) {
   return bands.map((band, index) => {
-    const deck = shuffle(band.words, random(31703 * (index + 1)));
+    const deck = shuffle(band.words, seededRandom(31703 * (index + 1)));
     const word = deck[((day % deck.length) + deck.length) % deck.length];
-    return { id: word.id, key: word.key, options: shuffle(word.choices, random(Math.imul(day, 2654435761) + index)) };
+    return { id: word.id, key: word.key, options: shuffle(word.choices, seededRandom(Math.imul(day, 2654435761) + index)) };
   });
 }
