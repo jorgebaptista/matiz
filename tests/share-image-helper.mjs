@@ -13,7 +13,7 @@ export async function checkSharedImage(page, name) {
   assert.equal(data.type, "image/png");
   assert.match(data.name, /^matiz-.*\.png$/);
   const png = PNG.sync.read(Buffer.from(data.bytes));
-  assert.deepEqual([png.width, png.height], [1080, 800]);
+  assert.deepEqual([png.width, png.height], [1080, 640]);
   assert.equal(new URL(data.text).protocol, "https:");
   if (process.env.MATIZ_SCREENSHOTS) {
     await mkdir(process.env.MATIZ_SCREENSHOTS, { recursive: true });

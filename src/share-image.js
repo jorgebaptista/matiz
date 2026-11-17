@@ -4,7 +4,7 @@ import { translate as t } from "./i18n.js";
 import { dailyShareText, survivalShareText } from "./share.js";
 
 /** Prepare before the tap: file sharing requires a live user gesture. */
-export async function resultImage(session, { survival = false, best = 0, playUrl }) {
+export async function resultImage(session, { survival = false, playUrl }) {
   const text = (survival ? survivalShareText : dailyShareText)(session, playUrl);
   const url = text.split("\n").at(-1);
   await Promise.all([
@@ -13,7 +13,7 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
   ]);
   const canvas = document.createElement("canvas");
   canvas.width = 1080;
-  canvas.height = 800;
+  canvas.height = 640;
   const ctx = canvas.getContext("2d");
   const ink = "#174f42", muted = "#526a5d", paper = "#f7f5ed";
   const box = (x, y, w, h, colour, radius = 0) => {
@@ -34,24 +34,21 @@ export async function resultImage(session, { survival = false, best = 0, playUrl
   label(locale.locale, 1008, 113, 28, { colour: muted });
   ctx.textAlign = "left";
   box(72, 158, 936, 2, "#d7dfd2");
-  label(t(survival ? "survival" : "daily"), 72, 282, 60, { weight: 600 });
-  if (survival) label(t("survivalShareInvite"), 76, 340, 34, { colour: muted });
+  label(t(survival ? "survival" : "daily"), 72, 250, 52, { weight: 600 });
   if (!survival) label(new Intl.DateTimeFormat(locale.locale, {
     day: "numeric", month: "short", timeZone: "UTC",
-  }).format(session.day * 86_400_000), 76, 340, 30, { colour: muted });
+  }).format(session.day * 86_400_000), 76, 297, 28, { colour: muted });
   const score = roundScore(session);
-  label(survival ? score : `${score} / ${session.cards.length}`, 65, 555, 220, { weight: 600 });
+  label(survival ? score : `${score} / ${session.cards.length}`, 65, 487, 210, { weight: 600 });
   if (survival) {
-    box(72, 620, 280, 118, "#edf0e6", 20);
-    label(t("yourBest"), 96, 660, 28, { colour: muted, width: 232 });
-    label(Math.max(best, score), 96, 714, 48, { weight: 600 });
+    label(t("survivalShareInvite"), 76, 568, 34, { colour: muted });
   } else {
     session.cards.forEach((card, index) => {
       const correct = session.answers[index] === (card.key ?? wordsById.get(card.id)?.key);
       const x = 76 + index * 76;
-      box(x, 620, 58, 58, correct ? ink : "#dce2d7", 12);
+      box(x, 530, 58, 58, correct ? ink : "#dce2d7", 12);
       // A shape as well as colour distinguishes correct answers.
-      label(correct ? "✓" : "–", x + 14, 661, 36, { colour: correct ? paper : muted });
+      label(correct ? "✓" : "–", x + 14, 571, 36, { colour: correct ? paper : muted });
     });
   }
   const dataUrl = canvas.toDataURL("image/png");
