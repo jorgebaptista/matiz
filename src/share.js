@@ -13,7 +13,7 @@ export function dailyShareText(session, playUrl) {
     session.answers[index] === (card.key ?? wordsById.get(card.id)?.key) ? "🟩" : "⬜",
   ).join("");
   const link = new URL(playUrl);
-  link.search = "?mode=daily";
+  link.search = "";
   link.hash = "";
   return [
     `Matiz · ${translate("daily")} · ${locale.locale}`,

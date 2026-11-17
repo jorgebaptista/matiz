@@ -47,7 +47,7 @@ try {
     viewport: { width: 390, height: 800 },
   });
   await staticPage.goto(url);
-  assert.match(await staticPage.title(), /synonym game for fluent speakers/i);
+  assert.match(await staticPage.title(), /daily word game/i);
   assert.equal(await staticPage.locator("html").getAttribute("lang"), "en");
   const info = staticPage.getByRole("link", {
     name: "About Português europeu",
@@ -79,6 +79,19 @@ try {
         "<loc>" + new URL("jogar/", base).href + "</loc>",
       ),
     );
+  }
+  for (const [locale, name] of [["en-GB", "British English"], ["pt-PT", "Português europeu"]]) {
+    await staticPage.getByRole("link", { name: "Play today’s four words in " + name }).click();
+    assert.equal(staticPage.url(), url + "daily/" + locale + "/");
+    assert.ok(await staticPage.locator(".daily-info p").isVisible());
+    if (process.env.SITE_URL) {
+      const canonical = new URL("daily/" + locale + "/", process.env.SITE_URL.replace(/\/+$/, "") + "/").href;
+      assert.equal(await staticPage.locator('link[rel="canonical"]').getAttribute("href"), canonical);
+      assert.equal(await staticPage.locator('meta[property="og:url"]').getAttribute("content"), canonical);
+      assert.equal(await staticPage.locator('link[hreflang="' + locale + '"]').getAttribute("href"), canonical);
+      assert.ok((await (await staticPage.request.get(url + "sitemap.xml")).text()).includes("<loc>" + canonical + "</loc>"));
+    }
+    await staticPage.goto(url);
   }
   await info.click();
   assert.match(await staticPage.title(), /sinónimos em português europeu/i);
@@ -157,7 +170,7 @@ try {
   await staticPage.goto(url);
   await staticPage.getByRole("link", { name: "About British English" }).click();
   assert.equal(await staticPage.locator("html").getAttribute("lang"), "en-GB");
-  assert.match(await staticPage.getByRole("link", { name: "Daily words" }).getAttribute("href"), /en-GB\/\?mode=daily$/);
+  assert.match(await staticPage.getByRole("link", { name: "Daily words" }).getAttribute("href"), /daily\/en-GB\/$/);
   console.log(
     "Crawlable mobile homepage, project path, share card and first question passed.",
   );

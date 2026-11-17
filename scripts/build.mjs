@@ -52,6 +52,7 @@ export async function buildGames({ root = projectRoot, outdir = path.join(projec
     const metadata = {
       locale: locale.locale, title: locale.title, description: locale.description,
       playUrl: new URL(route, siteRoot).href,
+      dailyUrl: new URL("daily/" + locale.locale + "/", siteRoot).href,
     };
     const editionOptions = languages.map(({ locale: edition }) => {
       const root = locale.locale === defaultLocale ? "./" : "../";

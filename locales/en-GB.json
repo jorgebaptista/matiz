@@ -14,6 +14,8 @@
     "imageUnavailable": "Couldn’t create the image. Try sharing again.",
     "licenseAndroidX": "AndroidX Core · Apache 2.0",
     "daily": "Daily words",
+    "dailyTitle": "Daily synonym quiz",
+    "dailyDescription": "Pick the closest synonym for four words, from easy to hard. Everyone playing in English gets the same four until midnight in Lisbon.",
     "dailyEncore": "Encore",
     "dailyUnplayed": "Unplayed",
     "dailyStarted": "In progress",

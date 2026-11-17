@@ -27,6 +27,18 @@ body {
   padding: 0 22px max(22px, env(safe-area-inset-bottom));
   min-height: 100dvh;
 }
+#game[data-mode="daily"]:empty {
+  min-height: 0;
+}
+.daily-info {
+  max-width: 570px;
+  margin: auto;
+  padding: 1.25rem 22px;
+  line-height: 1.5;
+}
+.daily-info a {
+  color: var(--green);
+}
 button {
   font: inherit;
   color: inherit;

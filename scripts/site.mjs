@@ -34,14 +34,17 @@ const languages = await readLanguages();
 const theme = await read("src", "theme.js");
 const themeButton = await read("src", "theme-button.html");
 const editionPath = locale => "editions/" + locale + "/";
-function publicLinks(route) {
+const dailyPath = locale => "daily/" + locale + "/";
+const gamePath = locale => locale === defaultLocale ? "jogar/" : "jogar/" + locale + "/";
+const dailyLanguages = languages.filter(({ pack }) => dailyBandsFor(pack.levels).length);
+function publicLinks(route, variant = editionPath, variants = languages) {
   if (!base) return "";
   const url = absolute(route);
   return [
     '<link rel="canonical" href="' + url + '">',
-    ...languages.map(({ pack }) => '<link rel="alternate" hreflang="' + esc(pack.locale) +
-      '" href="' + absolute(editionPath(pack.locale)) + '">'),
-    '<link rel="alternate" hreflang="x-default" href="' + absolute("") + '">',
+    ...variants.map(({ pack }) => '<link rel="alternate" hreflang="' + esc(pack.locale) +
+      '" href="' + absolute(variant(pack.locale)) + '">'),
+    ...(variant === editionPath ? ['<link rel="alternate" hreflang="x-default" href="' + absolute("") + '">'] : []),
     '<meta property="og:url" content="' + url + '">',
     '<meta property="og:image" content="' + absolute("matiz.png") + '">',
     '<meta name="twitter:card" content="summary_large_image">',
@@ -56,17 +59,34 @@ try {
     const locale = pack.locale;
     const isDefault = locale === defaultLocale;
     const relative = isDefault ? "" : locale;
-    const route = isDefault ? "jogar/" : "jogar/" + locale + "/";
+    const route = gamePath(locale);
     const name = copy.languageName;
-    let game = await read("dist", relative, "index.html");
-    if (base)
-      game = game.replace(
-        "</head>",
-        () => '<link rel="canonical" href="' + absolute(route) + '"></head>',
-      );
-    const dest = path.join(output, route);
-    await mkdir(dest, { recursive: true });
-    await writeFile(path.join(dest, "index.html"), game);
+    const game = await read("dist", relative, "index.html");
+    const daily = dailyLanguages.some(language => language.pack.locale === locale) ? dailyPath(locale) : null;
+    async function writeGamePage(destination, source, title, description, headLinks) {
+      const meta = '<meta property="og:type" content="website"><meta property="og:title" content="' + esc(title) +
+        '"><meta property="og:description" content="' + esc(description) + '">';
+      const dir = path.join(output, destination);
+      await mkdir(dir, { recursive: true });
+      await writeFile(path.join(dir, "index.html"), source.replace("</head>", () => meta + headLinks + "</head>"));
+    }
+    await writeGamePage(route, game, copy.title, copy.description, publicLinks(route, gamePath));
+    if (daily) {
+      const { dailyTitle, dailyDescription } = copy.strings;
+      const title = dailyTitle + " · Matiz";
+      const otherEditions = dailyLanguages.filter(language => language.pack.locale !== locale)
+        .map(({ pack, locale }) => {
+          const href = path.posix.relative(route, dailyPath(pack.locale)) + "/";
+          return '<a lang="' + esc(pack.locale) + '" href="' + esc(href) + '">' + esc(locale.languageName) + '</a>';
+        });
+      const source = game
+        .replace("<head>", () => '<head><base href="../../' + esc(route) + '">')
+        .replace("<title>" + esc(copy.title) + "</title>", () => "<title>" + esc(title) + "</title>")
+        .replace('name="description" content="' + esc(copy.description) + '"', () => 'name="description" content="' + esc(dailyDescription) + '"')
+        .replace('<main id="game"></main>', () => '<main id="game" data-mode="daily"></main><footer class="daily-info"><h2>' +
+          esc(dailyTitle) + '</h2><p>' + esc(dailyDescription) + '</p>' + otherEditions.join(' · ') + '</footer>');
+      await writeGamePage(daily, source, title, dailyDescription, publicLinks(daily, dailyPath, dailyLanguages));
+    }
     const info = editionPath(locale);
     const word = (
       pack.levels.find((level) => level.id === "1") ?? pack.levels[0]
@@ -82,17 +102,17 @@ try {
     const page = template
       .replace("<!-- theme-button -->", () => themeButton)
       .replace("/* THEME_JS */", () => theme)
-      .replace("<!-- daily-link -->", () => dailyBandsFor(pack.levels).length ? '<a href="../../' + esc(route) + '?mode=daily">' + esc(copy.strings.daily) + '</a>' : '')
+      .replace("<!-- daily-link -->", () => daily ? '<a href="../../' + esc(daily) + '">' + esc(copy.strings.daily) + '</a>' : '')
       .replace("<!-- public-links -->", () => publicLinks(info))
       .replace(/\{\{(\w+)\}\}/g, (_, key) => esc(fields[key]));
     const dir = path.join(output, info);
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, "index.html"), page);
-    editions.push({ locale, route, info, name, word });
+    editions.push({ locale, route, info, daily, name, word });
   }
   const links = editions
     .map(
-      ({ locale, route, info, name }) =>
+      ({ locale, route, info, daily, name }) =>
         '<p><a class="play" lang="' +
         esc(locale) +
         '" hreflang="' +
@@ -102,6 +122,7 @@ try {
         '">' +
         esc(name) +
         ' <span aria-hidden="true">→</span></a>' +
+        (daily ? '<a hreflang="' + esc(locale) + '" href="./' + esc(daily) + '" aria-label="Play today’s four words in ' + esc(name) + '">Daily quiz</a>' : '') +
         '<a hreflang="' +
         esc(locale) +
         '" href="./' +
@@ -136,7 +157,7 @@ try {
   for (const file of ["dm-sans.woff2", "dmsans-OFL.txt"])
     await copyFile(at("vendor", "fonts", file), path.join(output, file));
   if (base) {
-    const urls = ["", ...editions.flatMap((e) => [e.info, e.route])].map(
+    const urls = ["", ...editions.flatMap((e) => [e.info, e.route, e.daily].filter(Boolean))].map(
       (route) => "<url><loc>" + absolute(route) + "</loc></url>",
     );
     await writeFile(
