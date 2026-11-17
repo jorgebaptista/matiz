@@ -363,7 +363,7 @@ function render(focus = false) {
   if (shareButton) {
     shareButton.disabled = true;
     resultImage(s, {
-      survival: state.survivalActive, best: state.survivalBests?.[s.version] ?? 0,
+      survival: state.survivalActive,
       playUrl: document.querySelector('meta[name="matiz-play-url"]').content,
     }).then(card => {
       if (version === renderVersion) shareCard = card;
