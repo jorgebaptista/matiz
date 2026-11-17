@@ -95,6 +95,9 @@ test("a shared invitation reproduces the run, target and version without answer 
 test("pack edits invalidate new invitations while saved runs retain their original questions", () => {
   const run = createSurvival(levels, 10);
   const edited = structuredClone(levels);
+  edited[0].words[0].phrase = "a different reading";
+  assert.notEqual(survivalVersion(edited), run.version);
+  delete edited[0].words[0].phrase;
   edited[0].words[0].key = "edited answer";
   assert.notEqual(survivalVersion(edited), run.version);
   assert.deepEqual(restoreSurvival(JSON.parse(JSON.stringify(run))), run);

@@ -62,8 +62,11 @@ test("exports pack order, stable IDs and a cross-band word map", () => {
   for (const level of levels) for (const word of level.words) {
     assert.equal(wordsById.get(word.id), word);
     assert.equal(word.levelId, level.id);
+    const source = pack.levels.flatMap(band => band.words).find(entry => entry.id === word.id);
+    assert.equal(word.phrase, source.phrase);
     assert.deepEqual(Object.keys(word).sort(),
-      ["id", "word", "key", "choices", "example", "levelId", ...(word.debutDay == null ? [] : ["debutDay"])].sort());
+      ["id", "word", "key", "choices", "example", "levelId", ...(source.phrase ? ["phrase"] : []),
+        ...(word.debutDay == null ? [] : ["debutDay"])].sort());
   }
 });
 

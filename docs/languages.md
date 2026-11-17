@@ -41,7 +41,7 @@ A minimal English pack has this shape:
 }
 ```
 
-Write original questions for fluent speakers of the language. The player sees the headword before the example: check that only one option is defensible without that context. The correct answer and three alternatives must differ from one another and the target, ignoring case and surrounding whitespace. Duplicate targets and IDs are rejected across a locale's playable and draft entries.
+Write original questions for fluent speakers. An optional `phrase` gives context before the answer. Follow the [one-best-answer review](../CONTRIBUTING.md#review-words-and-levels). The four choices and target must differ, ignoring case and surrounding whitespace. Targets and IDs must be unique across playable and draft entries.
 
 Level IDs are unique numeric strings; `"0"` is the optional introductory band. Array order controls difficulty order. Every level needs a name and at least one word. Rounds contain up to five words, so small starter packs work too. Keep published word and level IDs stable to preserve saves. Changes to published answers or choices require checking saved rounds.
 

@@ -240,7 +240,9 @@ function play(s) {
   }
   return (
     top +
-    '<section class="question">' + wordHeading(word) + '<p>' + t("prompt") + '</p></section>' +
+    '<section class="question">' + wordHeading(word) +
+    (word.phrase ? '<p><i>' + esc(word.phrase) + '</i></p>' : '') +
+    '<p>' + t("prompt") + '</p></section>' +
     '<div class="choices">' +
     card.options
       .map(

@@ -13,6 +13,7 @@ export function createSurvival(levels, seed, target = null) {
     const words = shuffle(band.words, random);
     return (index === bands.length - 1 ? words : words.slice(0, 3)).map(word => ({
       id: word.id, word: word.word, levelId: word.levelId,
+      ...(word.phrase ? { phrase: word.phrase } : {}),
       key: word.key, example: word.example, options: shuffle(word.choices, random),
     }));
   });

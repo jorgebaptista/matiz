@@ -18,7 +18,9 @@ Open an issue with a word, the sense you have in mind and an example. Or copy th
 
 ## Review words and levels
 
-A fluent reviewer plays each question before reading the example. Replace alternatives that could also be correct: players see only the headword. Check part of speech, register and idiomatic usage.
+Read the word and all four choices before looking at the example. Try to defend each alternative, including in other common senses of the word. Replace any competing synonym. If the intended reading needs context, add a short `phrase` such as “lavish spending”. It appears with the word before the player answers. A clear word needs no phrase.
+
+Keep the choices comparable in grammar and specificity. The example after the answer should illustrate the same sense. A fluent reviewer should be able to explain why one choice fits best without seeing that example.
 
 Move reviewed questions from the queue to the appropriate level. Remove `targetLevel`, set `status` to `reviewed` and add `reviewedBy` with the reviewer's agreed public credit. Keep the original drafting credit, intended sense and references. For existing `pilot` entries, add those review fields in place.
 
