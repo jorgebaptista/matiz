@@ -10,8 +10,8 @@
     112.5%/1.55 "DM Sans",
     system-ui,
     sans-serif;
-  color: #173c32;
-  background: #f7f5ed;
+  color: var(--ink);
+  background: var(--paper);
 }
 * {
   box-sizing: border-box;
@@ -33,7 +33,7 @@ footer,
 header,
 footer {
   padding: 1rem 0;
-  border-block-end: 1px solid #ced4c7;
+  border-block-end: 1px solid var(--line);
 }
 .brand {
   font:
@@ -41,12 +41,12 @@ footer {
     serif;
 }
 a {
-  color: #174f42;
+  color: var(--green);
   text-underline-offset: 0.18em;
 }
 a:focus-visible,
 summary:focus-visible {
-  outline: 3px solid #94601e;
+  outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
 .intro {
@@ -74,8 +74,8 @@ p {
   max-width: 63ch;
 }
 aside {
-  background: #174f42;
-  color: #f7f5ed;
+  background: var(--hero-bg);
+  color: var(--hero-ink);
   border-radius: 1rem;
   padding: 1.6rem;
 }
@@ -111,8 +111,8 @@ aside details p {
   display: inline-flex;
   align-items: center;
   gap: 2rem;
-  background: #174f42;
-  color: white;
+  background: var(--green);
+  color: var(--button-ink);
   border-radius: 0.55rem;
   padding: 0.75rem 1.1rem;
   font-weight: 700;
@@ -124,7 +124,7 @@ aside details p {
   font-size: 0.82rem;
 }
 main > section + section {
-  border-top: 1px solid #ced4c7;
+  border-top: 1px solid var(--line);
   padding: 1.7rem 0;
 }
 .links,
@@ -133,7 +133,7 @@ footer {
   gap: 1.5rem;
 }
 footer {
-  border-block-start: 1px solid #ced4c7;
+  border-block-start: 1px solid var(--line);
   font-size: 0.85rem;
 }
 @media (max-width: 42rem) {

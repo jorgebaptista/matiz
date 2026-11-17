@@ -4,6 +4,7 @@
   "title": "Matiz · Jogo de sinónimos em português europeu",
   "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco perguntas.",
   "strings": {
+    "darkMode": "Modo escuro",
     "currentScore": "Atual",
     "yourBest": "Recorde",
     "challenger": "Rival",

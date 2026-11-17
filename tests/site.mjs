@@ -6,6 +6,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "@playwright/test";
 import { projectRoot } from "../scripts/content.mjs";
+import { testTheme } from "./theme-browser.mjs";
 
 const prefix = "/matiz/";
 const root = path.join(projectRoot, "site-dist");
@@ -40,6 +41,7 @@ try {
   browser = await chromium.launch({
     executablePath: process.env.MATIZ_BROWSER || undefined,
   });
+  await testTheme(browser, url);
   const staticPage = await browser.newPage({
     javaScriptEnabled: false,
     viewport: { width: 390, height: 800 },

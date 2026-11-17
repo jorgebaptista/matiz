@@ -2,6 +2,7 @@ package pt.matiz.game;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.ClipData;
 import android.net.Uri;
 import android.graphics.Color;
@@ -26,11 +27,11 @@ public class MainActivity extends Activity {
     private static final String DEFAULT_GAME = ASSET_ROOT + "index.html";
     private final Set<String> editionUrls = new HashSet<>();
     @Override public void onCreate(Bundle state) {
+        boolean dark = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        setTheme(dark ? android.R.style.Theme_Material_NoActionBar : android.R.style.Theme_Material_Light_NoActionBar);
         super.onCreate(state);
-        getWindow().setStatusBarColor(Color.rgb(247, 245, 237));
-        getWindow().setNavigationBarColor(Color.rgb(247, 245, 237));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         game = new WebView(this);
+        applyTheme(dark);
         game.getSettings().setJavaScriptEnabled(true);
         game.getSettings().setDomStorageEnabled(true);
         game.getSettings().setAllowFileAccess(false);
@@ -45,8 +46,18 @@ public class MainActivity extends Activity {
             android.util.Log.w("Matiz", "Could not list bundled editions", e);
         }
         game.setWebViewClient(new WebViewClient() {
+            @Override public void onPageFinished(WebView view, String url) {
+                if (editionUrls.contains(url.split("\\?", 2)[0]))
+                    view.evaluateJavascript("document.documentElement.dataset.theme === 'dark'", value -> applyTheme("true".equals(value)));
+            }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
+                if (request.isForMainFrame() && "matiz-theme".equals(request.getUrl().getScheme())) {
+                    String theme = request.getUrl().getHost();
+                    if (view.getUrl() != null && editionUrls.contains(view.getUrl().split("\\?", 2)[0]) && ("dark".equals(theme) || "light".equals(theme)))
+                        applyTheme("dark".equals(theme));
+                    return true;
+                }
                 if (request.isForMainFrame() && "matiz-share".equals(request.getUrl().getScheme())) {
                     if (view.getUrl() != null && editionUrls.contains(view.getUrl().split("\\?", 2)[0]))
                         view.evaluateJavascript("window.matizSharePayload ? window.matizSharePayload() : null", MainActivity.this::shareImage);
@@ -59,6 +70,13 @@ public class MainActivity extends Activity {
         });
         setContentView(game);
         game.loadUrl(gameUrl(getIntent()));
+    }
+    private void applyTheme(boolean dark) {
+        int background = dark ? Color.rgb(20, 35, 30) : Color.rgb(247, 245, 237);
+        getWindow().setStatusBarColor(background);
+        getWindow().setNavigationBarColor(background);
+        getWindow().getDecorView().setSystemUiVisibility(dark ? 0 : View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        game.setBackgroundColor(background);
     }
     private void shareImage(String payload) {
         try {

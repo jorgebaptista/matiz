@@ -25,6 +25,11 @@ const alert = document.querySelector("#storage-alert");
 const bundledApp = location.protocol === "file:" && location.pathname.startsWith("/android_asset/");
 const editionPicker = document.querySelector("#edition-picker").content.querySelector("select");
 const canSwitch = (bundledApp || /^https?:$/.test(location.protocol)) && editionPicker.options.length > 1;
+function themeControl() {
+  const button = document.querySelector("#theme-control").content.firstElementChild.cloneNode(true);
+  button.setAttribute("aria-pressed", String(document.documentElement.dataset.theme === "dark"));
+  return button.outerHTML;
+}
 function restore() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
@@ -57,8 +62,8 @@ const badge =
 const header = () =>
   '<header><span class="brand">' +
   badge +
-  t("brand") + '</span>' + (canSwitch ? editionPicker.outerHTML :
-    '<span class="locale">' + esc(locale.languageName) + '</span>') + '</header>';
+  t("brand") + '</span><div class="header-tools">' + (canSwitch ? editionPicker.outerHTML :
+    '<span class="locale">' + esc(locale.languageName) + '</span>') + themeControl() + '</div></header>';
 const bandById = new Map(levels.map((level) => [level.id, level]));
 const difficultyKeys = ["entryBand", "easyBand", "mediumBand", "hardBand"];
 function wordHeading(word) {
@@ -175,9 +180,9 @@ function roundTop(s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
   const caption = state.survivalActive ? t("survival") : state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
   return (
-    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><span>' +
+    '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><div class="header-tools"><span class="position">' +
     (state.survivalActive ? '' : t("wordPosition", { count: pos, total: s.cards.length })) +
-    '</span></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
+    '</span>' + themeControl() + '</div></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
     s.cards
       .map(
         (_, i) =>
