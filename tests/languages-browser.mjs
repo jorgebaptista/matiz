@@ -23,17 +23,9 @@ export async function testLanguages(browser) {
     assert.equal(await page.locator(".question p").innerText(), "Which meaning is closest?");
     await page.getByRole("button", { name: "I don't know", exact: true }).click();
     assert.equal(await page.locator(".result").innerText(), "Good to know");
-    assert.match(await page.locator(".review-time").innerText(), /5 other questions/);
+    assert.match(await page.locator(".review-time").innerText(), /end of this round/);
     await page.reload();
     assert.equal(await page.locator(".example blockquote").innerText(), "She paused to ponder the two options.");
-    await page.evaluate(() => {
-      const saved = JSON.parse(localStorage.getItem("matiz.en-GB.v1"));
-      saved.progress.ponderar.questionsLeft = 1;
-      localStorage.setItem("matiz.en-GB.v1", JSON.stringify(saved));
-    });
-    await page.reload();
-    assert.match(await page.locator(".review-time").innerText(), /1 other question,/);
-
     // Fulfil both pages locally at one origin; no server or external requests.
     const htmlByPath = new Map([
       ["/jogar/", await readFile(path.join(fixture.outdir, "index.html"), "utf8")],

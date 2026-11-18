@@ -6,8 +6,6 @@ import { dailyBandsFor, gameLevels } from "./bands.js";
 import { createSurvival, restoreSurvival, survivalVersion, survivalId, survivalAttempt, restoreAttempts, mergeAttempts } from "./survival.js";
 
 const DAY = 24 * 60 * 60 * 1000;
-const RETRY = 10 * 60 * 1000;
-const RETRY_GAP = 5;
 const INTERVALS = [1, 3, 7, 14, 30];
 const SIZE = 5;
 
@@ -39,13 +37,22 @@ export function startDaily(state, now = Date.now()) {
     if (released.length && !debut)
       sourceDay = released[(day - latest - 1) % released.length];
     const bands = dailyBands.map(band => ({ ...band, words: band.words.filter(w => w.debutDay === sourceDay) }));
+    delete state.dailyReplay;
     state.daily = { day, debut, cards: dailyCards(bands, sourceDay ?? day), cursor: 0, answers: [] };
   }
   state.dailyActive = true;
   state.active = false;
 }
 
-export const activeSession = state => state.survivalActive ? state.survival : state.dailyActive ? state.daily : state.active ? state.session : null;
+export function retryDaily(state) {
+  const daily = state.daily;
+  if (!state.dailyActive || !daily || daily.cursor !== daily.cards.length) return;
+  state.dailyReplay = { ...daily, cards: daily.cards.map(card => ({
+    ...card, options: shuffle(card.options),
+  })), cursor: 0, answers: [] };
+}
+
+export const activeSession = state => state.survivalActive ? state.survival : state.dailyActive ? (state.dailyReplay ?? state.daily) : state.active ? state.session : null;
 
 /** Resume Survival, or accept a particular challenge without changing practice or daily saves. */
 export function startSurvival(state, seed, target = null, challengeLevels = levels) {
@@ -142,6 +149,11 @@ export function restoreState(saved) {
     Array.isArray(saved.progress)
   ) return fresh();
   const state = fresh();
+  if (Number.isSafeInteger(saved.answerBest) && saved.answerBest > 0) {
+    state.answerBest = saved.answerBest;
+    state.answerRun = Number.isSafeInteger(saved.answerRun) && saved.answerRun >= 0
+      ? Math.min(saved.answerRun, saved.answerBest) : 0;
+  }
   for (const [id, value] of Object.entries(saved.progress)) {
     if (!value || typeof value !== "object" || Array.isArray(value)) continue;
     const word = wordsById.get(id);
@@ -157,12 +169,15 @@ export function restoreState(saved) {
       progress.retry = progress.seen > 0 && progress.box === 0;
       progress.dueAt = progress.seen > 0
         ? progress.lastSeen + (progress.retry
-          ? RETRY
+          ? 0
           : INTERVALS[Math.max(0, progress.reviewStep)] * DAY)
         : 0;
     }
-    if ((progress.retry || progress.scheduledDueAt != null) && progress.questionsLeft == null)
-      progress.questionsLeft = RETRY_GAP;
+    // Older saves used a countdown and an optional early free-practice review.
+    if (progress.scheduledDueAt != null) progress.dueAt = progress.scheduledDueAt;
+    else if (progress.retry && progress.questionsLeft != null) progress.dueAt = progress.lastSeen;
+    delete progress.scheduledDueAt;
+    delete progress.questionsLeft;
     state.progress[id] = progress;
   }
   if (saved.version === 1) {
@@ -189,6 +204,10 @@ export function restoreState(saved) {
       const daily = restoreSession(saved.daily);
       if (daily) {
         state.daily = daily;
+        if (daily.cursor === daily.cards.length && saved.dailyReplay?.day === daily.day) {
+          const replay = restoreSession(saved.dailyReplay);
+          if (replay) state.dailyReplay = replay;
+        }
         state.dailyActive = Boolean(saved.dailyActive);
         if (state.dailyActive) state.active = false;
       }
@@ -245,7 +264,7 @@ export function start(state, now = Date.now(), rng = Math.random) {
   const words = available.flatMap(band => band.words);
   const reviews = words.filter((word) => {
     const p = state.progress[word.id];
-    return p?.seen > 0 && (dueAt(p) <= now || p.questionsLeft != null);
+    return p?.seen > 0 && dueAt(p) <= now;
   }).sort((a, b) => dueAt(state.progress[a.id]) - dueAt(state.progress[b.id]));
   const difficultyPause = struggling(state, available);
   const pristine = !words.some((word) => seen(state, word));
@@ -256,19 +275,12 @@ export function start(state, now = Date.now(), rng = Math.random) {
     Number(b.levelId === difficultyPause.id) - Number(a.levelId === difficultyPause.id));
   const cards = [];
   while (cards.length < SIZE) {
-    // Earlier slots in this round will each supply one intervening answer.
-    const i = reviews.findIndex(w => {
-      const p = state.progress[w.id];
-      return dueAt(p) <= now || p.questionsLeft <= cards.length;
-    });
-    let word = i >= 0 ? reviews.splice(i, 1)[0] : undefined;
+    let word = reviews.shift();
     let practice = false;
     if (!word && !difficultyPause) word = unseen.shift();
-    if (!word && (reviews.length || cards.every(card => card.practice))) {
+    if (!word && cards.every(card => card.practice)) {
       word = practicePool.shift();
       practice = Boolean(word);
-      // A new word can bridge a gap when every familiar word is awaiting a retry.
-      if (!word && reviews.length) word = unseen.shift();
     }
     if (!word) break;
     cards.push({ id: word.id, key: word.key, options: shuffle(word.choices, rng), practice });
@@ -293,6 +305,11 @@ export function answer(state, value, now = Date.now()) {
   const word = state.survivalActive ? card : wordsById.get(card.id);
   if (!word || (value !== null && !card.options.includes(value))) return;
   session.answers.push(value);
+  const correct = value === (card.key ?? word.key);
+  if (!(state.dailyActive && state.dailyReplay) && !card.correction) {
+    state.answerRun = correct ? (state.answerRun ?? 0) + 1 : 0;
+    state.answerBest = Math.max(state.answerBest ?? 0, state.answerRun);
+  }
   if (state.survivalActive) {
     state.survivalBests ??= {};
     state.survivalBests[session.version] = Math.max(state.survivalBests[session.version] ?? 0, roundScore(session));
@@ -300,38 +317,12 @@ export function answer(state, value, now = Date.now()) {
     return;
   }
   if (state.dailyActive) return;
-  for (const p of Object.values(state.progress)) {
-    if (p.termId !== word.id && p.questionsLeft > 0) p.questionsLeft--;
+  if (!correct && !card.correction) {
+    session.cards.push({ ...card, correction: true, options: shuffle(card.options) });
   }
-  const correct = value === (card.key ?? word.key);
   const prior = state.progress[word.id] ?? emptyProgress(word.levelId, word.id);
-  const ready = dueAt(prior) <= now || prior.questionsLeft === 0;
-  const earlyRetry = prior.scheduledDueAt > now && ready;
-  const practice = card.practice || session.practice || session.replay ||
-    earlyRetry || (prior.seen > 0 && !ready);
-  if (practice) {
-    // Practice never promotes or postpones a review, including one now overdue.
-    if (!correct) {
-      state.progress[word.id] = {
-        ...prior,
-        questionsLeft: RETRY_GAP,
-        // Keep the real review separate from an optional, earlier retry.
-        scheduledDueAt: prior.scheduledDueAt ?? dueAt(prior),
-        dueAt: Math.min(dueAt(prior), now + RETRY),
-      };
-      if (earlyRetry) state.progress[word.id].dueAt =
-        Math.min(prior.scheduledDueAt, now + RETRY);
-    } else if (earlyRetry && !card.practice && !session.practice && !session.replay) {
-      state.progress[word.id] = { ...prior, dueAt: prior.scheduledDueAt };
-      delete state.progress[word.id].scheduledDueAt;
-      delete state.progress[word.id].questionsLeft;
-    }
-    return;
-  }
+  if (card.practice || session.practice || session.replay || (prior.seen > 0 && dueAt(prior) > now)) return;
   const progress = applyAnswer(prior, correct, now);
-  delete progress.scheduledDueAt;
-  if (correct) delete progress.questionsLeft;
-  else progress.questionsLeft = RETRY_GAP;
   progress.delayedReviews = prior.delayedReviews ?? 0;
   progress.reviewStep = correct
     ? Math.min(INTERVALS.length - 1, (prior.retry ? -1 : prior.reviewStep ?? -1) + 1)
@@ -339,7 +330,7 @@ export function answer(state, value, now = Date.now()) {
   if (correct && !prior.retry && prior.reviewStep >= 0 && prior.seen > 0)
     progress.delayedReviews++;
   progress.retry = !correct;
-  progress.dueAt = now + (correct ? INTERVALS[progress.reviewStep] * DAY : RETRY);
+  progress.dueAt = now + (correct ? INTERVALS[progress.reviewStep] * DAY : 0);
   state.progress[word.id] = progress;
 }
 
@@ -366,6 +357,6 @@ export function roundScore(session) {
   return session.answers.reduce((score, value, index) => {
     const card = session.cards[index];
     const key = card?.key ?? wordsById.get(card?.id)?.key;
-    return score + Number(key !== undefined && value === key);
+    return score + Number(!card?.correction && key !== undefined && value === key);
   }, 0);
 }

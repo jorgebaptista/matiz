@@ -137,6 +137,19 @@ try {
     await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
   }
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
+  await daily.getByRole("button", { name: "Tentar de novo" }).click();
+  await daily.reload();
+  for (let i = 0; i < 4; i++) {
+    const key = await daily.evaluate(() => {
+      const { dailyReplay } = JSON.parse(localStorage.getItem("matiz.pt-PT.v1"));
+      return dailyReplay.cards[dailyReplay.cursor].key;
+    });
+    await daily.locator(".choice").filter({ hasText: key }).first().click();
+    await daily.locator('[data-action="next"]').click();
+  }
+  assert.match(await daily.locator(".score").innerText(), /4\s*\/\s*4/);
+  await daily.getByRole("button", { name: "Primeiro resultado" }).click();
+  assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
   assert.equal(await dailyButton.getAttribute("data-status"), "dailyCompleted");
   assert.ok(await dailyButton.locator(".calendar-check").isVisible());
@@ -145,6 +158,11 @@ try {
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
   await daily.clock.fastForward("24:00:00");
   await daily.waitForSelector('.daily[data-status="dailyUnplayed"]');
+  assert.equal(await daily.locator(".daily-streak").innerText(), "1 dia seguido · Recorde: 1 dia");
+  await daily.goto(url + "jogar/en-GB/");
+  assert.match(await daily.locator(".daily-streak").innerText(), /1 day in a row/);
+  await daily.clock.fastForward("24:00:00");
+  assert.equal(await daily.locator(".daily-streak").innerText(), "Best: 1 day");
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
   await play

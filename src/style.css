@@ -39,6 +39,13 @@ body {
 .daily-info a {
   color: var(--green);
 }
+.streak {
+  color: var(--ink);
+  font-size: .88rem;
+  text-align: center;
+  margin: .45rem 0 .8rem;
+}
+.streak:empty { display: none; }
 button {
   font: inherit;
   color: inherit;

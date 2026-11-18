@@ -22,16 +22,16 @@ test("locale metadata, exact UI keys and every placeholder occurrence are requir
   reject((locale) => { locale.strings.credits = ""; }, /empty translation/);
   for (const template of ["{count} of {missing}", "{count} {count} {total}", "{count} {total} {bad-key}"])
     reject((locale) => { locale.strings.seenTotal = template; }, /placeholder/);
-  reject((locale) => { delete locale.strings.reviewAfter.one; }, /plural forms/);
-  reject((locale) => { locale.strings.reviewAfter.other = "after {total}"; }, /placeholder/);
-  reject((locale) => { locale.strings.reviewAfter.few = ""; }, /empty translation/);
+  reject((locale) => { delete locale.strings.dailyStreak.one; }, /plural forms/);
+  reject((locale) => { locale.strings.dailyStreak.other = "after {total}"; }, /placeholder/);
+  reject((locale) => { locale.strings.dailyStreak.few = ""; }, /empty translation/);
   assert.throws(() => checkLocale(fixturePack, fixtureLocale, "en-gb"), /BCP47/);
 });
 
 test("PT-PT keeps its key, templates and singular/plural wording", () => {
   assert.equal(storageKey, "matiz.pt-PT.v1");
-  assert.equal(translate("reviewAfter", { count: 1 }), " ou após 1 outra pergunta, se for mais cedo");
-  assert.equal(translate("reviewAfter", { count: 2 }), " ou após 2 outras perguntas, se for mais cedo");
+  assert.equal(translate("dailyStreak", { count: 1 }), "1 dia seguido");
+  assert.equal(translate("dailyStreak", { count: 2 }), "2 dias seguidos");
   assert.equal(translate("seenTotal", { count: 2, total: 8 }), "2 de 8 vistas");
 });
 
