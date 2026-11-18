@@ -1,10 +1,11 @@
 import { roundScore, wordsById } from "./game.js";
+import { flamePath } from "./streak.js";
 import { locale } from "./pack.js";
 import { translate as t } from "./i18n.js";
 import { dailyShareText, survivalShareText } from "./share.js";
 
 /** Prepare before the tap: file sharing requires a live user gesture. */
-export async function resultImage(session, { survival = false, playUrl }) {
+export async function resultImage(session, { survival = false, playUrl, streak }) {
   const text = (survival ? survivalShareText : dailyShareText)(session, playUrl);
   const url = text.split("\n").at(-1);
   await Promise.all([
@@ -39,10 +40,23 @@ export async function resultImage(session, { survival = false, playUrl }) {
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(session.day * 86_400_000), 76, 297, 28, { colour: muted });
   const score = roundScore(session);
-  label(survival ? score : `${score} / ${session.cards.length}`, 65, 487, 210, { weight: 600 });
+  const scoreLabel = survival ? String(score) : `${score} / ${session.cards.length}`;
+  const scoreBaseline = 487;
+  label(scoreLabel, 65, scoreBaseline, 210, { weight: 600 });
   if (survival) {
     label(t("survivalShareInvite"), 76, 568, 34, { colour: muted });
   } else {
+    ctx.save();
+    const flameScale = 4.25;
+    const bounds = ctx.measureText(scoreLabel);
+    const scoreCenter = scoreBaseline + (bounds.actualBoundingBoxDescent - bounds.actualBoundingBoxAscent) / 2;
+    ctx.translate(933 - 20 * flameScale, scoreCenter - 24 * flameScale);
+    ctx.scale(flameScale, flameScale);
+    ctx.fillStyle = "#ffc184";
+    ctx.fill(new Path2D(flamePath));
+    ctx.textAlign = "center";
+    label(streak, 20, 36, 17, { colour: "#472209", weight: 700, width: 30 });
+    ctx.restore();
     session.cards.forEach((card, index) => {
       const correct = session.answers[index] === (card.key ?? wordsById.get(card.id)?.key);
       const x = 76 + index * 76;

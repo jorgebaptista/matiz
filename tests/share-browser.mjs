@@ -14,6 +14,16 @@ export async function testDailySharing(browser) {
       const html = await readFile("dist/" + suffix + "index.html", "utf8");
       await page.route("**/*", route => route.fulfill({ contentType: "text/html", body: html }));
       await page.clock.setFixedTime(new Date("2026-11-17T12:00:00Z"));
+      await page.addInitScript(() => {
+        const today = Date.UTC(2026, 10, 17) / 86_400_000;
+        for (let i = 1; i <= 6; i++) localStorage.setItem("matiz.daily-day." + (today - i), "1");
+        const fillText = CanvasRenderingContext2D.prototype.fillText;
+        window.flameNumbers = [];
+        CanvasRenderingContext2D.prototype.fillText = function (text, ...args) {
+          if (this.fillStyle === "#472209") window.flameNumbers.push(text);
+          return fillText.call(this, text, ...args);
+        };
+      });
       await page.goto("https://matiz.test/jogar/" + suffix + "?mode=daily");
       assert.equal(await page.locator('[data-action="share"]').count(), 0);
       for (let index = 0; index < 4; index++) {
@@ -50,6 +60,7 @@ export async function testDailySharing(browser) {
       const stored = JSON.parse(saved).daily;
       for (const card of stored.cards) assert.ok(!text.includes(card.key));
       await checkSharedImage(page, "daily-card-" + locale);
+      assert.equal(await page.evaluate(() => window.flameNumbers.at(-1)), "7");
 
       await page.evaluate(() => Object.defineProperty(navigator, "share", {
         configurable: true, value: async () => { throw new DOMException("Cancelled", "AbortError"); },
