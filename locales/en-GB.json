@@ -14,6 +14,7 @@
     "freezeReady": "Freeze ready",
     "freezeUsed": "Freeze used",
     "freezeRule": "Earn a freeze every 7 days played in a streak. You can hold one. It covers one missed day without adding to your count.",
+    "dailyStreakLabel": "Daily streak",
     "dailyStreak": { "one": "{count} day in a row", "other": "{count} days in a row" },
     "bestStreak": { "one": "Best: {count} day", "other": "Best: {count} days" },
     "darkMode": "Dark mode",

@@ -14,6 +14,7 @@
     "freezeReady": "Proteção disponível",
     "freezeUsed": "Proteção usada",
     "freezeRule": "Ganhas uma proteção a cada 7 dias de jogo na mesma sequência. Podes guardar uma. Cobre um dia de falta sem aumentar a contagem.",
+    "dailyStreakLabel": "Sequência diária",
     "dailyStreak": { "one": "{count} dia seguido", "many": "{count} dias seguidos", "other": "{count} dias seguidos" },
     "bestStreak": { "one": "Recorde: {count} dia", "many": "Recorde: {count} dias", "other": "Recorde: {count} dias" },
     "darkMode": "Modo escuro",
