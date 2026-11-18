@@ -129,9 +129,9 @@ function dailyStreakBadge() {
   const { current, best, freezeReady, protectedYesterday } = streakCounts(playedDays, dailyDay());
   if (!best) return "";
   const freeze = protectedYesterday ? "freezeUsed" : freezeReady ? "freezeReady" : null;
-  return '<summary>' + (current ? flame(current, t("dailyStreak", { count: current })) : '') +
-    t("bestStreak", { count: best }) + (freeze ? '<span class="freeze"><span aria-hidden="true">❄</span> ' +
-    t(freeze) + '</span>' : '') + '</summary><p>' + t("freezeRule") + '</p>';
+  return '<summary>' + (current ? flame(current, t("dailyStreak", { count: current })) : t("dailyStreakLabel")) +
+    (freeze ? '<span class="freeze"><span aria-hidden="true">❄</span> ' +
+    t(freeze) + '</span>' : '') + '</summary><p>' + t("bestStreak", { count: best }) + '</p><p>' + t("freezeRule") + '</p>';
 }
 function streakLine() {
   return '<details class="streak daily-streak">' + dailyStreakBadge() + '</details>';
