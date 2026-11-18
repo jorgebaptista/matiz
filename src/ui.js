@@ -9,7 +9,7 @@ import {
   next,
   finish,
   roundScore,
-  hasDaily, startDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
+  hasDaily, startDaily, retryDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
 } from "./game.js";
 import { locale, survivalArchives } from "./pack.js";
 import { dailyDay } from "./daily.js";
@@ -87,7 +87,7 @@ function reviewTime(word) {
   const progress = state.progress[word.id];
   const due = progress?.dueAt;
   if (!Number.isFinite(due)) return "";
-  if (due <= Date.now() || progress.questionsLeft === 0)
+  if (due <= Date.now())
     return '<p class="review-time">' + t("reviewAvailable") + '</p>';
   const when = new Intl.DateTimeFormat(locale.locale, {
     day: "numeric",
@@ -97,9 +97,7 @@ function reviewTime(word) {
   }).format(due);
   return (
     '<p class="review-time">' +
-    t("nextReview", { when }) + (progress.questionsLeft > 0
-      ? t("reviewAfter", { count: progress.questionsLeft })
-      : "") +
+    t("nextReview", { when }) +
     "</p>"
   );
 }
@@ -128,12 +126,12 @@ function streakText() {
   return current ? translate("dailyStreak", { count: current }) + " · " + record : record;
 }
 function streakLine() {
-  return '<p class="streak">' + esc(streakText()) + '</p>';
+  return '<p class="streak daily-streak">' + esc(streakText()) + '</p>';
 }
 
 function refreshDailyButton() {
   const button = root.querySelector('[data-action="daily"]');
-  const line = root.querySelector(".streak");
+  const line = root.querySelector(".daily-streak");
   if (line) line.textContent = streakText();
   if (!button) return;
   const daily = state.daily;
@@ -157,7 +155,7 @@ function home() {
     [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
-    '</section>' + (hasDaily ? dailyButton() : '') +
+    answerRecord() + '</section>' + (hasDaily ? dailyButton() : '') +
     '<button class="survival" data-action="survival"><span class="survival-icon" aria-hidden="true">⚡</span><strong>' +
     t(state.survival && state.survival.cursor < state.survival.cards.length ? "resumeSurvival" : "survival") +
     '</strong><span class="survival-best">' + t("personalBest", { count: state.survivalBests?.[survivalVersion(levels)] ?? 0 }) + '</span></button>' +
@@ -195,9 +193,12 @@ function home() {
     "</div>"
   );
 }
+function answerRecord() {
+  return state.answerBest ? '<p class="streak">' + t("answerRecord", { count: state.answerBest }) + '</p>' : '';
+}
 function roundTop(s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);
-  const caption = state.survivalActive ? t("survival") : state.dailyActive ? t("daily") : card.practice ? t("practice") : "";
+  const caption = state.survivalActive ? t("survival") : state.dailyActive ? t(state.dailyReplay ? "dailyRetry" : "daily") : card.correction ? t("correction") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><div class="header-tools"><span class="position">' +
     (state.survivalActive ? '' : t("wordPosition", { count: pos, total: s.cards.length })) +
@@ -241,12 +242,14 @@ function play(s) {
       (correct ? "good" : "learn") +
       '">' +
       status +
-      "</div>" + wordHeading(word) + '<p class="meaning">' +
+      "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
+        ? '<p class="streak">' + t("answerRun", { count: state.answerRun }) + '</p>' : '') + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
-      (state.dailyActive || state.survivalActive ? "" : reviewTime(word)) +
+      (state.dailyActive || state.survivalActive ? "" : !correct && !card.correction
+        ? '<p class="review-time">' + t("endRetry") + '</p>' : reviewTime(word)) +
       (value && !correct
         ? '<p class="your">' + t("yourAnswer", { answer: value }) + '</p>'
         : "") +
@@ -287,12 +290,15 @@ function summary(s) {
   if (state.survivalActive) return survivalSummary(s);
   return (
     header() +
-    '<section class="summary"><h1>' + (state.dailyActive ? dailyLabel(s) : t("roundComplete")) + '</h1><div class="score">' +
+    '<section class="summary"><h1>' + (state.dailyActive ? (state.dailyReplay ? t("dailyRetry") : dailyLabel(s)) : t("roundComplete")) + '</h1><div class="score">' +
     roundScore(s) +
     "<span> / " +
-    s.cards.length +
+    s.cards.filter(card => !card.correction).length +
     '</span></div><p>' + t("correctAnswers") + '</p></section>' +
-    (state.dailyActive ? streakLine() + shareControls("shareResult") +
+    (state.dailyActive ? (state.dailyReplay
+      ? action("original-daily", translate("originalResult"))
+      : streakLine() + shareControls("shareResult")) +
+      '<button class="secondary" data-action="daily-retry">' + t("retry") + '</button>' +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
     action("continue", translate("playAgain")) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
@@ -413,6 +419,7 @@ function goHome() {
   invitation = null;
   clearChallengeUrl();
   state.active = false;
+  delete state.dailyReplay;
   state.dailyActive = false;
   state.survivalActive = false;
   save();
@@ -466,6 +473,8 @@ root.addEventListener("click", (e) => {
     invitation = null;
     clearChallengeUrl();
   } else if (id === "start") start(state);
+  else if (id === "daily-retry") retryDaily(state);
+  else if (id === "original-daily") delete state.dailyReplay;
   else if (id === "daily") startDaily(state);
   else if (activeSession(state)) {
     const s = activeSession(state);

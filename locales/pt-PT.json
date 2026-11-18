@@ -2,8 +2,15 @@
   "locale": "pt-PT",
   "languageName": "Português europeu",
   "title": "Matiz · Jogo de sinónimos em português europeu",
-  "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco perguntas.",
+  "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco palavras.",
   "strings": {
+    "answerRun": "{count} respostas certas seguidas",
+    "answerRecord": "Recorde de acertos seguidos: {count}",
+    "endRetry": "Volta no fim desta ronda",
+    "correction": "Revisão",
+    "retry": "Tentar de novo",
+    "dailyRetry": "Repetição do dia",
+    "originalResult": "Primeiro resultado",
     "dailyStreak": { "one": "{count} dia seguido", "many": "{count} dias seguidos", "other": "{count} dias seguidos" },
     "bestStreak": { "one": "Recorde: {count} dia", "many": "Recorde: {count} dias", "other": "Recorde: {count} dias" },
     "darkMode": "Modo escuro",
@@ -61,11 +68,6 @@
     "unseen": "Por descobrir",
     "reviewAvailable": "Revisão disponível.",
     "nextReview": "Próxima revisão · {when}",
-    "reviewAfter": {
-      "one": " ou após {count} outra pergunta, se for mais cedo",
-      "many": " ou após {count} outras perguntas, se for mais cedo",
-      "other": " ou após {count} outras perguntas, se for mais cedo"
-    },
     "heroTitle": "Sinónimos",
     "heroArt": "ãáa",
     "resume": "Continuar a ronda",

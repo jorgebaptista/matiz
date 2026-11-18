@@ -161,15 +161,16 @@ test("delayed successes schedule 1, 3, 7, 14, 30 then repeated 30 days", () => {
   }
 });
 
-test("misses and skips retry at ten minutes and retry success is not a delayed review", () => {
+test("misses and skips retry at round end and retry success is not a delayed review", () => {
   for (const value of [null, first.choices[1]]) {
     const state = fresh();
     oneCard(state);
     answer(state, value, NOW);
     assert.equal(roundScore(state.session), 0);
-    assert.equal(state.progress[first.id].dueAt, NOW + RETRY);
+    assert.equal(state.progress[first.id].dueAt, NOW);
     assert.equal(state.progress[first.id].incorrect, 1);
-    oneCard(state);
+    next(state);
+    assert.equal(state.session.cards[1].correction, true);
     answer(state, first.key, NOW + RETRY);
     assert.equal(state.progress[first.id].dueAt, NOW + RETRY + DAY);
     assert.equal(learned(state, first), false);
@@ -291,7 +292,7 @@ test("migration derives due dates without a wall clock and handles invalid save 
   const state = restoreState({ version: 1, active: null, sessions: {}, progress: {
     [first.id]: { ...emptyProgress("0", first.id), seen: 1, lastSeen: NOW },
   } });
-  assert.equal(state.progress[first.id].dueAt, NOW + RETRY);
+  assert.equal(state.progress[first.id].dueAt, NOW);
   for (const saved of [null, {}, { version: 3 }, { version: 2, progress: [] }])
     assert.deepEqual(restoreState(saved), fresh());
   const invalid = restoreState({ version: 2, progress: {}, active: true,
@@ -312,43 +313,17 @@ test("all seen and none due permits flagged free practice without promotions or 
   assert.equal(words.some((word) => learned(state, word)), false);
 });
 
-test("practice misses offer a retry without moving or advancing the actual review", () => {
+test("a free-practice correction preserves the scheduled review across reload", () => {
   let state = allSeen();
-  start(state, NOW, rng);
-  const word = wordsById.get(state.session.cards[0].id);
-  const before = structuredClone(state.progress[word.id]);
+  oneCard(state, first, true);
+  const before = structuredClone(state.progress[first.id]);
   answer(state, null, NOW);
-  assert.equal(state.progress[word.id].dueAt, NOW + RETRY);
-  assert.equal(state.progress[word.id].scheduledDueAt, before.dueAt);
-  assert.equal(state.progress[word.id].seen, before.seen);
-  state.session = null;
-  state.active = false;
+  next(state);
   state = restoreState(JSON.parse(JSON.stringify(state)));
-  start(state, NOW + RETRY, rng);
-  assert.equal(state.session.cards[0].id, word.id);
-  answer(state, word.key, NOW + RETRY);
-  assert.deepEqual(state.progress[word.id], before);
-  assert.equal(learned(state, word), false);
-  state.session = null;
-  start(state, before.dueAt, rng);
-  answer(state, key(state.session.cards[0]), before.dueAt);
-  assert.equal(learned(state, wordsById.get(state.session.cards[0].id)), true);
-});
-
-test("failed practice retries remain spaced, and never postpone an imminent review", () => {
-  const state = allSeen();
-  oneCard(state, first, true);
-  answer(state, null, NOW);
-  oneCard(state);
-  answer(state, null, NOW + RETRY);
-  assert.equal(state.progress[first.id].dueAt, NOW + 2 * RETRY);
-  assert.equal(state.progress[first.id].scheduledDueAt, NOW + DAY);
-  assert.equal(state.progress[first.id].seen, 1);
-  state.progress[first.id].dueAt = NOW + 1000;
-  state.progress[first.id].scheduledDueAt = NOW + 1000;
-  oneCard(state, first, true);
-  answer(state, null, NOW);
-  assert.equal(state.progress[first.id].dueAt, NOW + 1000);
+  assert.equal(state.session.cards[1].correction, true);
+  answer(state, first.key, NOW + DAY);
+  assert.deepEqual(state.progress[first.id], before);
+  assert.equal(roundScore(state.session), 0);
 });
 
 test("a practice card held past the real due time cannot satisfy or delay the review", () => {
@@ -364,54 +339,23 @@ test("a practice card held past the real due time cannot satisfy or delay the re
   assert.equal(state.progress[state.session.cards[1].id].dueAt, NOW + DAY);
 });
 
-test("a run of misses introduces one intervening word then prioritises eligible retries", () => {
+test("misses return once, in order, and remain due after a second miss", () => {
   const state = fresh();
   start(state, NOW, rng);
-  const original = state.session.cards.map((card) => card.id);
-  completeRound(state, NOW, () => null);
-  start(state, NOW + 1, rng);
-  assert.ok(!original.includes(state.session.cards[0].id));
-  assert.deepEqual(state.session.cards.slice(1).map(card => card.id), original.slice(0, 4));
-  completeRound(state, NOW + 1);
-  start(state, NOW + 2, rng);
-  assert.equal(state.session.cards[0].id, original[4]);
-});
-
-test("a seven-minute visit can retry after five other answers, even across a reload", () => {
-  let state = fresh();
-  start(state, NOW, rng);
-  const missed = state.session.cards[0].id;
-  completeRound(state, NOW, card => card.id === missed ? null : key(card));
-  assert.equal(state.progress[missed].questionsLeft, 1);
-  const later = NOW + 2 * 60_000;
-  start(state, later, rng);
-  assert.notEqual(state.session.cards[0].id, missed);
-  assert.equal(state.session.cards[1].id, missed);
-  answer(state, key(state.session.cards[0]), later);
-  assert.equal(state.progress[missed].questionsLeft, 0);
-  state = restoreState(JSON.parse(JSON.stringify(state)));
-  next(state);
-  answer(state, key(state.session.cards[1]), later);
-  assert.equal(state.progress[missed].dueAt, later + DAY);
-  assert.equal(state.progress[missed].questionsLeft, undefined);
-  assert.equal(state.progress[missed].delayedReviews, 0);
-});
-
-test("five other practice answers can trigger a retry while preserving a later scheduled review", () => {
-  const state = allSeen();
-  const original = structuredClone(state.progress[first.id]);
-  oneCard(state, first, true);
-  answer(state, null, NOW);
-  for (const other of words.slice(1, 6)) {
-    oneCard(state, other, true);
-    answer(state, other.key, NOW + 1);
-    answer(state, other.key, NOW + 1);
+  const original = state.session.cards.map(card => card.id);
+  for (const card of state.session.cards.slice()) {
+    answer(state, null, NOW);
+    next(state);
   }
-  state.session = null;
-  start(state, NOW + 2, rng);
-  assert.equal(state.session.cards[0].id, first.id);
-  answer(state, first.key, NOW + 2);
-  assert.deepEqual(state.progress[first.id], original);
+  assert.deepEqual(state.session.cards.slice(5).map(card => card.id), original);
+  for (const card of state.session.cards.slice(5)) {
+    answer(state, null, NOW);
+    next(state);
+  }
+  assert.equal(state.session.cards.length, 10);
+  finish(state);
+  start(state, NOW, rng);
+  assert.deepEqual(new Set(state.session.cards.map(card => card.id)), new Set(original));
 });
 
 test("bands smaller than five do not deadlock or introduce harder words on the first draw", () => {
@@ -429,12 +373,12 @@ test("bands smaller than five do not deadlock or introduce harder words on the f
     assert.ok(state.session.cards.every((card) => wordsById.get(card.id).levelId === "0"));
     completeRound(state, NOW, () => null);
     start(state, NOW + 1, rng);
-    assert.ok(state.session.cards.every(card => wordsById.get(card.id).levelId === "1"));
-    completeRound(state, NOW + 1);
-    start(state, NOW + RETRY, rng);
     assert.ok(state.session.cards.every(card => wordsById.get(card.id).levelId === "0"));
-    completeRound(state, NOW + RETRY);
-    start(state, NOW + RETRY, rng);
+    completeRound(state, NOW + 1);
+    start(state, NOW + 2, rng);
+    assert.ok(state.session.cards.every(card => wordsById.get(card.id).levelId === "1"));
+    completeRound(state, NOW + 2);
+    start(state, NOW + 3, rng);
     assert.equal(state.session.practice, true);
   } finally {
     levels.splice(0, levels.length, ...originalLevels);

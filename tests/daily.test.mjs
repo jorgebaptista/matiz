@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { dailyCards, dailyDay } from "../src/daily.js";
-import { fresh, levels, practiceLevels, wordsById, start, startDaily, answer, next, restoreState, roundScore } from "../src/game.js";
+import { fresh, levels, practiceLevels, wordsById, start, startDaily, retryDaily, activeSession, answer, next, restoreState, roundScore } from "../src/game.js";
 
 test("the shared date changes at Lisbon midnight in winter and summer", () => {
   for (const midnight of ["2026-11-18T00:00Z", "2026-07-17T23:00Z", "2026-03-29T23:00Z", "2026-10-26T00:00Z"]) {
@@ -88,4 +88,35 @@ test("every scheduled set is unique, then the entire calendar loops intact", () 
     assert.deepEqual(state.daily.cards, original);
   }
   assert.equal(ids.size, dates.length * 4);
+});
+
+test("the correct-answer run survives reload and mode changes; daily retries preserve first results", () => {
+  let state = fresh();
+  start(state);
+  answer(state, state.session.cards[0].key);
+  startDaily(state);
+  for (const card of state.daily.cards) {
+    answer(state, card.key);
+    answer(state, null);
+    next(state);
+  }
+  assert.equal(state.answerRun, 5);
+  const official = restoreState(state).daily;
+  retryDaily(state);
+  answer(state, null);
+  state = restoreState(JSON.parse(JSON.stringify(state)));
+  assert.equal(activeSession(state).answers.length, 1);
+  next(state);
+  for (const card of activeSession(state).cards.slice(1)) {
+    answer(state, card.key);
+    next(state);
+  }
+  assert.equal(roundScore(activeSession(state)), 3);
+  assert.deepEqual(state.daily, official);
+  assert.equal(state.answerRun, 5);
+  start(state);
+  next(state);
+  answer(state, null);
+  assert.equal(state.answerRun, 0);
+  assert.equal(restoreState(state).answerBest, 5);
 });

@@ -4,23 +4,27 @@ Practice mixes new words with scheduled reviews.
 
 ## Reviews
 
-A round contains up to five words. Due reviews take priority over new words.
+A round starts with up to five words. Misses return once at the end with shuffled choices. Only first answers count towards the score. Due reviews take priority over new words.
 
 | Answer | Next scheduled review |
 | --- | --- |
-| Wrong or “I don't know” | After five other answers or ten minutes, whichever comes first |
+| Wrong or “I don't know” | At the end of the round |
 | Correct on a scheduled retry | The next day |
 | Later successful scheduled reviews | After 3, 7, 14 and 30 days, then every 30 days |
 
-The answer count and time carry over between rounds and visits. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked learned.
+A scheduled word missed twice stays due for the next round. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked learned.
 
 “Learned” records a successful scheduled review after an earlier correct answer.
+
+Each language saves the current and best run of consecutive correct answers across modes. A wrong answer or skip resets the run. Correction cards and daily replays leave it untouched.
 
 ## Daily words
 
 Each daily set introduces four words, from easiest to hardest. At midnight in Lisbon, each set joins regular practice, even for players who missed it.
 
 On unscheduled days, earlier sets loop in order as **Encore** or **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
+
+The daily can be replayed for practice. Sharing uses the first result.
 
 Finishing all four daily words in either language counts once per Lisbon calendar day, at any score. A missed day ends the current streak, and the personal best stays on the device.
 
