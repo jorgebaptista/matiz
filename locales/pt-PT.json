@@ -4,6 +4,8 @@
   "title": "Matiz · Jogo de sinónimos em português europeu",
   "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco perguntas.",
   "strings": {
+    "dailyStreak": { "one": "{count} dia seguido", "many": "{count} dias seguidos", "other": "{count} dias seguidos" },
+    "bestStreak": { "one": "Recorde: {count} dia", "many": "Recorde: {count} dias", "other": "Recorde: {count} dias" },
     "darkMode": "Modo escuro",
     "currentScore": "Atual",
     "yourBest": "Recorde",

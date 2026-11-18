@@ -145,6 +145,11 @@ try {
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
   await daily.clock.fastForward("24:00:00");
   await daily.waitForSelector('.daily[data-status="dailyUnplayed"]');
+  assert.equal(await daily.locator(".streak").innerText(), "1 dia seguido · Recorde: 1 dia");
+  await daily.goto(url + "jogar/en-GB/");
+  assert.match(await daily.locator(".streak").innerText(), /1 day in a row/);
+  await daily.clock.fastForward("24:00:00");
+  assert.equal(await daily.locator(".streak").innerText(), "Best: 1 day");
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
   await play

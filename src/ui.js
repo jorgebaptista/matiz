@@ -13,6 +13,7 @@ import {
 } from "./game.js";
 import { locale, survivalArchives } from "./pack.js";
 import { dailyDay } from "./daily.js";
+import { completedDay, loadDays, streakCounts, streakPrefix } from "./streak.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
 import { resultImage } from "./share-image.js";
@@ -40,12 +41,18 @@ function restore() {
     return fresh();
   }
 }
+let playedDays = new Set();
+try { playedDays = loadDays(localStorage); } catch { alert.hidden = false; }
 let state = restore();
 let invitation = null;
 let shareCard = null;
 let renderVersion = 0;
 function save() {
+  const day = completedDay(state.daily);
+  const newlyCompleted = day !== undefined && !playedDays.has(day);
+  if (newlyCompleted) playedDays.add(day);
   try {
+    if (newlyCompleted) localStorage.setItem(streakPrefix + day, "1");
     if (state.survivalAttempts) {
       let previous;
       try { previous = JSON.parse(localStorage.getItem(storageKey)); }
@@ -112,10 +119,22 @@ const dailyButton = () =>
   '<circle class="calendar-dot" cx="12" cy="15.5" r="2" fill="currentColor" stroke="none"/>' +
   '<path class="calendar-check" d="m8.5 15.5 2.4 2.3 4.8-5"/></svg>' +
   '<strong>' + t("daily") + '</strong><span class="daily-arrow" aria-hidden="true">→</span></button>' +
-  '<span hidden id="daily-status"></span>';
+  '<span hidden id="daily-status"></span>' + streakLine();
+
+function streakText() {
+  const { current, best } = streakCounts(playedDays, dailyDay());
+  if (!best) return "";
+  const record = translate("bestStreak", { count: best });
+  return current ? translate("dailyStreak", { count: current }) + " · " + record : record;
+}
+function streakLine() {
+  return '<p class="streak">' + esc(streakText()) + '</p>';
+}
 
 function refreshDailyButton() {
   const button = root.querySelector('[data-action="daily"]');
+  const line = root.querySelector(".streak");
+  if (line) line.textContent = streakText();
   if (!button) return;
   const daily = state.daily;
   let status = "dailyUnplayed";
@@ -273,7 +292,7 @@ function summary(s) {
     "<span> / " +
     s.cards.length +
     '</span></div><p>' + t("correctAnswers") + '</p></section>' +
-    (state.dailyActive ? shareControls("shareResult") +
+    (state.dailyActive ? streakLine() + shareControls("shareResult") +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
     action("continue", translate("playAgain")) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
@@ -414,6 +433,10 @@ if (hasDaily) {
   });
 }
 window.addEventListener("storage", (e) => {
+  if (e.key === null || e.key?.startsWith(streakPrefix)) {
+    try { playedDays = loadDays(localStorage); } catch { alert.hidden = false; }
+    refreshDailyButton();
+  }
   if (e.key === storageKey) {
     state = restore();
     render();

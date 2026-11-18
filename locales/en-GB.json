@@ -4,6 +4,8 @@
   "title": "Matiz · A British English synonym game",
   "description": "Find a more precise word in rounds of up to five questions.",
   "strings": {
+    "dailyStreak": { "one": "{count} day in a row", "other": "{count} days in a row" },
+    "bestStreak": { "one": "Best: {count} day", "other": "Best: {count} days" },
     "darkMode": "Dark mode",
     "currentScore": "Score",
     "yourBest": "Best",
