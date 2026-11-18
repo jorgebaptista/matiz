@@ -111,13 +111,13 @@ function action(id, label, symbol = "→") {
   );
 }
 const dailyButton = () =>
-  '<button class="daily" data-action="daily" aria-describedby="daily-status">' +
+  '<div class="daily-row"><button class="daily" data-action="daily" aria-describedby="daily-status">' +
   '<svg class="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
   '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7.5 3v4m9-4v4M3 10h18"/>' +
   '<circle class="calendar-dot" cx="12" cy="15.5" r="2" fill="currentColor" stroke="none"/>' +
   '<path class="calendar-check" d="m8.5 15.5 2.4 2.3 4.8-5"/></svg>' +
   '<strong>' + t("daily") + '</strong><span class="daily-arrow" aria-hidden="true">→</span></button>' +
-  '<span hidden id="daily-status"></span>' + streakLine();
+  '<span hidden id="daily-status"></span>' + streakLine() + '</div>';
 
 function flame(count, label) {
   return '<span class="flame" role="img" aria-label="' + label + '" title="' + label + '">' +
@@ -129,9 +129,11 @@ function dailyStreakBadge() {
   const { current, best, freezeReady, protectedYesterday } = streakCounts(playedDays, dailyDay());
   if (!best) return "";
   const freeze = protectedYesterday ? "freezeUsed" : freezeReady ? "freezeReady" : null;
-  return '<summary>' + (current ? flame(current, t("dailyStreak", { count: current })) : t("dailyStreakLabel")) +
-    (freeze ? '<span class="freeze"><span aria-hidden="true">❄</span> ' +
-    t(freeze) + '</span>' : '') + '</summary><p>' + t("bestStreak", { count: best }) + '</p><p>' + t("freezeRule") + '</p>';
+  const label = current ? t("dailyStreak", { count: current }) : t("dailyStreakLabel");
+  return '<summary aria-label="' + label + (freeze ? ' · ' + t(freeze) : '') + '">' +
+    flame(current, label) + (freeze ? '<span class="freeze" aria-hidden="true">❄</span>' : '') +
+    '</summary><p>' + t("bestStreak", { count: best }) + (freeze ? ' · ' + t(freeze) : '') +
+    '</p><p>' + t("freezeRule") + '</p>';
 }
 function streakLine() {
   return '<details class="streak daily-streak">' + dailyStreakBadge() + '</details>';
