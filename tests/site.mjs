@@ -158,11 +158,20 @@ try {
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
   await daily.clock.fastForward("24:00:00");
   await daily.waitForSelector('.daily[data-status="dailyUnplayed"]');
-  assert.equal(await daily.locator(".daily-streak").innerText(), "1 dia seguido · Recorde: 1 dia");
+  assert.ok(await daily.getByRole("img", { name: "1 dia seguido" }).isVisible());
   await daily.goto(url + "jogar/en-GB/");
-  assert.match(await daily.locator(".daily-streak").innerText(), /1 day in a row/);
+  assert.ok(await daily.getByRole("img", { name: "1 day in a row" }).isVisible());
   await daily.clock.fastForward("24:00:00");
-  assert.equal(await daily.locator(".daily-streak").innerText(), "Best: 1 day");
+  assert.equal(await daily.locator(".daily-streak summary").innerText(), "Best: 1 day");
+  await daily.evaluate(() => {
+    const day = JSON.parse(localStorage.getItem("matiz.pt-PT.v1")).daily.day;
+    for (let i = 1; i <= 6; i++) localStorage.setItem("matiz.daily-day." + (day - i), "1");
+  });
+  await daily.reload();
+  assert.ok(await daily.getByRole("img", { name: "7 days in a row" }).isVisible());
+  assert.match(await daily.locator(".freeze").innerText(), /Freeze used/);
+  await daily.locator(".daily-streak summary").click();
+  assert.ok(await daily.getByText(/Earn a freeze every 7 days/).isVisible());
   const play = await browser.newPage({ viewport: { width: 390, height: 800 } });
   await play.goto(url);
   await play

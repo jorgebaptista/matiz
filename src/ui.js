@@ -119,20 +119,34 @@ const dailyButton = () =>
   '<strong>' + t("daily") + '</strong><span class="daily-arrow" aria-hidden="true">→</span></button>' +
   '<span hidden id="daily-status"></span>' + streakLine();
 
-function streakText() {
-  const { current, best } = streakCounts(playedDays, dailyDay());
+function flame(count, label) {
+  return '<span class="flame" role="img" aria-label="' + label + '" title="' + label + '">' +
+    '<svg aria-hidden="true" viewBox="0 0 40 48" preserveAspectRatio="none">' +
+    '<path d="M21 1c2 9 13 12 12 23 2-2 3-5 3-7 3 5 4 10 3 15-1 9-9 15-19 15S1 40 1 30c0-7 4-13 9-18-1 7 2 10 4 11C12 14 20 10 21 1Z"/></svg>' +
+    '<b aria-hidden="true">' + count + '</b></span>';
+}
+function dailyStreakBadge() {
+  const { current, best, freezeReady, protectedYesterday } = streakCounts(playedDays, dailyDay());
   if (!best) return "";
-  const record = translate("bestStreak", { count: best });
-  return current ? translate("dailyStreak", { count: current }) + " · " + record : record;
+  const freeze = protectedYesterday ? "freezeUsed" : freezeReady ? "freezeReady" : null;
+  return '<summary>' + (current ? flame(current, t("dailyStreak", { count: current })) : '') +
+    t("bestStreak", { count: best }) + (freeze ? '<span class="freeze"><span aria-hidden="true">❄</span> ' +
+    t(freeze) + '</span>' : '') + '</summary><p>' + t("freezeRule") + '</p>';
 }
 function streakLine() {
-  return '<p class="streak daily-streak">' + esc(streakText()) + '</p>';
+  return '<details class="streak daily-streak">' + dailyStreakBadge() + '</details>';
 }
 
 function refreshDailyButton() {
   const button = root.querySelector('[data-action="daily"]');
   const line = root.querySelector(".daily-streak");
-  if (line) line.textContent = streakText();
+  if (line) {
+    const badge = dailyStreakBadge();
+    if (line.dataset.badge !== badge) {
+      line.innerHTML = badge;
+      line.dataset.badge = badge;
+    }
+  }
   if (!button) return;
   const daily = state.daily;
   let status = "dailyUnplayed";
@@ -243,7 +257,7 @@ function play(s) {
       '">' +
       status +
       "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
-        ? '<p class="streak">' + t("answerRun", { count: state.answerRun }) + '</p>' : '') + wordHeading(word) + '<p class="meaning">' +
+        ? '<p class="streak">' + flame(state.answerRun, t("answerRun", { count: state.answerRun })) + '</p>' : '') + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
