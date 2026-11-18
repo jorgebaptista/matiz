@@ -26,7 +26,7 @@ On unscheduled days, earlier sets loop in order as **Encore** or **Revisita**. A
 
 The daily can be replayed for practice. Sharing uses the first result.
 
-Finishing all four daily words in either language counts once per Lisbon calendar day, at any score. Every seventh played day in the streak earns a freeze, up to one in reserve. It automatically covers one missed day without increasing the count. Two consecutive misses end the streak. The personal best stays on the device.
+Finishing all four daily words in either language counts once per Lisbon calendar day, at any score. Each completed daily earns one freeze, up to two in reserve. Each missed day uses one freeze and preserves the streak without increasing it. A missed day with no freeze ends the streak. The personal best stays on the device.
 
 ## Evidence
 
