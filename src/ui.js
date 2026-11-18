@@ -13,7 +13,7 @@ import {
 } from "./game.js";
 import { locale, survivalArchives } from "./pack.js";
 import { dailyDay } from "./daily.js";
-import { completedDay, loadDays, streakCounts, streakPrefix } from "./streak.js";
+import { flamePath, completedDay, loadDays, streakCounts, streakPrefix } from "./streak.js";
 import { translate, storageKey } from "./i18n.js";
 import { escapeHTML as esc } from "./html.js";
 import { resultImage } from "./share-image.js";
@@ -122,7 +122,7 @@ const dailyButton = () =>
 function flame(count, label) {
   return '<span class="flame" role="img" aria-label="' + label + '" title="' + label + '">' +
     '<svg aria-hidden="true" viewBox="0 0 40 48" preserveAspectRatio="none">' +
-    '<path d="M21 1c2 9 13 12 12 23 2-2 3-5 3-7 3 5 4 10 3 15-1 9-9 15-19 15S1 40 1 30c0-7 4-13 9-18-1 7 2 10 4 11C12 14 20 10 21 1Z"/></svg>' +
+    '<path d="' + flamePath + '"/></svg>' +
     '<b aria-hidden="true">' + count + '</b></span>';
 }
 function dailyStreakBadge() {
@@ -144,6 +144,11 @@ function refreshDailyButton() {
   const button = root.querySelector('[data-action="daily"]');
   const line = root.querySelector(".daily-streak");
   if (line) {
+    const dailyShare = root.querySelector("[data-share-streak]");
+    if (dailyShare && Number(dailyShare.dataset.shareStreak) !== streakCounts(playedDays, dailyDay()).current) {
+      render();
+      return;
+    }
     const badge = dailyStreakBadge();
     if (line.dataset.badge !== badge) {
       line.innerHTML = badge;
@@ -411,7 +416,10 @@ function render(focus = false) {
   const shareButton = root.querySelector('[data-action="share"]');
   if (shareButton) {
     shareButton.disabled = true;
+    const streak = state.survivalActive ? undefined : streakCounts(playedDays, dailyDay()).current;
+    if (streak !== undefined) shareButton.dataset.shareStreak = streak;
     resultImage(s, {
+      streak,
       survival: state.survivalActive,
       playUrl: document.querySelector(state.survivalActive ? 'meta[name="matiz-play-url"]' : 'meta[name="matiz-daily-url"]').content,
     }).then(card => {

@@ -1,3 +1,4 @@
+export const flamePath = "M21 1c2 9 13 12 12 23 2-2 3-5 3-7 3 5 4 10 3 15-1 9-9 15-19 15S1 40 1 30c0-7 4-13 9-18-1 7 2 10 4 11C12 14 20 10 21 1Z";
 export const streakPrefix = "matiz.daily-day.";
 
 export function streakCounts(days, today) {
