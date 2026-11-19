@@ -4,7 +4,7 @@ import pack from "../packs/pt-PT.json" with { type: "json" };
 import { emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import {
   levels, practiceLevels, wordsById, restoreState, fresh, start, answer, next, finish,
-  roundScore, learned,
+  roundScore, learned, missedWords, retryMissed,
 } from "../src/game.js";
 
 const DAY = 86_400_000;
@@ -385,4 +385,35 @@ test("bands smaller than five do not deadlock or introduce harder words on the f
     wordsById.clear();
     for (const [id, word] of originalWords) wordsById.set(id, word);
   }
+});
+
+test("optional passes shrink to unresolved words, resume mid-pass, and preserve the first score", () => {
+  let state = fresh();
+  start(state, NOW, rng);
+  const [a, b, c] = state.session.cards;
+  function step(correct) {
+    const card = state.session.cards[state.session.cursor];
+    answer(state, correct ? card.key : null, NOW);
+    next(state);
+  }
+  for (const card of state.session.cards.slice()) step(![a, b, c].includes(card));
+  step(false);
+  step(true);
+  step(false);
+  assert.deepEqual(missedWords(state.session).map(card => card.id), [a.id, c.id]);
+  const score = roundScore(state.session);
+  const streak = state.answerRun;
+  retryMissed(state);
+  step(true);
+  state = restoreState(JSON.parse(JSON.stringify(state)));
+  assert.equal(state.session.cards[state.session.cursor].id, c.id);
+  step(false);
+  retryMissed(state);
+  assert.deepEqual(state.session.cards.slice(state.session.retryStart).map(card => card.id), [c.id]);
+  step(true);
+  assert.deepEqual(missedWords(state.session), []);
+  assert.equal(roundScore(state.session), score);
+  assert.equal(state.answerRun, streak);
+  finish(state);
+  assert.equal(state.session, null);
 });

@@ -7,7 +7,7 @@ import {
   start,
   answer,
   next,
-  finish,
+  finish, missedWords, retryMissed,
   roundScore,
   hasDaily, startDaily, retryDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
 } from "./game.js";
@@ -216,17 +216,18 @@ function home() {
   );
 }
 function roundTop(s, card) {
-  const pos = Math.min(s.cursor + 1, s.cards.length);
+  const start = s.retryStart ?? 0;
+  const cursor = s.cursor - start;
   const caption = state.survivalActive ? t("survival") : state.dailyActive ? t(state.dailyReplay ? "dailyRetry" : "daily") : card.correction ? t("correction") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><div class="header-tools"><span class="position">' +
-    (state.survivalActive ? '' : t("wordPosition", { count: pos, total: s.cards.length })) +
+    (state.survivalActive ? '' : t("wordPosition", { count: cursor + 1, total: s.cards.length - start })) +
     '</span>' + themeControl() + '</div></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
-    s.cards
+    s.cards.slice(start)
       .map(
         (_, i) =>
           '<i class="' +
-          (i < s.cursor ? "done" : i === s.cursor ? "here" : "") +
+          (i < cursor ? "done" : i === cursor ? "here" : "") +
           '"></i>',
       )
       .join("") +
@@ -311,6 +312,7 @@ function dailyLabel(s) {
 }
 function summary(s) {
   if (state.survivalActive) return survivalSummary(s);
+  const missed = state.dailyActive ? 0 : missedWords(s).length;
   return (
     header() +
     '<section class="summary"><h1>' + (state.dailyActive ? (state.dailyReplay ? t("dailyRetry") : dailyLabel(s)) : t("roundComplete")) + '</h1><div class="score">' +
@@ -323,7 +325,9 @@ function summary(s) {
       : streakLine() + shareControls("shareResult")) +
       '<button class="secondary" data-action="daily-retry">' + t("retry") + '</button>' +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
-    action("continue", translate("playAgain")) +
+    (missed ? action("retry-missed", translate("retryMissed", { count: missed })) +
+      '<button class="secondary" data-action="continue">' + t("playAgain") + '</button>' :
+      action("continue", translate("playAgain"))) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
   );
 }
@@ -511,6 +515,7 @@ root.addEventListener("click", (e) => {
     invitation = null;
     clearChallengeUrl();
   } else if (id === "start") start(state);
+  else if (id === "retry-missed") retryMissed(state);
   else if (id === "daily-retry") retryDaily(state);
   else if (id === "original-daily") delete state.dailyReplay;
   else if (id === "daily") startDaily(state);

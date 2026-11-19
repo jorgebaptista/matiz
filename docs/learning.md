@@ -12,7 +12,7 @@ A round starts with up to five words. Misses return once at the end with shuffle
 | Correct on a scheduled retry | The next day |
 | Later successful scheduled reviews | After 3, 7, 14 and 30 days, then every 30 days |
 
-A scheduled word missed twice stays due for the next round. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked learned.
+After the automatic retry, players can practise just the words they still missed. Each optional pass drops words answered correctly and keeps the original score. A scheduled word still missed stays due for the next round. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked learned.
 
 “Learned” records a successful scheduled review after an earlier correct answer.
 

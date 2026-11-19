@@ -8,6 +8,7 @@
     "answerRun": { "one": "{count} resposta certa", "many": "{count} respostas certas seguidas", "other": "{count} respostas certas seguidas" },
     "endRetry": "Volta no fim desta ronda",
     "correction": "Revisão",
+    "retryMissed": "Rever erros ({count})",
     "retry": "Tentar de novo",
     "dailyRetry": "Repetição do dia",
     "originalResult": "Primeiro resultado",

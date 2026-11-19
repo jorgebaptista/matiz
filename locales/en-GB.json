@@ -8,6 +8,7 @@
     "answerRun": { "one": "{count} correct answer", "other": "{count} correct in a row" },
     "endRetry": "Back at the end of this round",
     "correction": "Review",
+    "retryMissed": "Retry missed words ({count})",
     "retry": "Retry",
     "dailyRetry": "Daily retry",
     "originalResult": "First result",
