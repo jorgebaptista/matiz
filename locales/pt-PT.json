@@ -4,8 +4,8 @@
   "title": "Matiz · Jogo de sinónimos em português europeu",
   "description": "Descobre palavras para te exprimires com mais precisão, em rondas de até cinco palavras.",
   "strings": {
-    "answerRunTip": "{count} seguidas. Continua!",
-    "answerRun": "{count} respostas certas seguidas",
+    "answerRunTip": { "one": "{count} certa. Continua!", "many": "{count} seguidas. Continua!", "other": "{count} seguidas. Continua!" },
+    "answerRun": { "one": "{count} resposta certa", "many": "{count} respostas certas seguidas", "other": "{count} respostas certas seguidas" },
     "answerRecord": "Recorde de acertos seguidos: {count}",
     "endRetry": "Volta no fim desta ronda",
     "correction": "Revisão",

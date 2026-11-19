@@ -264,8 +264,9 @@ function play(s) {
       (correct ? "good" : "learn") +
       '">' +
       status +
-      "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
-        ? '<details class="run-tip"><summary class="answer-run" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
+      "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 1
+        ? '<details class="run-tip"><summary class="answer-run" data-tier="' +
+          (state.answerRun <= 3 ? "low" : state.answerRun >= 8 ? "high" : "mid") + '" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 1 3 14h7l-1 9L21 9h-8z"/></svg>' +
           '<span class="run-count" aria-hidden="true"><span>' + state.answerRun + '</span></span></summary><p>' +
           t("answerRunTip", { count: state.answerRun }) + '</p></details>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +

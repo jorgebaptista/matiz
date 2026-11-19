@@ -93,7 +93,11 @@ try {
     assert.ok(i >= 0);
     await page.locator(".choice").nth(i).click();
     assert.equal(await page.locator(".result").innerText(), "Certo!");
-    if (++correctInRound === 2) {
+    correctInRound++;
+    if (correctInRound <= 4) {
+      assert.equal(await page.locator(".answer-run").getAttribute("data-tier"), correctInRound <= 3 ? "low" : "mid");
+    }
+    if (correctInRound === 2) {
       const bolt = page.locator(".answer-run", { hasText: "2" });
       const badge = await bolt.boundingBox();
       const result = await page.locator(".result").boundingBox();
