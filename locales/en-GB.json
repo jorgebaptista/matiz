@@ -83,6 +83,13 @@
     "heroArt": "aAe",
     "resume": "Continue round",
     "play": "Play",
+    "stageLearned": "Learned",
+    "roundDiscovered": {"one": "+{count} discovered", "other": "+{count} discovered"},
+    "roundLearned": {"one": "+{count} learned", "other": "+{count} learned"},
+    "roundPractised": {"one": "{count} word practised", "other": "{count} words practised"},
+    "goalRemaining": {"one": "{count} more to reach {goal} learned.", "other": "{count} more to reach {goal} learned."},
+    "goalReached": {"one": "Milestone · {count} word learned!", "other": "Milestone · {count} words learned!"},
+    "allLearned": "You’ve learned every available word.",
     "yourWords": "Your words",
     "learnedTotal": "{count} / {total} learned",
     "seenTotal": {

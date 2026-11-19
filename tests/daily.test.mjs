@@ -50,7 +50,8 @@ test("daily feedback, completion and tomorrow's draw preserve the parked practic
   assert.equal(state.daily.cursor, 0);
   assert.notDeepEqual(state.daily.cards.map(c => c.id), first);
   assert.deepEqual(state.session, practice);
-  assert.deepEqual(state.progress, progress);
+  for (const [id, saved] of Object.entries(progress)) assert.deepEqual(state.progress[id], saved);
+  for (const id of first) assert.equal(state.progress[id].seen, 1);
 });
 
 test("a debut is exclusive that day, joins its own band tomorrow, and never leaks into an encore", () => {
@@ -119,4 +120,32 @@ test("the correct-answer run survives reload and mode changes; daily retries pre
   answer(state, null);
   assert.equal(state.answerRun, 0);
   assert.equal(restoreState(state).answerBest, 5);
+});
+
+test("daily discoveries wait until the next Lisbon day and preserve existing review dates", () => {
+  for (const [time, due] of [["2026-07-17T12:00Z", "2026-07-17T23:00Z"], ["2026-11-17T12:00Z", "2026-11-18T00:00Z"]]) {
+    const state = fresh(), now = Date.parse(time);
+    startDaily(state, now);
+    const [first, known] = state.daily.cards;
+    answer(state, first.key, now);
+    assert.equal(state.progress[first.id].dueAt, Date.parse(due));
+    assert.equal(state.progress[first.id].delayedReviews, 0);
+    next(state);
+    state.progress[known.id] = { ...state.progress[first.id], termId: known.id };
+    const prior = structuredClone(state.progress[known.id]);
+    answer(state, null, now);
+    assert.deepEqual(state.progress[known.id], prior);
+    assert.equal(state.daily.discoveries, 1);
+  }
+});
+
+test("an older daily save credits answered words exactly once on restore", () => {
+  const now = Date.parse("2026-11-17T12:00Z"), old = fresh();
+  startDaily(old, now);
+  const card = old.daily.cards[0];
+  old.daily.answers.push(null);
+  const restored = restoreState(old);
+  assert.equal(restored.progress[card.id].seen, 1);
+  assert.equal(restored.daily.discoveries, 1);
+  assert.deepEqual(restoreState(restored), restored);
 });

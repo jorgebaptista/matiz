@@ -7,7 +7,7 @@ import {
   start,
   answer,
   next,
-  finish, missedWords, retryMissed,
+  collectionCounts, nextMilestone, finish, missedWords, retryMissed,
   roundScore,
   hasDaily, startDaily, retryDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
 } from "./game.js";
@@ -165,12 +165,8 @@ function refreshDailyButton() {
   root.querySelector("#daily-status").textContent = translate(status);
 }
 function home() {
-  const available = practiceLevels();
-  const wordTotal = available.reduce((sum, level) => sum + level.words.length, 0);
-  const total = available.reduce(
-    (sum, l) => sum + l.words.filter((w) => learned(state, w)).length,
-    0,
-  );
+  const available = practiceLevels(dailyDay(), state.progress);
+  const { total: wordTotal, mastered: total } = collectionCounts(state, available);
   return (
     header() +
     '<section class="hero"><div class="art" aria-hidden="true">' +
@@ -240,7 +236,7 @@ function survivalStats(s, summary = false) {
   if (s.target != null) stats.push(["challenger", s.target]);
   return '<dl class="survival-stats' + (summary ? ' final-stats' : '') + '">' + stats.map(([key, value], index) =>
     '<div><dt>' + t(key) + '</dt><dd data-stat="' + key + '"' +
-    (summary && index === 0 ? ' class="score"' : '') + '>' + value + '</dd></div>').join('') + '</dl>';
+    (summary && index === 0 ? ' class="score"' : '') + '>' + esc(value) + '</dd></div>').join('') + '</dl>';
 }
 function play(s) {
   if (s.cursor >= s.cards.length) return summary(s);
@@ -310,6 +306,28 @@ function dailyLabel(s) {
   const date = new Intl.DateTimeFormat(locale.locale, { day: "numeric", month: "short", timeZone: "UTC" });
   return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + (s.debut ? "" : " · " + t("dailyEncore"));
 }
+function collectionPanel(session) {
+  const { total, discovered, mastered } = session.collection ?? collectionCounts(state);
+  if (!total) return "";
+  const discoveries = session.discoveries ?? 0, promotions = session.promotions ?? 0;
+  const gains = [];
+  if (discoveries) gains.push(t("roundDiscovered", { count: discoveries }));
+  if (promotions) gains.push(t("roundLearned", { count: promotions }));
+  if (!gains.length) gains.push(t("roundPractised", { count: new Set(session.cards.map(c => c.id)).size }));
+  const goal = nextMilestone(mastered, total);
+  const hit = session.milestone;
+  const segment = (kind, count, gain) =>
+    '<i class="' + kind + '" style="width:' + (100 * count / total) + '%;--from:' +
+    (count ? Math.max(0, count - gain) / count : 1) + '"></i>';
+  const legend = [["stageLearned", mastered], ["learning", discovered - mastered], ["unseen", total - discovered]];
+  return '<section class="collection-progress"><h2>' + t("yourWords") + '</h2><p class="round-gains">' +
+    gains.join(" · ") + '</p><div class="collection-bar" aria-hidden="true">' +
+    segment("discovered", discovered, discoveries) + segment("mastered", mastered, promotions) +
+    '</div><dl>' + legend.map(([label, value]) => '<div><dt>' + t(label) + '</dt><dd>' + esc(value) + '</dd></div>').join("") +
+    '</dl><p class="collection-goal' + (hit ? ' hit' : '') + '">' +
+    (hit ? t("goalReached", { count: hit }) : mastered >= total ? t("allLearned") :
+      t("goalRemaining", { count: goal - mastered, goal })) + '</p></section>';
+}
 function summary(s) {
   if (state.survivalActive) return survivalSummary(s);
   const missed = state.dailyActive ? 0 : missedWords(s).length;
@@ -322,6 +340,7 @@ function summary(s) {
     "<span> / " +
     s.cards.filter(card => !card.correction).length +
     '</span></div><p>' + t("correctAnswers") + '</p>' + (showStreak ? streakLine() + '</div>' : '') + '</section>' +
+    (state.dailyActive && state.dailyReplay ? '' : collectionPanel(s)) +
     (state.dailyActive ? (state.dailyReplay
       ? action("original-daily", translate("originalResult"))
       : shareControls("shareResult")) +
@@ -545,6 +564,7 @@ root.addEventListener("click", (e) => {
   }
   save();
   render(true);
+  if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
   const bolt = root.querySelector(".answer-run");
   if (bolt && state.answerRun > previousRun) {
     bolt.querySelector(".run-count").dataset.previous = previousRun;

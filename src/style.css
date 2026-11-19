@@ -667,6 +667,33 @@ h2,
   padding: .8rem .55rem 0;
 }
 .daily-result .daily-streak[open] { padding-top: .5rem; }
+.collection-progress {
+  margin: 1.2rem 0;
+  padding: 1rem 0;
+  border-block: 1px solid var(--line);
+  --discovered: color-mix(in srgb, var(--green) 48%, var(--paper));
+}
+.collection-progress h2 { font-size: 1.15rem; }
+.round-gains { margin: .3rem 0 .8rem; font-size: .9rem; font-weight: 650; color: var(--green); }
+.collection-bar { position: relative; height: .8rem; border-radius: 1rem; background: var(--track); overflow: hidden; }
+.collection-bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; transform-origin: left; }
+.collection-bar .discovered { background: var(--discovered); }
+.collection-bar .mastered { background: var(--green); }
+.collection-progress dl { display: flex; justify-content: space-between; gap: .5rem; margin: .65rem 0; }
+.collection-progress dl div { display: flex; flex-direction: column-reverse; }
+.collection-progress dt { font-size: .8rem; color: var(--muted); }
+.collection-progress dd { margin: 0; font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.collection-progress dd::before { content: ""; display: inline-block; width: .45rem; height: .45rem; margin-right: .3rem; vertical-align: middle; border-radius: 100%; background: var(--track); }
+.collection-progress dl div:first-child dd::before { background: var(--green); }
+.collection-progress dl div:nth-child(2) dd::before { background: var(--discovered); }
+.collection-goal { font-size: .9rem; }
+.collection-goal.hit { font-weight: 700; color: var(--green); }
+@media (prefers-reduced-motion: no-preference) {
+  .show-gains .collection-bar i { animation: reveal-progress 600ms ease-out both; }
+  .show-gains .collection-goal.hit { animation: milestone-pulse 650ms ease-out; transform-origin: left; }
+  @keyframes reveal-progress { from { transform: scaleX(var(--from)); } to { transform: scaleX(1); } }
+  @keyframes milestone-pulse { 45% { transform: scale(1.035); } }
+}
 .share-status { text-align: center; color: var(--muted); margin-top: 10px; }
 .share-status:empty { display: none; }
 .survival-stats { display: flex; gap: 10px; margin: 14px 0; }
