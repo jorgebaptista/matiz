@@ -14,6 +14,9 @@ export async function checkSharedImage(page, name) {
   assert.match(data.name, /^matiz-.*\.png$/);
   const png = PNG.sync.read(Buffer.from(data.bytes));
   assert.deepEqual([png.width, png.height], [1080, 640]);
+  const theme = await page.locator("html").getAttribute("data-theme");
+  const paper = theme === "dark" ? [20, 35, 30] : [247, 245, 237];
+  assert.deepEqual([...png.data.subarray(0, 3)], paper, name + " background in " + theme);
   assert.equal(new URL(data.text).protocol, "https:");
   if (process.env.MATIZ_SCREENSHOTS) {
     await mkdir(process.env.MATIZ_SCREENSHOTS, { recursive: true });

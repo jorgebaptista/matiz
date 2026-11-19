@@ -51,6 +51,8 @@ export async function testDailySharing(browser) {
         Object.defineProperty(navigator, "share", { configurable: true, value: async data => window.shared.push(data) });
         Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async text => window.copied.push(text) } });
       });
+      // Switch after the result image was prepared.
+      if (locale === "pt-PT") await page.locator("[data-theme-toggle]").click();
       await share.click();
       await page.waitForFunction(() => window.shared.length === 1);
       const text = await page.evaluate(() => window.shared[0].text);
@@ -83,6 +85,12 @@ export async function testDailySharing(browser) {
       await page.evaluate(() => Object.defineProperty(navigator, "share", { configurable: true, value: undefined }));
       await share.click();
       assert.ok(await page.locator(".share-preview").isVisible());
+      const previousPreview = await page.locator(".share-preview").getAttribute("src");
+      await page.locator("[data-theme-toggle]").click();
+      await page.waitForFunction(old => {
+        const preview = document.querySelector(".share-preview").src;
+        return preview !== old && document.querySelector("[data-download]").href === preview;
+      }, previousPreview);
       const downloaded = page.waitForEvent("download");
       await page.locator("[data-download]").click();
       assert.equal((await downloaded).suggestedFilename(), `matiz-daily-${locale}.png`);

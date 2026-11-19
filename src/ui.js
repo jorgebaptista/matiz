@@ -411,30 +411,41 @@ async function shareResult(button) {
   } catch (error) {
     if (error.name !== "AbortError" && version === renderVersion) showShareFallback();
   } finally {
-    button.disabled = false;
+    if (version === renderVersion) button.disabled = false;
   }
 }
-function render(focus = false) {
+function prepareShareCard(s, shareButton) {
   const version = ++renderVersion;
+  shareCard = null;
+  const fallback = root.querySelector(".share-fallback");
+  fallback.querySelector("[data-download]").removeAttribute("href");
+  shareButton.disabled = true;
+  const streak = state.survivalActive ? undefined : streakCounts(playedDays, dailyDay()).current;
+  if (streak !== undefined) shareButton.dataset.shareStreak = streak;
+  resultImage(s, {
+    streak,
+    survival: state.survivalActive,
+    playUrl: document.querySelector(state.survivalActive ? 'meta[name="matiz-play-url"]' : 'meta[name="matiz-daily-url"]').content,
+  }).then(card => {
+    if (version !== renderVersion) return;
+    shareCard = card;
+    if (!fallback.hidden) showShareFallback();
+  }).catch(() => {
+    if (version === renderVersion) root.querySelector(".share-status").textContent = translate("imageUnavailable");
+  }).finally(() => { if (version === renderVersion) shareButton.disabled = false; });
+}
+document.addEventListener("matiz-theme-change", () => {
+  const button = root.querySelector('[data-action="share"]');
+  if (button) prepareShareCard(activeSession(state), button);
+});
+function render(focus = false) {
+  ++renderVersion;
   shareCard = null;
   const s = activeSession(state);
   root.classList.toggle("in-round", Boolean(!invitation && s && s.cursor < s.cards.length));
   root.innerHTML = invitation ? survivalInvitation() : s ? play(s) : home();
   const shareButton = root.querySelector('[data-action="share"]');
-  if (shareButton) {
-    shareButton.disabled = true;
-    const streak = state.survivalActive ? undefined : streakCounts(playedDays, dailyDay()).current;
-    if (streak !== undefined) shareButton.dataset.shareStreak = streak;
-    resultImage(s, {
-      streak,
-      survival: state.survivalActive,
-      playUrl: document.querySelector(state.survivalActive ? 'meta[name="matiz-play-url"]' : 'meta[name="matiz-daily-url"]').content,
-    }).then(card => {
-      if (version === renderVersion) shareCard = card;
-    }).catch(() => {
-      if (version === renderVersion) root.querySelector(".share-status").textContent = translate("imageUnavailable");
-    }).finally(() => { if (version === renderVersion) shareButton.disabled = false; });
-  }
+  if (shareButton) prepareShareCard(s, shareButton);
   if (!s && !invitation) {
     root.append(document.querySelector("#credits").content.cloneNode(true));
     refreshDailyButton();

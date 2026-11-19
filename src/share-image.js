@@ -16,7 +16,9 @@ export async function resultImage(session, { survival = false, playUrl, streak }
   canvas.width = 1080;
   canvas.height = 640;
   const ctx = canvas.getContext("2d");
-  const ink = "#174f42", muted = "#526a5d", paper = "#f7f5ed";
+  const style = getComputedStyle(document.documentElement);
+  const colour = name => style.getPropertyValue(name).trim();
+  const ink = colour("--green"), muted = colour("--muted"), paper = colour("--paper");
   const box = (x, y, w, h, colour, radius = 0) => {
     ctx.fillStyle = colour;
     ctx.beginPath();
@@ -29,12 +31,12 @@ export async function resultImage(session, { survival = false, playUrl, streak }
     ctx.fillText(String(value), x, y, width);
   };
   box(0, 0, canvas.width, canvas.height, paper);
-  [30, 44, 58].forEach((h, i) => box(72 + i * 19, 122 - h, 12, h, i === 2 ? "#c97735" : ink));
+  [30, 44, 58].forEach((h, i) => box(72 + i * 19, 122 - h, 12, h, i === 2 ? colour("--current-step") : ink));
   label("Matiz", 142, 123, 62, { font: "Instrument Serif", weight: 400 });
   ctx.textAlign = "right";
   label(locale.locale, 1008, 113, 28, { colour: muted });
   ctx.textAlign = "left";
-  box(72, 158, 936, 2, "#d7dfd2");
+  box(72, 158, 936, 2, colour("--line"));
   label(t(survival ? "survival" : "daily"), 72, 250, 52, { weight: 600 });
   if (!survival) label(new Intl.DateTimeFormat(locale.locale, {
     day: "numeric", month: "short", timeZone: "UTC",
@@ -52,7 +54,7 @@ export async function resultImage(session, { survival = false, playUrl, streak }
     const scoreCenter = scoreBaseline + (bounds.actualBoundingBoxDescent - bounds.actualBoundingBoxAscent) / 2;
     ctx.translate(933 - 20 * flameScale, scoreCenter - 24 * flameScale);
     ctx.scale(flameScale, flameScale);
-    ctx.fillStyle = "#ffc184";
+    ctx.fillStyle = colour("--orange");
     ctx.fill(new Path2D(flamePath));
     ctx.textAlign = "center";
     label(streak, 20, 36, 17, { colour: "#472209", weight: 700, width: 30 });
@@ -60,7 +62,7 @@ export async function resultImage(session, { survival = false, playUrl, streak }
     session.cards.forEach((card, index) => {
       const correct = session.answers[index] === (card.key ?? wordsById.get(card.id)?.key);
       const x = 76 + index * 76;
-      box(x, 530, 58, 58, correct ? ink : "#dce2d7", 12);
+      box(x, 530, 58, 58, correct ? ink : colour("--track"), 12);
       // A shape as well as colour distinguishes correct answers.
       label(correct ? "✓" : "–", x + 14, 571, 36, { colour: correct ? paper : muted });
     });

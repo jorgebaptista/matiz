@@ -54,6 +54,10 @@ export async function testSurvival(browser) {
       assert.equal(await page.locator('[data-stat="yourBest"]').innerText(), "4");
       assert.deepEqual((await readSave(page)).session, practice);
       assert.deepEqual((await readSave(page)).progress, {});
+      if (locale === "en-GB") {
+        await page.emulateMedia({ colorScheme: "dark" });
+        await page.waitForFunction(() => document.documentElement.dataset.theme === "dark");
+      }
       await page.locator('[data-action="share"]').click();
       const text = await page.evaluate(() => window.shared[0].text);
       const link = text.split("\n").at(-1);

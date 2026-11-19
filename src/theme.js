@@ -10,7 +10,9 @@
 
   function apply(notify = false) {
     const theme = preference || (system.matches ? "dark" : "light");
+    const changed = root.dataset.theme !== theme;
     root.dataset.theme = theme;
+    if (changed) document.dispatchEvent(new Event("matiz-theme-change"));
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#14231e" : "#f7f5ed");
     document.querySelectorAll("[data-theme-toggle]").forEach(button => {
       button.setAttribute("aria-pressed", String(theme === "dark"));
