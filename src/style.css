@@ -651,6 +651,22 @@ h2,
   font-size: 40px;
   color: var(--muted);
 }
+.daily-result { position: relative; display: grid; }
+.daily-result .score { width: fit-content; }
+.daily-result .daily-streak { margin: 0; }
+.daily-result .daily-streak summary {
+  position: absolute;
+  inset-inline-end: 0;
+  grid-row: 1 / 2;
+  inset-block: 0;
+}
+.daily-result .flame {
+  height: 3.9rem;
+  min-width: 3.25rem;
+  font-size: 1.6rem;
+  padding: .8rem .55rem 0;
+}
+.daily-result .daily-streak[open] { padding-top: .5rem; }
 .share-status { text-align: center; color: var(--muted); margin-top: 10px; }
 .share-status:empty { display: none; }
 .survival-stats { display: flex; gap: 10px; margin: 14px 0; }
