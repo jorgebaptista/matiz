@@ -265,9 +265,9 @@ function play(s) {
       '">' +
       status +
       "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
-        ? '<span class="answer-run" role="img" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
+        ? '<details class="run-tip"><summary class="answer-run" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 1 3 14h7l-1 9L21 9h-8z"/></svg>' +
-          state.answerRun + '</span>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
+          state.answerRun + '</summary><p>' + t("answerRunTip", { count: state.answerRun }) + '</p></details>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
@@ -476,10 +476,22 @@ window.addEventListener("storage", (e) => {
     render();
   }
 });
+document.addEventListener("click", event => {
+  const tip = root.querySelector(".run-tip[open]");
+  if (tip && !tip.contains(event.target)) tip.open = false;
+});
+document.addEventListener("keydown", event => {
+  const tip = root.querySelector(".run-tip[open]");
+  if (event.key === "Escape" && tip) {
+    tip.open = false;
+    tip.querySelector("summary").focus();
+  }
+});
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
+  const previousRun = state.answerRun ?? 0;
   if (id === "copy-link") { copyShareLink(); return; }
   if (id === "share" && (state.dailyActive || state.survivalActive)) {
     shareResult(target);
@@ -516,6 +528,7 @@ root.addEventListener("click", (e) => {
   }
   save();
   render(true);
+  if (state.answerRun > previousRun) root.querySelector(".answer-run")?.classList.add("run-increased");
 });
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {

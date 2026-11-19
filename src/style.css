@@ -510,7 +510,24 @@ h2,
   justify-content: space-between;
   margin-bottom: 12px;
 }
+.run-tip { position: relative; }
+.run-tip p {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: 0;
+  top: calc(100% + 5px);
+  width: max-content;
+  max-width: 75vw;
+  padding: .45rem .75rem;
+  border-radius: .65rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: .875rem;
+}
+.answer-run::-webkit-details-marker { display: none; }
+.answer-run:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .answer-run {
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -522,6 +539,17 @@ h2,
   font-variant-numeric: tabular-nums;
 }
 .answer-run svg { width: 1.1em; height: 1.1em; }
+@media (prefers-reduced-motion: no-preference) {
+  .run-increased { animation: run-glow 450ms ease-out; }
+  .run-increased svg { animation: bolt-pop 450ms ease-out; }
+  @keyframes run-glow {
+    from { box-shadow: 0 0 0 2px #429bde; }
+    to { box-shadow: 0 0 0 9px transparent; }
+  }
+  @keyframes bolt-pop {
+    35% { transform: scale(1.35) rotate(-10deg); }
+  }
+}
 .result {
   display: inline-block;
   padding: 5px 12px;

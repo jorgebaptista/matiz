@@ -94,11 +94,18 @@ try {
     await page.locator(".choice").nth(i).click();
     assert.equal(await page.locator(".result").innerText(), "Certo!");
     if (++correctInRound === 2) {
-      const bolt = page.getByRole("img", { name: "2 respostas certas seguidas" });
+      const bolt = page.locator(".answer-run", { hasText: "2" });
       const badge = await bolt.boundingBox();
       const result = await page.locator(".result").boundingBox();
       assert.ok(badge && badge.x > result.x + result.width);
       assert.ok(Math.abs((badge.y + badge.height / 2) - (result.y + result.height / 2)) <= 1);
+      assert.ok(await bolt.evaluate(el => el.classList.contains("run-increased")));
+      await bolt.click();
+      assert.ok(await page.getByText("2 seguidas. Continua!").isVisible());
+      await page.keyboard.press("Escape");
+      assert.equal(await page.getByText("2 seguidas. Continua!").isVisible(), false);
+      await page.reload();
+      assert.equal(await bolt.evaluate(el => el.classList.contains("run-increased")), false);
     }
     assert.ok(await page.locator(".review-time").isVisible());
     await page.locator(".primary").click();
