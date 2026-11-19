@@ -504,13 +504,30 @@ h2,
 .summary {
   margin: 17px 0 20px;
 }
+.feedback-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.answer-run {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: var(--band-0-bg);
+  color: var(--band-0-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.answer-run svg { width: 1.1em; height: 1.1em; }
 .result {
   display: inline-block;
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 12px;
 }
 .good {
   background: var(--good);

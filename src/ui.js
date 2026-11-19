@@ -260,12 +260,14 @@ function play(s) {
         : t("incorrect");
     return (
       top +
-      '<section class="feedback"><div class="result ' +
+      '<section class="feedback"><div class="feedback-status"><div class="result ' +
       (correct ? "good" : "learn") +
       '">' +
       status +
       "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
-        ? '<p class="streak">' + flame(state.answerRun, t("answerRun", { count: state.answerRun })) + '</p>' : '') + wordHeading(word) + '<p class="meaning">' +
+        ? '<span class="answer-run" role="img" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 1 3 14h7l-1 9L21 9h-8z"/></svg>' +
+          state.answerRun + '</span>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
