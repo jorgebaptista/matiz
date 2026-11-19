@@ -78,6 +78,7 @@ try {
   await page.locator(".hero .primary").click();
   assert.equal(await h1.innerText(), first);
   await page.locator(".primary").click();
+  let correctInRound = 0;
   while (!(await page.locator(".summary").count())) {
     const headword = await h1.innerText();
     const word = levels[0].words.find(w => w.word === headword);
@@ -92,6 +93,26 @@ try {
     assert.ok(i >= 0);
     await page.locator(".choice").nth(i).click();
     assert.equal(await page.locator(".result").innerText(), "Certo!");
+    correctInRound++;
+    if (correctInRound <= 4) {
+      assert.equal(await page.locator(".answer-run").getAttribute("data-tier"), correctInRound <= 3 ? "low" : "mid");
+    }
+    if (correctInRound === 2) {
+      const bolt = page.locator(".answer-run", { hasText: "2" });
+      const badge = await bolt.boundingBox();
+      const result = await page.locator(".result").boundingBox();
+      assert.ok(badge && badge.x > result.x + result.width);
+      assert.ok(Math.abs((badge.y + badge.height / 2) - (result.y + result.height / 2)) <= 1);
+      assert.ok(await bolt.evaluate(el => el.classList.contains("run-increased")));
+      assert.equal(await bolt.locator(".run-count").getAttribute("data-previous"), "1");
+      assert.equal(await bolt.locator(".run-count > span").textContent(), "2");
+      await bolt.click();
+      assert.ok(await page.getByText("2 seguidas. Continua!").isVisible());
+      await page.keyboard.press("Escape");
+      assert.equal(await page.getByText("2 seguidas. Continua!").isVisible(), false);
+      await page.reload();
+      assert.equal(await bolt.evaluate(el => el.classList.contains("run-increased")), false);
+    }
     assert.ok(await page.locator(".review-time").isVisible());
     await page.locator(".primary").click();
   }

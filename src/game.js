@@ -344,6 +344,32 @@ export function next(state) {
   if (state.survivalActive) rememberSurvival(state);
 }
 
+/** Only the latest answer for each word in the finished pass matters here. */
+export function missedWords(session) {
+  if (!session || session.cursor !== session.cards.length) return [];
+  const missed = new Map();
+  for (let i = session.retryStart ?? 0; i < session.cards.length; i++) {
+    const card = session.cards[i];
+    if (session.answers[i] === (card.key ?? wordsById.get(card.id)?.key)) missed.delete(card.id);
+    else missed.set(card.id, card);
+  }
+  return [...missed.values()];
+}
+
+export function retryMissed(state) {
+  if (!state.active || state.dailyActive || state.survivalActive) return;
+  const session = state.session;
+  const missed = missedWords(session);
+  if (!missed.length) return;
+  // Retain the scored round and replace only its optional practice pass.
+  session.retryStart ??= session.cards.length;
+  session.cursor = session.retryStart;
+  session.answers.length = session.retryStart;
+  session.cards.splice(session.retryStart, Infinity, ...missed.map(card => ({
+    ...card, correction: true, options: shuffle(card.options),
+  })));
+}
+
 /** Clear only a fully completed round; exiting instead sets active to false. */
 export function finish(state) {
   const session = state.session;

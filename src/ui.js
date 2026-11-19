@@ -7,7 +7,7 @@ import {
   start,
   answer,
   next,
-  finish,
+  finish, missedWords, retryMissed,
   roundScore,
   hasDaily, startDaily, retryDaily, activeSession, practiceLevels, startSurvival, reconcileSurvival,
 } from "./game.js";
@@ -177,7 +177,7 @@ function home() {
     [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
-    answerRecord() + '</section>' + (hasDaily ? dailyButton() : '') +
+    '</section>' + (hasDaily ? dailyButton() : '') +
     '<button class="survival" data-action="survival"><span class="survival-icon" aria-hidden="true">⚡</span><strong>' +
     t(state.survival && state.survival.cursor < state.survival.cards.length ? "resumeSurvival" : "survival") +
     '</strong><span class="survival-best">' + t("personalBest", { count: state.survivalBests?.[survivalVersion(levels)] ?? 0 }) + '</span></button>' +
@@ -215,21 +215,19 @@ function home() {
     "</div>"
   );
 }
-function answerRecord() {
-  return state.answerBest ? '<p class="streak">' + t("answerRecord", { count: state.answerBest }) + '</p>' : '';
-}
 function roundTop(s, card) {
-  const pos = Math.min(s.cursor + 1, s.cards.length);
+  const start = s.retryStart ?? 0;
+  const cursor = s.cursor - start;
   const caption = state.survivalActive ? t("survival") : state.dailyActive ? t(state.dailyReplay ? "dailyRetry" : "daily") : card.correction ? t("correction") : card.practice ? t("practice") : "";
   return (
     '<div class="nav"><button class="back" data-action="home"><span aria-hidden="true">‹</span> ' + t("home") + '</button><div class="header-tools"><span class="position">' +
-    (state.survivalActive ? '' : t("wordPosition", { count: pos, total: s.cards.length })) +
+    (state.survivalActive ? '' : t("wordPosition", { count: cursor + 1, total: s.cards.length - start })) +
     '</span>' + themeControl() + '</div></div>' + (state.survivalActive ? '' : '<div class="steps" aria-hidden="true">' +
-    s.cards
+    s.cards.slice(start)
       .map(
         (_, i) =>
           '<i class="' +
-          (i < s.cursor ? "done" : i === s.cursor ? "here" : "") +
+          (i < cursor ? "done" : i === cursor ? "here" : "") +
           '"></i>',
       )
       .join("") +
@@ -260,12 +258,16 @@ function play(s) {
         : t("incorrect");
     return (
       top +
-      '<section class="feedback"><div class="result ' +
+      '<section class="feedback"><div class="feedback-status"><div class="result ' +
       (correct ? "good" : "learn") +
       '">' +
       status +
-      "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
-        ? '<p class="streak">' + flame(state.answerRun, t("answerRun", { count: state.answerRun })) + '</p>' : '') + wordHeading(word) + '<p class="meaning">' +
+      "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 1
+        ? '<details class="run-tip"><summary class="answer-run" data-tier="' +
+          (state.answerRun <= 3 ? "low" : state.answerRun >= 8 ? "high" : "mid") + '" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 1 3 14h7l-1 9L21 9h-8z"/></svg>' +
+          '<span class="run-count" aria-hidden="true"><span>' + state.answerRun + '</span></span></summary><p>' +
+          t("answerRunTip", { count: state.answerRun }) + '</p></details>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
@@ -310,6 +312,7 @@ function dailyLabel(s) {
 }
 function summary(s) {
   if (state.survivalActive) return survivalSummary(s);
+  const missed = state.dailyActive ? 0 : missedWords(s).length;
   return (
     header() +
     '<section class="summary"><h1>' + (state.dailyActive ? (state.dailyReplay ? t("dailyRetry") : dailyLabel(s)) : t("roundComplete")) + '</h1><div class="score">' +
@@ -322,7 +325,9 @@ function summary(s) {
       : streakLine() + shareControls("shareResult")) +
       '<button class="secondary" data-action="daily-retry">' + t("retry") + '</button>' +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
-    action("continue", translate("playAgain")) +
+    (missed ? action("retry-missed", translate("retryMissed", { count: missed })) +
+      '<button class="secondary" data-action="continue">' + t("playAgain") + '</button>' :
+      action("continue", translate("playAgain"))) +
     '<button class="unsure" data-action="close">' + t("backHome") + '</button>')
   );
 }
@@ -474,10 +479,22 @@ window.addEventListener("storage", (e) => {
     render();
   }
 });
+document.addEventListener("click", event => {
+  const tip = root.querySelector(".run-tip[open]");
+  if (tip && !tip.contains(event.target)) tip.open = false;
+});
+document.addEventListener("keydown", event => {
+  const tip = root.querySelector(".run-tip[open]");
+  if (event.key === "Escape" && tip) {
+    tip.open = false;
+    tip.querySelector("summary").focus();
+  }
+});
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
+  const previousRun = state.answerRun ?? 0;
   if (id === "copy-link") { copyShareLink(); return; }
   if (id === "share" && (state.dailyActive || state.survivalActive)) {
     shareResult(target);
@@ -498,6 +515,7 @@ root.addEventListener("click", (e) => {
     invitation = null;
     clearChallengeUrl();
   } else if (id === "start") start(state);
+  else if (id === "retry-missed") retryMissed(state);
   else if (id === "daily-retry") retryDaily(state);
   else if (id === "original-daily") delete state.dailyReplay;
   else if (id === "daily") startDaily(state);
@@ -514,6 +532,11 @@ root.addEventListener("click", (e) => {
   }
   save();
   render(true);
+  const bolt = root.querySelector(".answer-run");
+  if (bolt && state.answerRun > previousRun) {
+    bolt.querySelector(".run-count").dataset.previous = previousRun;
+    bolt.classList.add("run-increased");
+  }
 });
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {

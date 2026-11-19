@@ -4,10 +4,11 @@
   "title": "Matiz · A British English synonym game",
   "description": "Find a more precise word in rounds of up to five words.",
   "strings": {
-    "answerRun": "{count} correct in a row",
-    "answerRecord": "Best correct streak: {count}",
+    "answerRunTip": { "one": "{count} correct. Keep going!", "other": "{count} in a row. Keep going!" },
+    "answerRun": { "one": "{count} correct answer", "other": "{count} correct in a row" },
     "endRetry": "Back at the end of this round",
     "correction": "Review",
+    "retryMissed": "Retry missed words ({count})",
     "retry": "Retry",
     "dailyRetry": "Daily retry",
     "originalResult": "First result",
