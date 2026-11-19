@@ -137,6 +137,14 @@ try {
     await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
   }
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
+  const resultRow = daily.locator(".daily-result");
+  const rowBounds = await resultRow.boundingBox();
+  const scoreBounds = await resultRow.locator(".score").boundingBox();
+  const flameBounds = await resultRow.locator(".flame").boundingBox();
+  assert.ok(Math.abs(scoreBounds.y + scoreBounds.height / 2 - flameBounds.y - flameBounds.height / 2) <= 1);
+  assert.ok(Math.abs(rowBounds.x + rowBounds.width - flameBounds.x - flameBounds.width) <= 1);
+  await resultRow.locator("summary").click();
+  assert.ok(await resultRow.getByText("Recorde: 1 dia", { exact: false }).isVisible());
   await daily.getByRole("button", { name: "Tentar de novo" }).click();
   await daily.reload();
   for (let i = 0; i < 4; i++) {

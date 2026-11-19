@@ -313,16 +313,18 @@ function dailyLabel(s) {
 function summary(s) {
   if (state.survivalActive) return survivalSummary(s);
   const missed = state.dailyActive ? 0 : missedWords(s).length;
+  const showStreak = state.dailyActive && !state.dailyReplay;
   return (
     header() +
-    '<section class="summary"><h1>' + (state.dailyActive ? (state.dailyReplay ? t("dailyRetry") : dailyLabel(s)) : t("roundComplete")) + '</h1><div class="score">' +
+    '<section class="summary"><h1>' + (state.dailyActive ? (state.dailyReplay ? t("dailyRetry") : dailyLabel(s)) : t("roundComplete")) + '</h1>' +
+    (showStreak ? '<div class="daily-result">' : '') + '<div class="score">' +
     roundScore(s) +
     "<span> / " +
     s.cards.filter(card => !card.correction).length +
-    '</span></div><p>' + t("correctAnswers") + '</p></section>' +
+    '</span></div><p>' + t("correctAnswers") + '</p>' + (showStreak ? streakLine() + '</div>' : '') + '</section>' +
     (state.dailyActive ? (state.dailyReplay
       ? action("original-daily", translate("originalResult"))
-      : streakLine() + shareControls("shareResult")) +
+      : shareControls("shareResult")) +
       '<button class="secondary" data-action="daily-retry">' + t("retry") + '</button>' +
       '<button class="unsure" data-action="home">' + t("backHome") + '</button>' :
     (missed ? action("retry-missed", translate("retryMissed", { count: missed })) +
