@@ -100,6 +100,8 @@ try {
       assert.ok(badge && badge.x > result.x + result.width);
       assert.ok(Math.abs((badge.y + badge.height / 2) - (result.y + result.height / 2)) <= 1);
       assert.ok(await bolt.evaluate(el => el.classList.contains("run-increased")));
+      assert.equal(await bolt.locator(".run-count").getAttribute("data-previous"), "1");
+      assert.equal(await bolt.locator(".run-count > span").textContent(), "2");
       await bolt.click();
       assert.ok(await page.getByText("2 seguidas. Continua!").isVisible());
       await page.keyboard.press("Escape");

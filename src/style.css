@@ -539,9 +539,25 @@ h2,
   font-variant-numeric: tabular-nums;
 }
 .answer-run svg { width: 1.1em; height: 1.1em; }
+.run-count { display: grid; overflow: hidden; text-align: center; line-height: 1.2; }
+.run-count > span { grid-area: 1 / 1; }
 @media (prefers-reduced-motion: no-preference) {
-  .run-increased { animation: run-glow 450ms ease-out; }
-  .run-increased svg { animation: bolt-pop 450ms ease-out; }
+  .run-increased { animation: run-glow 560ms ease-out; }
+  .run-increased svg { animation: bolt-pop 560ms ease-out; }
+  .run-increased .run-count::before {
+    content: attr(data-previous);
+    grid-area: 1 / 1;
+    animation: count-out 560ms ease-in-out both;
+  }
+  .run-increased .run-count > span { animation: count-in 560ms ease-in-out both; }
+  @keyframes count-out {
+    0%, 22% { transform: translateY(0); }
+    to { transform: translateY(-100%); }
+  }
+  @keyframes count-in {
+    0%, 22% { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
   @keyframes run-glow {
     from { box-shadow: 0 0 0 2px #429bde; }
     to { box-shadow: 0 0 0 9px transparent; }

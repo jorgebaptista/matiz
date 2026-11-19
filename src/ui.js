@@ -267,7 +267,8 @@ function play(s) {
       "</div>" + (correct && !card.correction && !(state.dailyActive && state.dailyReplay) && state.answerRun >= 2
         ? '<details class="run-tip"><summary class="answer-run" aria-label="' + t("answerRun", { count: state.answerRun }) + '">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 1 3 14h7l-1 9L21 9h-8z"/></svg>' +
-          state.answerRun + '</summary><p>' + t("answerRunTip", { count: state.answerRun }) + '</p></details>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
+          '<span class="run-count" aria-hidden="true"><span>' + state.answerRun + '</span></span></summary><p>' +
+          t("answerRunTip", { count: state.answerRun }) + '</p></details>' : '') + '</div>' + wordHeading(word) + '<p class="meaning">' +
       esc(card.key ?? word.key) +
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
@@ -528,7 +529,11 @@ root.addEventListener("click", (e) => {
   }
   save();
   render(true);
-  if (state.answerRun > previousRun) root.querySelector(".answer-run")?.classList.add("run-increased");
+  const bolt = root.querySelector(".answer-run");
+  if (bolt && state.answerRun > previousRun) {
+    bolt.querySelector(".run-count").dataset.previous = previousRun;
+    bolt.classList.add("run-increased");
+  }
 });
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {
