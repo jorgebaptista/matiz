@@ -21,8 +21,8 @@ const dailyBands = dailyBandsFor(levels);
 export const hasDaily = dailyBands.length > 0;
 const debutCalendar = hasDaily ? dailyBands[0].words.map(w => w.debutDay)
   .filter(Number.isInteger).sort((a, b) => a - b) : [];
-export function practiceLevels(day = dailyDay()) {
-  return levels.map(band => ({ ...band, words: band.words.filter(w => w.debutDay == null || w.debutDay < day) }));
+export function practiceLevels(day = dailyDay(), discoveries = {}) {
+  return levels.map(band => ({ ...band, words: band.words.filter(w => w.debutDay == null || w.debutDay < day || discoveries[w.id]?.seen) }));
 }
 export function startDaily(state, now = Date.now()) {
   if (!hasDaily) return;
@@ -204,6 +204,10 @@ export function restoreState(saved) {
       const daily = restoreSession(saved.daily);
       if (daily) {
         state.daily = daily;
+        // Credit answers still present in a pre-collection daily save.
+        if (daily.discoveries == null) daily.answers.forEach((value, index) =>
+          discoverDailyWord(state, daily, daily.cards[index], value, daily.day * DAY));
+
         if (daily.cursor === daily.cards.length && saved.dailyReplay?.day === daily.day) {
           const replay = restoreSession(saved.dailyReplay);
           if (replay) state.dailyReplay = replay;
@@ -296,6 +300,42 @@ export function start(state, now = Date.now(), rng = Math.random) {
   return state.session;
 }
 
+export function collectionCounts(state, available = practiceLevels(dailyDay(), state.progress)) {
+  let total = 0, discovered = 0, mastered = 0;
+  for (const band of available) {
+    total += band.words.length;
+    for (const word of band.words) {
+      if (learned(state, word)) {
+        mastered++;
+        discovered++;
+      } else if (seen(state, word)) discovered++;
+    }
+  }
+  return { total, discovered, mastered };
+}
+
+export function nextMilestone(mastered, total) {
+  const goal = mastered < 5 ? 5 : mastered < 10 ? 10 : 25 * (Math.floor(mastered / 25) + 1);
+  return Math.min(goal, total);
+}
+
+function discoverDailyWord(state, daily, card, value, now) {
+  daily.discoveries ??= 0;
+  const word = wordsById.get(card.id);
+  if (seen(state, word) || learned(state, word)) return;
+  const correct = value === card.key;
+  const progress = applyAnswer(emptyProgress(word.levelId, word.id), correct, now);
+  // Lisbon midnight is either 00:00 UTC or 23:00 UTC on the previous date.
+  const tomorrow = dailyDay(now) + 1;
+  const summerMidnight = tomorrow * DAY - 3_600_000;
+  progress.dueAt = dailyDay(summerMidnight) === tomorrow ? summerMidnight : tomorrow * DAY;
+  progress.retry = !correct;
+  progress.reviewStep = correct ? 0 : -1;
+  progress.delayedReviews = 0;
+  state.progress[word.id] = progress;
+  daily.discoveries++;
+}
+
 /** Count an answer once and schedule from answer time, never from round creation. */
 export function answer(state, value, now = Date.now()) {
   const session = activeSession(state);
@@ -316,12 +356,16 @@ export function answer(state, value, now = Date.now()) {
     rememberSurvival(state);
     return;
   }
-  if (state.dailyActive) return;
+  if (state.dailyActive) {
+    if (!state.dailyReplay) discoverDailyWord(state, session, card, value, now);
+    return;
+  }
   if (!correct && !card.correction) {
     session.cards.push({ ...card, correction: true, options: shuffle(card.options) });
   }
   const prior = state.progress[word.id] ?? emptyProgress(word.levelId, word.id);
   if (card.practice || session.practice || session.replay || (prior.seen > 0 && dueAt(prior) > now)) return;
+  const wasLearned = learned(state, word);
   const progress = applyAnswer(prior, correct, now);
   progress.delayedReviews = prior.delayedReviews ?? 0;
   progress.reviewStep = correct
@@ -332,6 +376,12 @@ export function answer(state, value, now = Date.now()) {
   progress.retry = !correct;
   progress.dueAt = now + (correct ? INTERVALS[progress.reviewStep] * DAY : 0);
   state.progress[word.id] = progress;
+  if (!prior.seen) session.discoveries = (session.discoveries ?? 0) + 1;
+  if (!wasLearned && learned(state, word)) {
+    session.promotions = (session.promotions ?? 0) + 1;
+    const { mastered, total } = collectionCounts(state);
+    if (nextMilestone(mastered - 1, total) === mastered) session.milestone = mastered;
+  }
 }
 
 /** Advance only past an answered card. */
@@ -342,6 +392,8 @@ export function next(state) {
     session.cursor = session.cards.length;
   else session.cursor++;
   if (state.survivalActive) rememberSurvival(state);
+  else if (session.cursor === session.cards.length && !(state.dailyActive && state.dailyReplay))
+    session.collection = collectionCounts(state);
 }
 
 /** Only the latest answer for each word in the finished pass matters here. */

@@ -4,7 +4,7 @@ import pack from "../packs/pt-PT.json" with { type: "json" };
 import { emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import {
   levels, practiceLevels, wordsById, restoreState, fresh, start, answer, next, finish,
-  roundScore, learned, missedWords, retryMissed,
+  roundScore, learned, missedWords, retryMissed, collectionCounts, nextMilestone,
 } from "../src/game.js";
 
 const DAY = 86_400_000;
@@ -416,4 +416,32 @@ test("optional passes shrink to unresolved words, resume mid-pass, and preserve 
   assert.equal(state.answerRun, streak);
   finish(state);
   assert.equal(state.session, null);
+});
+
+test("a correction counts as one discovery and a later scheduled recall earns mastery", () => {
+  let state = fresh();
+  for (const word of words.filter(w => w.id !== first.id).slice(0, 4))
+    state.progress[word.id] = progress(word, { delayedReviews: 1 });
+  oneCard(state);
+  answer(state, null, NOW);
+  next(state);
+  answer(state, first.key, NOW);
+  next(state);
+  assert.equal(state.session.discoveries, 1);
+  assert.equal(state.session.promotions ?? 0, 0);
+  assert.deepEqual(state.session.collection, { total: collectionCounts(state).total, discovered: 5, mastered: 4 });
+  state = restoreState(structuredClone(state));
+  oneCard(state);
+  answer(state, first.key, state.progress[first.id].dueAt);
+  next(state);
+  assert.equal(state.session.discoveries ?? 0, 0);
+  assert.equal(state.session.promotions, 1);
+  assert.equal(state.session.milestone, 5);
+  assert.equal(state.session.collection.mastered, 5);
+  assert.deepEqual(restoreState(state).session.collection, state.session.collection);
+});
+
+test("collection goals start small, grow and stop at the pack size", () => {
+  assert.deepEqual([0, 4, 5, 9, 10, 24, 25, 50].map(n => nextMilestone(n, 61)), [5, 5, 10, 10, 25, 25, 50, 61]);
+  assert.equal(nextMilestone(0, 3), 3);
 });

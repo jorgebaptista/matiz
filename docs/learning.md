@@ -18,13 +18,15 @@ After the automatic retry, players can practise just the words they still missed
 
 Each language saves the current and best run of consecutive correct answers across modes. A wrong answer or skip resets the run. Correction cards and daily replays leave it untouched.
 
+Round results show the collection in three stages. First encounters count as discoveries, and the first successful delayed review counts as a learned word. Milestones are 5, 10, 25 and every 25 learned words after that, capped at the available collection.
+
 ## Daily words
 
 Each daily set introduces four words, from easiest to hardest. At midnight in Lisbon, each set joins regular practice, even for players who missed it.
 
 On unscheduled days, earlier sets loop in order as **Encore** or **Revisita**. A newly scheduled set takes priority. Web and Android use the same bundled calendar offline. Today's attempt and score are saved separately from practice.
 
-The daily can be replayed for practice. Sharing uses the first result.
+The first daily attempt adds unseen words to the collection, with a review due from the next Lisbon midnight. Previously encountered words keep their schedule. The daily can be replayed for practice. Sharing uses the first result.
 
 Finishing all four daily words in either language counts once per Lisbon calendar day, at any score. Each completed daily earns one freeze, up to two in reserve. Each missed day uses one freeze and preserves the streak without increasing it. A missed day with no freeze ends the streak. The personal best stays on the device.
 

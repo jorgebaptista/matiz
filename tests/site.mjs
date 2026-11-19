@@ -137,6 +137,11 @@ try {
     await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
   }
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
+  const progressPanel = daily.locator(".collection-progress");
+  assert.equal(await progressPanel.locator(".round-gains").innerText(), "+4 descobertas");
+  const stages = (await progressPanel.locator("dd").allTextContents()).map(Number);
+  assert.deepEqual(stages.slice(0, 2), [0, 4]);
+  assert.ok(stages[2] > 0);
   const resultRow = daily.locator(".daily-result");
   const rowBounds = await resultRow.boundingBox();
   const scoreBounds = await resultRow.locator(".score").boundingBox();
@@ -156,7 +161,9 @@ try {
     await daily.locator('[data-action="next"]').click();
   }
   assert.match(await daily.locator(".score").innerText(), /4\s*\/\s*4/);
+  assert.equal(await progressPanel.count(), 0);
   await daily.getByRole("button", { name: "Primeiro resultado" }).click();
+  assert.equal(await progressPanel.locator(".round-gains").innerText(), "+4 descobertas");
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);
   await daily.getByRole("button", { name: "Voltar ao início" }).click();
   assert.equal(await dailyButton.getAttribute("data-status"), "dailyCompleted");
