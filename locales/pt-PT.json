@@ -6,7 +6,6 @@
   "strings": {
     "answerRunTip": { "one": "{count} certa. Continua!", "many": "{count} seguidas. Continua!", "other": "{count} seguidas. Continua!" },
     "answerRun": { "one": "{count} resposta certa", "many": "{count} respostas certas seguidas", "other": "{count} respostas certas seguidas" },
-    "answerRecord": "Recorde de acertos seguidos: {count}",
     "endRetry": "Volta no fim desta ronda",
     "correction": "Revisão",
     "retry": "Tentar de novo",

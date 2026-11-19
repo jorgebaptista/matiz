@@ -177,7 +177,7 @@ function home() {
     [...locale.strings.heroArt].map((letter) => '<i>' + esc(letter) + '</i>').join('') + '</div>' +
     '<h1>' + t("heroTitle") + '</h1><p>' + esc(locale.description) + '</p>' +
     action("start", translate(state.session ? "resume" : "play")) +
-    answerRecord() + '</section>' + (hasDaily ? dailyButton() : '') +
+    '</section>' + (hasDaily ? dailyButton() : '') +
     '<button class="survival" data-action="survival"><span class="survival-icon" aria-hidden="true">⚡</span><strong>' +
     t(state.survival && state.survival.cursor < state.survival.cards.length ? "resumeSurvival" : "survival") +
     '</strong><span class="survival-best">' + t("personalBest", { count: state.survivalBests?.[survivalVersion(levels)] ?? 0 }) + '</span></button>' +
@@ -214,9 +214,6 @@ function home() {
       .join("") +
     "</div>"
   );
-}
-function answerRecord() {
-  return state.answerBest ? '<p class="streak">' + t("answerRecord", { count: state.answerBest }) + '</p>' : '';
 }
 function roundTop(s, card) {
   const pos = Math.min(s.cursor + 1, s.cards.length);

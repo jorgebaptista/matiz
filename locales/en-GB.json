@@ -6,7 +6,6 @@
   "strings": {
     "answerRunTip": { "one": "{count} correct. Keep going!", "other": "{count} in a row. Keep going!" },
     "answerRun": { "one": "{count} correct answer", "other": "{count} correct in a row" },
-    "answerRecord": "Best correct streak: {count}",
     "endRetry": "Back at the end of this round",
     "correction": "Review",
     "retry": "Retry",
