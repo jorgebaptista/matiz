@@ -360,12 +360,13 @@ export function answer(state, value, now = Date.now()) {
     if (!state.dailyReplay) discoverDailyWord(state, session, card, value, now);
     return;
   }
+  const wasLearned = learned(state, word);
+  if (wasLearned) card.learnedReview = true;
   if (!correct && !card.correction) {
     session.cards.push({ ...card, correction: true, options: shuffle(card.options) });
   }
   const prior = state.progress[word.id] ?? emptyProgress(word.levelId, word.id);
   if (card.practice || session.practice || session.replay || (prior.seen > 0 && dueAt(prior) > now)) return;
-  const wasLearned = learned(state, word);
   const progress = applyAnswer(prior, correct, now);
   progress.delayedReviews = prior.delayedReviews ?? 0;
   progress.reviewStep = correct

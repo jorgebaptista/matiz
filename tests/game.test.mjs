@@ -445,3 +445,15 @@ test("collection goals start small, grow and stop at the pack size", () => {
   assert.deepEqual([0, 4, 5, 9, 10, 24, 25, 50].map(n => nextMilestone(n, 61)), [5, 5, 10, 10, 25, 25, 50, 61]);
   assert.equal(nextMilestone(0, 3), 3);
 });
+
+test("feedback marks an already learned word as a review, including in free practice", () => {
+  const state = fresh();
+  state.progress[first.id] = progress(first, { dueAt: NOW });
+  oneCard(state);
+  answer(state, first.key, NOW);
+  assert.ok(learned(state, first));
+  assert.equal(state.session.cards[0].learnedReview, undefined);
+  oneCard(state, first, true);
+  answer(state, null, NOW);
+  assert.equal(restoreState(state).session.cards[0].learnedReview, true);
+});

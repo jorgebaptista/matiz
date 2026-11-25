@@ -70,6 +70,8 @@ try {
   await tap("Não sei");
   await page.locator(".result").waitFor();
   assert.equal(await page.locator(".result").innerText(), "Fica a saber");
+  assert.equal(await page.locator(".word-stage").innerText(), "Em aprendizagem");
+  assert.equal(await page.locator(".stage-track .filled").count(), 2);
   await capture("feedback");
   await page.reload();
   await page.locator(".feedback").waitFor();

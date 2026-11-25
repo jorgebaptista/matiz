@@ -83,6 +83,13 @@ function wordStatus(word) {
   if (learned(state, word)) return t("learned");
   return t(state.progress[word.id]?.seen ? "learning" : "unseen");
 }
+function wordStage(word, card) {
+  const mastered = learned(state, word);
+  const stage = mastered ? 3 : state.progress[word.id]?.seen ? 2 : 1;
+  return '<div class="word-stage"><span class="stage-track" aria-hidden="true">' +
+    [1, 2, 3].map(step => step <= stage ? '<i class="filled"></i>' : '<i></i>').join("") +
+    '</span><span>' + wordStatus(word) + (card.learnedReview ? ' · ' + t("reviewLabel") : '') + '</span></div>';
+}
 function reviewTime(word) {
   const progress = state.progress[word.id];
   const due = progress?.dueAt;
@@ -268,6 +275,7 @@ function play(s) {
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
+      (state.dailyActive || state.survivalActive ? "" : wordStage(word, card)) +
       (state.dailyActive || state.survivalActive ? "" : !correct && !card.correction
         ? '<p class="review-time">' + t("endRetry") + '</p>' : reviewTime(word)) +
       (value && !correct
