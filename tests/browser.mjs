@@ -70,6 +70,8 @@ try {
   await tap("Não sei");
   await page.locator(".result").waitFor();
   assert.equal(await page.locator(".result").innerText(), "Fica a saber");
+  assert.equal(await page.locator(".word-stage").innerText(), "Em aprendizagem");
+  assert.equal(await page.locator(".stage-track .filled").count(), 2);
   await capture("feedback");
   await page.reload();
   await page.locator(".feedback").waitFor();
@@ -191,6 +193,45 @@ try {
     "Mobile flow: collection, entry round, feedback, resume, score and next round passed.",
   );
   if (!remote) {
+    const word = wordsById.get("ponderar");
+    await page.evaluate(word => {
+      localStorage.setItem("matiz.pt-PT.v1", JSON.stringify({
+        version: 2, active: false, session: null,
+        progress: { [word.id]: { seen: 3, correct: 3, delayedReviews: 2, reviewStep: 2, dueAt: 0 } },
+      }));
+    }, word);
+    await page.reload();
+    await page.locator(".hero .primary").click();
+    assert.equal(await h1.innerText(), "Completa a frase");
+    assert.equal(await page.locator(".choice").count(), 0);
+    const input = page.getByRole("textbox", { name: "Palavra em falta" });
+    await input.fill("outra");
+    await tap("Confirmar");
+    assert.match(await page.getByRole("status").filter({ hasText: "Tenta outra" }).innerText(), /vê as opções/);
+    await input.fill(word.word);
+    await tap("Confirmar");
+    assert.equal(await page.locator(".word-stage").innerText(), "Consolidada · Revisão");
+    assert.equal(await page.locator(".stage-track .filled").count(), 4);
+    const stage = page.locator(".word-stage");
+    assert.ok(await stage.evaluate(el => el.classList.contains("stage-advanced")));
+    const tip = stage.locator(".stage-tip");
+    assert.equal(await tip.isVisible(), false);
+    await stage.locator("summary").click();
+    assert.match(await tip.innerText(), /3 revisões espaçadas/);
+    assert.equal(await tip.isVisible(), true);
+    await page.keyboard.press("Escape");
+    assert.equal(await tip.isVisible(), false);
+    assert.equal(await stage.locator("summary").evaluate(el => el === document.activeElement), true);
+
+    await page.evaluate(() => {
+      const key = "matiz.pt-PT.v1", saved = JSON.parse(localStorage.getItem(key));
+      saved.session.answers = [];
+      localStorage.setItem(key, JSON.stringify(saved));
+    });
+    await page.reload();
+    await tap("Ver opções");
+    assert.equal(await h1.innerText(), word.word);
+    assert.equal(await page.locator(".choice").count(), 4);
     await testLanguages(browser);
     await testDailySharing(browser);
     await testSurvival(browser);

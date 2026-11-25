@@ -14,7 +14,7 @@ A round starts with up to five words. Misses return once at the end with shuffle
 
 After the automatic retry, players can practise just the words they still missed. Each optional pass drops words answered correctly and keeps the original score. A scheduled word still missed stays due for the next round. An extra retry from free practice preserves the original review date. A word remains eligible for review after it is marked learned.
 
-“Learned” records a successful scheduled review after an earlier correct answer.
+“Learned” records the first successful delayed review and “Retained” records three. Missing a word brings its review forward without removing an earned stage. Daily words first enter the collection as “Discovered”; regular practice starts their progression. A practice round can include one optional sentence prompt for a learned word when its example contains the exact headword. Players can switch to the synonym choices at any time.
 
 Each language saves the current and best run of consecutive correct answers across modes. A wrong answer or skip resets the run. Correction cards and daily replays leave it untouched.
 

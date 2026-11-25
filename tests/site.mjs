@@ -134,6 +134,7 @@ try {
       await dailyButton.click();
     }
     assert.equal(await daily.locator(".feedback .difficulty").innerText(), difficulty);
+    assert.equal(await daily.locator(".word-stage").innerText(), "Descoberta");
     await daily.getByRole("button", { name: i === 3 ? "Ver resultado" : "Próxima palavra" }).click();
   }
   assert.match(await daily.locator(".score").innerText(), /0\s*\/\s*4/);

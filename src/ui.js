@@ -5,7 +5,7 @@ import {
   wordsById,
   restoreState,
   start,
-  answer,
+  answer, answerRecall, recallPrompt, wordStage, RETAINED_REVIEWS,
   next,
   collectionCounts, nextMilestone, finish, missedWords, retryMissed,
   roundScore,
@@ -79,9 +79,32 @@ function wordHeading(word) {
   return '<div class="word-heading"><h1>' + esc(word.word) + '</h1><span class="difficulty" data-band="' +
     esc(word.levelId) + '">' + label + '</span></div>';
 }
-function wordStatus(word) {
-  if (learned(state, word)) return t("learned");
-  return t(state.progress[word.id]?.seen ? "learning" : "unseen");
+const stages = ["discovered", "learning", "learned", "retained"];
+function stageBar(word, card) {
+  const status = wordStage(state, word);
+  const stageIndex = stages.indexOf(status);
+  const reviews = state.progress[word.id]?.delayedReviews ?? 0;
+  return '<details class="word-stage" data-stage="' + status + '"><summary>' +
+    '<span class="stage-track" aria-hidden="true">' +
+    stages.map((_, index) =>
+      index === stageIndex ? '<i class="filled current"></i>' : index < stageIndex ? '<i class="filled"></i>' : '<i></i>'
+    ).join("") + '</span><span>' + t(status) +
+    (card.learnedReview ? ' <small>· ' + t("reviewLabel") + '</small>' : '') +
+    '</span><i class="stage-chevron" aria-hidden="true"></i></summary>' +
+    '<p class="stage-tip">' + t("stageTip." + status, { count: reviews, total: RETAINED_REVIEWS }) + '</p></details>';
+}
+function currentWordStage() {
+  if (state.survivalActive) return;
+  const session = activeSession(state);
+  const word = wordsById.get(session?.cards[session.cursor]?.id);
+  if (word) return wordStage(state, word);
+}
+function recallQuestion(prompt) {
+  return '<section class="question"><h1>' + t("recallPrompt") + '</h1><p>' + esc(prompt) + '</p></section>' +
+    '<form class="recall-form"><input name="word" required type="text" autocomplete="off" autocapitalize="none" spellcheck="false"' +
+    ' aria-label="' + t("recallWord") + '" aria-describedby="recall-result"><button class="primary" type="submit">' +
+    t("recallCheck") + '</button><p id="recall-result" role="status"></p></form>' +
+    '<button class="unsure" data-action="recall-options">' + t("recallOptions") + '</button>';
 }
 function reviewTime(word) {
   const progress = state.progress[word.id];
@@ -200,7 +223,7 @@ function home() {
                 esc(w.word) +
                 (state.progress[w.id]?.seen ? "<small class=\"synonym\">" + esc(w.key) + "</small>" : "") +
                 "</span><small>" +
-                wordStatus(w) +
+                t(wordStage(state, w)) +
                 "</small></li>",
             )
             .join("") +
@@ -268,6 +291,7 @@ function play(s) {
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
+      (state.survivalActive ? "" : stageBar(word, card)) +
       (state.dailyActive || state.survivalActive ? "" : !correct && !card.correction
         ? '<p class="review-time">' + t("endRetry") + '</p>' : reviewTime(word)) +
       (value && !correct
@@ -279,6 +303,10 @@ function play(s) {
         translate(s.cursor === s.cards.length - 1 || (state.survivalActive && !correct) ? "result" : "nextWord"),
       )
     );
+  }
+  if (card.recall && !card.correction && !state.dailyActive && !state.survivalActive) {
+    const prompt = recallPrompt(word);
+    if (prompt) return top + recallQuestion(prompt);
   }
   return (
     top +
@@ -511,22 +539,37 @@ window.addEventListener("storage", (e) => {
     render();
   }
 });
+const openTips = ".run-tip[open], .word-stage[open]";
 document.addEventListener("click", event => {
-  const tip = root.querySelector(".run-tip[open]");
-  if (tip && !tip.contains(event.target)) tip.open = false;
+  for (const tip of root.querySelectorAll(openTips)) if (!tip.contains(event.target)) tip.open = false;
 });
 document.addEventListener("keydown", event => {
-  const tip = root.querySelector(".run-tip[open]");
-  if (event.key === "Escape" && tip) {
+  if (event.key !== "Escape") return;
+  const tip = root.querySelector(openTips);
+  if (tip) {
     tip.open = false;
     tip.querySelector("summary").focus();
   }
+});
+root.addEventListener("submit", event => {
+  const form = event.target;
+  if (!form.matches(".recall-form")) return;
+  event.preventDefault();
+  const previousRun = state.answerRun ?? 0;
+  const previousStage = currentWordStage();
+  if (!answerRecall(state, form.elements.word.value)) {
+    form.querySelector("#recall-result").textContent = translate("recallTryAgain");
+    form.elements.word.select();
+    return;
+  }
+  refreshAfterAnswer(previousRun, previousStage);
 });
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
   const previousRun = state.answerRun ?? 0;
+  const previousStage = id.startsWith("answer-") || id === "unsure" ? currentWordStage() : undefined;
   if (id === "copy-link") { copyShareLink(); return; }
   if (id === "share" && (state.dailyActive || state.survivalActive)) {
     shareResult(target);
@@ -555,6 +598,7 @@ root.addEventListener("click", (e) => {
     const s = activeSession(state);
     if (id.startsWith("answer-"))
       answer(state, s.cards[s.cursor].options[Number(id.slice(7))]);
+    else if (id === "recall-options") delete s.cards[s.cursor].recall;
     else if (id === "unsure") answer(state, null);
     else if (id === "next") next(state);
     else if (id === "continue" || id === "close") {
@@ -562,15 +606,21 @@ root.addEventListener("click", (e) => {
       if (id === "continue") start(state);
     }
   }
+  refreshAfterAnswer(previousRun, previousStage);
+  if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
+});
+function refreshAfterAnswer(previousRun, previousStage) {
   save();
   render(true);
-  if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
+  const progress = root.querySelector(".word-stage");
+  if (progress && previousStage && progress.dataset.stage !== previousStage)
+    progress.classList.add("stage-advanced");
   const bolt = root.querySelector(".answer-run");
   if (bolt && state.answerRun > previousRun) {
     bolt.querySelector(".run-count").dataset.previous = previousRun;
     bolt.classList.add("run-increased");
   }
-});
+}
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {
   if (!["http:", "https:", "file:"].includes(entry.protocol)) return;

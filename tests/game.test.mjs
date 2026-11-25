@@ -4,7 +4,7 @@ import pack from "../packs/pt-PT.json" with { type: "json" };
 import { emptyProgress } from "../vendor/openquiz/scheduler.ts";
 import {
   levels, practiceLevels, wordsById, restoreState, fresh, start, answer, next, finish,
-  roundScore, learned, missedWords, retryMissed, collectionCounts, nextMilestone,
+  roundScore, learned, missedWords, retryMissed, collectionCounts, nextMilestone, wordStage, recallPrompt, answerRecall,
 } from "../src/game.js";
 
 const DAY = 86_400_000;
@@ -444,4 +444,53 @@ test("a correction counts as one discovery and a later scheduled recall earns ma
 test("collection goals start small, grow and stop at the pack size", () => {
   assert.deepEqual([0, 4, 5, 9, 10, 24, 25, 50].map(n => nextMilestone(n, 61)), [5, 5, 10, 10, 25, 25, 50, 61]);
   assert.equal(nextMilestone(0, 3), 3);
+});
+
+test("feedback marks an already learned word as a review, including in free practice", () => {
+  const state = fresh();
+  state.progress[first.id] = progress(first, { dueAt: NOW });
+  oneCard(state);
+  answer(state, first.key, NOW);
+  assert.ok(learned(state, first));
+  assert.equal(state.session.cards[0].learnedReview, undefined);
+  oneCard(state, first, true);
+  answer(state, null, NOW);
+  assert.equal(restoreState(state).session.cards[0].learnedReview, true);
+});
+
+
+test("three delayed successes earn retention, which survives a miss and correction", () => {
+  const state = fresh();
+  state.progress[first.id] = progress(first, { dueAt: NOW });
+  for (const stage of ["learned", "learned", "retained"]) {
+    oneCard(state);
+    answer(state, first.key, state.progress[first.id].dueAt);
+    assert.equal(wordStage(state, first), stage);
+  }
+  const due = state.progress[first.id].dueAt;
+  oneCard(state);
+  answer(state, null, due);
+  assert.equal(wordStage(state, first), "retained");
+  assert.equal(state.progress[first.id].dueAt, due);
+  next(state);
+  answer(state, first.key, due);
+  assert.equal(state.progress[first.id].delayedReviews, 3);
+  assert.equal(state.progress[first.id].dueAt, due + DAY);
+  assert.equal(wordStage(restoreState(state), first), "retained");
+});
+
+test("typed recall checks a whole headword and lets players try again without a penalty", () => {
+  const state = fresh();
+  state.progress[first.id] = progress(first, { dueAt: NOW, delayedReviews: 2 });
+  start(state, NOW, rng);
+  assert.equal(state.session.cards.filter(card => card.recall).length, 1);
+  assert.match(recallPrompt(first), /p___/i);
+  assert.equal(recallPrompt({ word: "ponderar", example: "ponderaram ontem" }), null);
+  assert.equal(recallPrompt({ word: "ponderar", example: "ponderar e voltar a ponderar" }), null);
+  assert.equal(answerRecall(state, "outra", NOW), false);
+  assert.equal(state.session.answers.length, 0);
+  assert.equal(answerRecall(state, "  PONDERAR ", NOW), true);
+  assert.equal(roundScore(state.session), 1);
+  assert.equal(wordStage(state, first), "retained");
+  assert.equal(answerRecall(state, first.word, NOW), false);
 });

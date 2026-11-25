@@ -667,6 +667,61 @@ h2,
   padding: .8rem .55rem 0;
 }
 .daily-result .daily-streak[open] { padding-top: .5rem; }
+.recall-form { display: grid; gap: .65rem; }
+.recall-form input { width: 100%; min-height: 48px; padding: .75rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); font: inherit; }
+.recall-form button { width: 100%; }
+#recall-result { margin: 0; color: var(--muted); }
+#recall-result:empty { display: none; }
+.word-stage { position: relative; margin-top: .75rem; font-size: .85rem; }
+.word-stage summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 .45rem;
+  border-radius: .5rem;
+  background: var(--soft);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 650;
+}
+.word-stage summary::-webkit-details-marker { display: none; }
+.word-stage summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.word-stage small { font-size: inherit; font-weight: 400; color: var(--muted); white-space: nowrap; }
+.stage-chevron {
+  margin-inline-start: .5rem;
+  width: .32rem;
+  height: .32rem;
+  border: solid var(--muted);
+  border-width: 0 1px 1px 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+.word-stage[open] .stage-chevron { transform: translateY(1px) rotate(225deg); }
+.stage-track { display: inline-flex; gap: 2px; margin-inline-end: .5rem; }
+.stage-track i { width: 1rem; height: .32rem; border-radius: 1rem; background: var(--track); }
+.stage-track .filled { background: color-mix(in srgb, var(--ink) 52%, var(--surface)); }
+.stage-track .current { background: var(--green); }
+.word-stage[data-stage="discovered"] .current { background: var(--current-step); }
+.word-stage[data-stage="retained"] .current { box-shadow: 0 0 0 1px var(--green); }
+.stage-tip {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(100% + .3rem);
+  z-index: 2;
+  width: max-content;
+  max-width: min(17rem, 100%);
+  margin: 0;
+  padding: .45rem .65rem;
+  border-radius: .55rem;
+  color: var(--paper);
+  background: var(--ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stage-advanced .current { animation: stage-flash 640ms ease-out; }
+  @keyframes stage-flash {
+    from { transform: scaleX(.4); opacity: .6; }
+    45% { transform: scale(1.1, 1.35); box-shadow: 0 0 6px var(--green); }
+  }
+}
 .collection-progress {
   margin: 1.2rem 0;
   padding: 1rem 0;
