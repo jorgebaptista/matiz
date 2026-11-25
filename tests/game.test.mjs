@@ -429,7 +429,7 @@ test("a correction counts as one discovery and a later scheduled recall earns ma
   next(state);
   assert.equal(state.session.discoveries, 1);
   assert.equal(state.session.promotions ?? 0, 0);
-  assert.deepEqual(state.session.collection, { total: collectionCounts(state).total, discovered: 5, mastered: 4 });
+  assert.deepEqual(state.session.collection, { total: collectionCounts(state).total, discovered: 5, mastered: 4, retained: 0 });
   state = restoreState(structuredClone(state));
   oneCard(state);
   answer(state, first.key, state.progress[first.id].dueAt);
@@ -467,6 +467,9 @@ test("three delayed successes earn retention, which survives a miss and correcti
     answer(state, first.key, state.progress[first.id].dueAt);
     assert.equal(wordStage(state, first), stage);
   }
+  assert.equal(state.session.consolidations, 1);
+  next(state);
+  assert.equal(state.session.collection.retained, 1);
   const due = state.progress[first.id].dueAt;
   oneCard(state);
   answer(state, null, due);

@@ -141,8 +141,8 @@ try {
   const progressPanel = daily.locator(".collection-progress");
   assert.equal(await progressPanel.locator(".round-gains").innerText(), "+4 descobertas");
   const stages = (await progressPanel.locator("dd").allTextContents()).map(Number);
-  assert.deepEqual(stages.slice(0, 2), [0, 4]);
-  assert.ok(stages[2] > 0);
+  assert.deepEqual(stages.slice(0, 3), [0, 0, 4]);
+  assert.ok(stages[3] > 0);
   const resultRow = daily.locator(".daily-result");
   const rowBounds = await resultRow.boundingBox();
   const scoreBounds = await resultRow.locator(".score").boundingBox();

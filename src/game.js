@@ -246,9 +246,13 @@ export function learned(state, word) {
   return Boolean(progress?.legacyLearned || progress?.delayedReviews > 0);
 }
 
+function isRetained(state, word) {
+  return state.progress[word.id]?.delayedReviews >= RETAINED_REVIEWS;
+}
+
 export function wordStage(state, word) {
   const progress = state.progress[word.id];
-  if (progress?.delayedReviews >= RETAINED_REVIEWS) return "retained";
+  if (isRetained(state, word)) return "retained";
   if (learned(state, word)) return "learned";
   if (progress?.dailyDiscovery) return "discovered";
   return seen(state, word) ? "learning" : "unseen";
@@ -325,17 +329,18 @@ export function start(state, now = Date.now(), rng = Math.random) {
 }
 
 export function collectionCounts(state, available = practiceLevels(dailyDay(), state.progress)) {
-  let total = 0, discovered = 0, mastered = 0;
+  let total = 0, discovered = 0, mastered = 0, retained = 0;
   for (const band of available) {
     total += band.words.length;
     for (const word of band.words) {
       if (learned(state, word)) {
         mastered++;
         discovered++;
+        if (isRetained(state, word)) retained++;
       } else if (seen(state, word)) discovered++;
     }
   }
-  return { total, discovered, mastered };
+  return { total, discovered, mastered, retained };
 }
 
 export function nextMilestone(mastered, total) {
@@ -410,8 +415,11 @@ export function answer(state, value, now = Date.now()) {
   progress.reviewStep = correct
     ? Math.min(INTERVALS.length - 1, (prior.retry ? -1 : prior.reviewStep ?? -1) + 1)
     : -1;
-  if (correct && !prior.retry && prior.reviewStep >= 0 && prior.seen > 0)
+  if (correct && !prior.retry && prior.reviewStep >= 0 && prior.seen > 0) {
     progress.delayedReviews++;
+    if (progress.delayedReviews === RETAINED_REVIEWS)
+      session.consolidations = (session.consolidations ?? 0) + 1;
+  }
   delete progress.dailyDiscovery;
   progress.retry = !correct;
   progress.dueAt = now + (correct ? INTERVALS[progress.reviewStep] * DAY : 0);

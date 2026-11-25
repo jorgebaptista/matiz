@@ -335,22 +335,31 @@ function dailyLabel(s) {
   return t("daily") + " · " + esc(date.format(s.day * 86_400_000)) + (s.debut ? "" : " · " + t("dailyEncore"));
 }
 function collectionPanel(session) {
-  const { total, discovered, mastered } = session.collection ?? collectionCounts(state);
+  const collection = session.collection?.retained == null ? collectionCounts(state) : session.collection;
+  const { total, discovered, mastered, retained } = collection;
   if (!total) return "";
   const discoveries = session.discoveries ?? 0, promotions = session.promotions ?? 0;
+  const consolidations = session.consolidations ?? 0;
   const gains = [];
   if (discoveries) gains.push(t("roundDiscovered", { count: discoveries }));
   if (promotions) gains.push(t("roundLearned", { count: promotions }));
+  if (consolidations) gains.push(t("roundRetained", { count: consolidations }));
   if (!gains.length) gains.push(t("roundPractised", { count: new Set(session.cards.map(c => c.id)).size }));
   const goal = nextMilestone(mastered, total);
   const hit = session.milestone;
   const segment = (kind, count, gain) =>
     '<i class="' + kind + '" style="width:' + (100 * count / total) + '%;--from:' +
     (count ? Math.max(0, count - gain) / count : 1) + '"></i>';
-  const legend = [["stageLearned", mastered], ["learning", discovered - mastered], ["unseen", total - discovered]];
+  const legend = [
+    ["stageRetained", retained],
+    ["stageLearned", mastered - retained],
+    ["stageLearning", discovered - mastered],
+    ["unseen", total - discovered],
+  ];
   return '<section class="collection-progress"><h2>' + t("yourWords") + '</h2><p class="round-gains">' +
     gains.join(" · ") + '</p><div class="collection-bar" aria-hidden="true">' +
     segment("discovered", discovered, discoveries) + segment("mastered", mastered, promotions) +
+    segment("retained", retained, consolidations) +
     '</div><dl>' + legend.map(([label, value]) => '<div><dt>' + t(label) + '</dt><dd>' + esc(value) + '</dd></div>').join("") +
     '</dl><p class="collection-goal' + (hit ? ' hit' : '') + '">' +
     (hit ? t("goalReached", { count: hit }) : mastered >= total ? t("allLearned") :

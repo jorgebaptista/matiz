@@ -202,6 +202,12 @@ try {
     }, word);
     await page.reload();
     await page.locator(".hero .primary").click();
+    await page.evaluate(() => {
+      const key = "matiz.pt-PT.v1", saved = JSON.parse(localStorage.getItem(key));
+      saved.session.cards = saved.session.cards.slice(0, 1);
+      localStorage.setItem(key, JSON.stringify(saved));
+    });
+    await page.reload();
     assert.equal(await h1.innerText(), "Completa a frase");
     assert.equal(await page.locator(".choice").count(), 0);
     const input = page.getByRole("textbox", { name: "Palavra em falta" });
@@ -223,8 +229,18 @@ try {
     assert.equal(await tip.isVisible(), false);
     assert.equal(await stage.locator("summary").evaluate(el => el === document.activeElement), true);
 
+    await tap("Ver resultado");
+    const collection = page.locator(".collection-progress");
+    assert.equal(await collection.locator(".round-gains").innerText(), "+1 consolidada");
+    assert.equal(await collection.locator("dt").first().innerText(), "Consolidadas");
+    assert.deepEqual((await collection.locator("dd").allTextContents()).slice(0, 3), ["1", "0", "0"]);
+    assert.ok(await collection.locator(".collection-bar .retained").isVisible());
+    await page.reload();
+    assert.equal(await collection.locator("dd").first().innerText(), "1");
+
     await page.evaluate(() => {
       const key = "matiz.pt-PT.v1", saved = JSON.parse(localStorage.getItem(key));
+      saved.session.cursor = 0;
       saved.session.answers = [];
       localStorage.setItem(key, JSON.stringify(saved));
     });

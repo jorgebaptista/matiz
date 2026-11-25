@@ -18,7 +18,7 @@ After the automatic retry, players can practise just the words they still missed
 
 Each language saves the current and best run of consecutive correct answers across modes. A wrong answer or skip resets the run. Correction cards and daily replays leave it untouched.
 
-Round results show the collection in three stages. First encounters count as discoveries, and the first successful delayed review counts as a learned word. Milestones are 5, 10, 25 and every 25 learned words after that, capped at the available collection.
+Round results show consolidated words, other learned words, words in progress and those still to discover. First encounters count as discoveries, and the first successful delayed review counts as a learned word. Milestones are 5, 10, 25 and every 25 learned words after that, capped at the available collection.
 
 ## Daily words
 
