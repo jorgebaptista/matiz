@@ -734,13 +734,15 @@ h2,
 .collection-bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; transform-origin: left; }
 .collection-bar .discovered { background: var(--discovered); }
 .collection-bar .mastered { background: var(--green); }
+.collection-bar .retained { background: var(--current-step); }
 .collection-progress dl { display: flex; justify-content: space-between; gap: .5rem; margin: .65rem 0; }
-.collection-progress dl div { display: flex; flex-direction: column-reverse; }
+.collection-progress dl div { display: flex; flex-direction: column-reverse; justify-content: flex-end; }
 .collection-progress dt { font-size: .8rem; color: var(--muted); }
 .collection-progress dd { margin: 0; font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .collection-progress dd::before { content: ""; display: inline-block; width: .45rem; height: .45rem; margin-right: .3rem; vertical-align: middle; border-radius: 100%; background: var(--track); }
-.collection-progress dl div:first-child dd::before { background: var(--green); }
-.collection-progress dl div:nth-child(2) dd::before { background: var(--discovered); }
+.collection-progress dl div:first-child dd::before { background: var(--current-step); }
+.collection-progress dl div:nth-child(2) dd::before { background: var(--green); }
+.collection-progress dl div:nth-child(3) dd::before { background: var(--discovered); }
 .collection-goal { font-size: .9rem; }
 .collection-goal.hit { font-weight: 700; color: var(--green); }
 @media (prefers-reduced-motion: no-preference) {
