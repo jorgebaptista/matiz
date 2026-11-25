@@ -8,6 +8,16 @@ import { createSurvival, restoreSurvival, survivalVersion, survivalId, survivalA
 const DAY = 24 * 60 * 60 * 1000;
 const INTERVALS = [1, 3, 7, 14, 30];
 const SIZE = 5;
+const RETAINED_REVIEWS = 3;
+
+export function recallPrompt(word) {
+  const parts = word.example.split(/([\p{L}\p{M}]+(?:[-’'][\p{L}\p{M}]+)*)/u);
+  const target = word.word.toLocaleLowerCase(pack.locale);
+  const matches = parts.filter((part, index) => index % 2 === 1 && part.toLocaleLowerCase(pack.locale) === target);
+  if (matches.length !== 1) return null;
+  parts[parts.indexOf(matches[0])] = [...matches[0]][0] + "___";
+  return parts.join("");
+}
 
 /** Bands and words retain pack order and stable save identifiers. */
 export const levels = gameLevels(pack);
@@ -236,6 +246,14 @@ export function learned(state, word) {
   return Boolean(progress?.legacyLearned || progress?.delayedReviews > 0);
 }
 
+export function wordStage(state, word) {
+  const progress = state.progress[word.id];
+  if (progress?.delayedReviews >= RETAINED_REVIEWS) return "retained";
+  if (learned(state, word)) return "learned";
+  if (progress?.dailyDiscovery) return "discovered";
+  return seen(state, word) ? "learning" : "unseen";
+}
+
 const seen = (state, word) => (state.progress[word.id]?.seen ?? 0) > 0;
 const dueAt = (progress) => Number.isFinite(progress?.dueAt)
   ? progress.dueAt : 0;
@@ -290,6 +308,12 @@ export function start(state, now = Date.now(), rng = Math.random) {
     cards.push({ id: word.id, key: word.key, options: shuffle(word.choices, rng), practice });
   }
   if (!cards.length) return null;
+  const recall = cards.find(card => {
+    const word = wordsById.get(card.id);
+    const prior = state.progress[card.id];
+    return learned(state, word) && !prior?.retry && recallPrompt(word);
+  });
+  if (recall) recall.recall = true;
   state.session = {
     cards,
     cursor: 0,
@@ -332,8 +356,22 @@ function discoverDailyWord(state, daily, card, value, now) {
   progress.retry = !correct;
   progress.reviewStep = correct ? 0 : -1;
   progress.delayedReviews = 0;
+  progress.dailyDiscovery = true;
   state.progress[word.id] = progress;
   daily.discoveries++;
+}
+
+/** Check a typed recall using the same answer and scheduling rules as a synonym pick. */
+export function answerRecall(state, text, now) {
+  if (state.dailyActive || state.survivalActive || !state.active) return false;
+  const session = state.session;
+  const card = session?.cards[session.cursor];
+  if (!card?.recall || card.correction || session.answers.length !== session.cursor) return false;
+  const word = wordsById.get(card.id);
+  const normalize = value => value.trim().normalize("NFC").toLocaleLowerCase(pack.locale);
+  if (normalize(text) !== normalize(word.word)) return false;
+  answer(state, card.key ?? word.key, now);
+  return true;
 }
 
 /** Count an answer once and schedule from answer time, never from round creation. */
@@ -374,6 +412,7 @@ export function answer(state, value, now = Date.now()) {
     : -1;
   if (correct && !prior.retry && prior.reviewStep >= 0 && prior.seen > 0)
     progress.delayedReviews++;
+  delete progress.dailyDiscovery;
   progress.retry = !correct;
   progress.dueAt = now + (correct ? INTERVALS[progress.reviewStep] * DAY : 0);
   state.progress[word.id] = progress;

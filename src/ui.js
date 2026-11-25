@@ -5,7 +5,7 @@ import {
   wordsById,
   restoreState,
   start,
-  answer,
+  answer, answerRecall, recallPrompt, wordStage,
   next,
   collectionCounts, nextMilestone, finish, missedWords, retryMissed,
   roundScore,
@@ -79,16 +79,20 @@ function wordHeading(word) {
   return '<div class="word-heading"><h1>' + esc(word.word) + '</h1><span class="difficulty" data-band="' +
     esc(word.levelId) + '">' + label + '</span></div>';
 }
-function wordStatus(word) {
-  if (learned(state, word)) return t("learned");
-  return t(state.progress[word.id]?.seen ? "learning" : "unseen");
-}
-function wordStage(word, card) {
-  const mastered = learned(state, word);
-  const stage = mastered ? 3 : state.progress[word.id]?.seen ? 2 : 1;
+const stages = ["discovered", "learning", "learned", "retained"];
+function stageBar(word, card) {
+  const status = wordStage(state, word);
+  const stageIndex = stages.indexOf(status);
   return '<div class="word-stage"><span class="stage-track" aria-hidden="true">' +
-    [1, 2, 3].map(step => step <= stage ? '<i class="filled"></i>' : '<i></i>').join("") +
-    '</span><span>' + wordStatus(word) + (card.learnedReview ? ' · ' + t("reviewLabel") : '') + '</span></div>';
+    stages.map((_, index) => index <= stageIndex ? '<i class="filled"></i>' : '<i></i>').join("") +
+    '</span><span>' + t(status) + (card.learnedReview ? ' · ' + t("reviewLabel") : '') + '</span></div>';
+}
+function recallQuestion(prompt) {
+  return '<section class="question"><h1>' + t("recallPrompt") + '</h1><p>' + esc(prompt) + '</p></section>' +
+    '<form class="recall-form"><input name="word" required type="text" autocomplete="off" autocapitalize="none" spellcheck="false"' +
+    ' aria-label="' + t("recallWord") + '" aria-describedby="recall-result"><button class="primary" type="submit">' +
+    t("recallCheck") + '</button><p id="recall-result" role="status"></p></form>' +
+    '<button class="unsure" data-action="recall-options">' + t("recallOptions") + '</button>';
 }
 function reviewTime(word) {
   const progress = state.progress[word.id];
@@ -207,7 +211,7 @@ function home() {
                 esc(w.word) +
                 (state.progress[w.id]?.seen ? "<small class=\"synonym\">" + esc(w.key) + "</small>" : "") +
                 "</span><small>" +
-                wordStatus(w) +
+                t(wordStage(state, w)) +
                 "</small></li>",
             )
             .join("") +
@@ -275,7 +279,7 @@ function play(s) {
       '</p><div class="example"><h2>' + t("example") + '</h2><blockquote>' +
       esc(word.example) +
       "</blockquote></div>" +
-      (state.dailyActive || state.survivalActive ? "" : wordStage(word, card)) +
+      (state.survivalActive ? "" : stageBar(word, card)) +
       (state.dailyActive || state.survivalActive ? "" : !correct && !card.correction
         ? '<p class="review-time">' + t("endRetry") + '</p>' : reviewTime(word)) +
       (value && !correct
@@ -287,6 +291,10 @@ function play(s) {
         translate(s.cursor === s.cards.length - 1 || (state.survivalActive && !correct) ? "result" : "nextWord"),
       )
     );
+  }
+  if (card.recall && !card.correction && !state.dailyActive && !state.survivalActive) {
+    const prompt = recallPrompt(word);
+    if (prompt) return top + recallQuestion(prompt);
   }
   return (
     top +
@@ -530,6 +538,18 @@ document.addEventListener("keydown", event => {
     tip.querySelector("summary").focus();
   }
 });
+root.addEventListener("submit", event => {
+  const form = event.target;
+  if (!form.matches(".recall-form")) return;
+  event.preventDefault();
+  const previousRun = state.answerRun ?? 0;
+  if (!answerRecall(state, form.elements.word.value)) {
+    form.querySelector("#recall-result").textContent = translate("recallTryAgain");
+    form.elements.word.select();
+    return;
+  }
+  refreshAfterAnswer(previousRun);
+});
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
@@ -563,6 +583,7 @@ root.addEventListener("click", (e) => {
     const s = activeSession(state);
     if (id.startsWith("answer-"))
       answer(state, s.cards[s.cursor].options[Number(id.slice(7))]);
+    else if (id === "recall-options") delete s.cards[s.cursor].recall;
     else if (id === "unsure") answer(state, null);
     else if (id === "next") next(state);
     else if (id === "continue" || id === "close") {
@@ -570,15 +591,18 @@ root.addEventListener("click", (e) => {
       if (id === "continue") start(state);
     }
   }
+  refreshAfterAnswer(previousRun);
+  if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
+});
+function refreshAfterAnswer(previousRun) {
   save();
   render(true);
-  if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
   const bolt = root.querySelector(".answer-run");
   if (bolt && state.answerRun > previousRun) {
     bolt.querySelector(".run-count").dataset.previous = previousRun;
     bolt.classList.add("run-increased");
   }
-});
+}
 const entry = new URL(window.location.href);
 function clearChallengeUrl() {
   if (!["http:", "https:", "file:"].includes(entry.protocol)) return;

@@ -667,6 +667,11 @@ h2,
   padding: .8rem .55rem 0;
 }
 .daily-result .daily-streak[open] { padding-top: .5rem; }
+.recall-form { display: grid; gap: .65rem; }
+.recall-form input { width: 100%; min-height: 48px; padding: .75rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); font: inherit; }
+.recall-form button { width: 100%; }
+#recall-result { margin: 0; color: var(--muted); }
+#recall-result:empty { display: none; }
 .word-stage { display: flex; align-items: center; gap: .55rem; margin-top: .85rem; color: var(--muted); font-size: .85rem; }
 .stage-track { display: inline-flex; gap: 2px; }
 .stage-track i { width: 1rem; height: .32rem; border-radius: 1rem; background: var(--track); }
