@@ -5,7 +5,7 @@ import {
   wordsById,
   restoreState,
   start,
-  answer, answerRecall, recallPrompt, wordStage,
+  answer, answerRecall, recallPrompt, wordStage, RETAINED_REVIEWS,
   next,
   collectionCounts, nextMilestone, finish, missedWords, retryMissed,
   roundScore,
@@ -83,9 +83,21 @@ const stages = ["discovered", "learning", "learned", "retained"];
 function stageBar(word, card) {
   const status = wordStage(state, word);
   const stageIndex = stages.indexOf(status);
-  return '<div class="word-stage"><span class="stage-track" aria-hidden="true">' +
-    stages.map((_, index) => index <= stageIndex ? '<i class="filled"></i>' : '<i></i>').join("") +
-    '</span><span>' + t(status) + (card.learnedReview ? ' · ' + t("reviewLabel") : '') + '</span></div>';
+  const reviews = state.progress[word.id]?.delayedReviews ?? 0;
+  return '<details class="word-stage" data-stage="' + status + '"><summary>' +
+    '<span class="stage-track" aria-hidden="true">' +
+    stages.map((_, index) =>
+      index === stageIndex ? '<i class="filled current"></i>' : index < stageIndex ? '<i class="filled"></i>' : '<i></i>'
+    ).join("") + '</span><span>' + t(status) +
+    (card.learnedReview ? ' <small>· ' + t("reviewLabel") + '</small>' : '') +
+    '</span><i class="stage-chevron" aria-hidden="true"></i></summary>' +
+    '<p class="stage-tip">' + t("stageTip." + status, { count: reviews, total: RETAINED_REVIEWS }) + '</p></details>';
+}
+function currentWordStage() {
+  if (state.survivalActive) return;
+  const session = activeSession(state);
+  const word = wordsById.get(session?.cards[session.cursor]?.id);
+  if (word) return wordStage(state, word);
 }
 function recallQuestion(prompt) {
   return '<section class="question"><h1>' + t("recallPrompt") + '</h1><p>' + esc(prompt) + '</p></section>' +
@@ -527,13 +539,14 @@ window.addEventListener("storage", (e) => {
     render();
   }
 });
+const openTips = ".run-tip[open], .word-stage[open]";
 document.addEventListener("click", event => {
-  const tip = root.querySelector(".run-tip[open]");
-  if (tip && !tip.contains(event.target)) tip.open = false;
+  for (const tip of root.querySelectorAll(openTips)) if (!tip.contains(event.target)) tip.open = false;
 });
 document.addEventListener("keydown", event => {
-  const tip = root.querySelector(".run-tip[open]");
-  if (event.key === "Escape" && tip) {
+  if (event.key !== "Escape") return;
+  const tip = root.querySelector(openTips);
+  if (tip) {
     tip.open = false;
     tip.querySelector("summary").focus();
   }
@@ -543,18 +556,20 @@ root.addEventListener("submit", event => {
   if (!form.matches(".recall-form")) return;
   event.preventDefault();
   const previousRun = state.answerRun ?? 0;
+  const previousStage = currentWordStage();
   if (!answerRecall(state, form.elements.word.value)) {
     form.querySelector("#recall-result").textContent = translate("recallTryAgain");
     form.elements.word.select();
     return;
   }
-  refreshAfterAnswer(previousRun);
+  refreshAfterAnswer(previousRun, previousStage);
 });
 root.addEventListener("click", (e) => {
   const target = e.target.closest("button[data-action]");
   if (!target || target.disabled) return;
   const id = target.dataset.action;
   const previousRun = state.answerRun ?? 0;
+  const previousStage = id.startsWith("answer-") || id === "unsure" ? currentWordStage() : undefined;
   if (id === "copy-link") { copyShareLink(); return; }
   if (id === "share" && (state.dailyActive || state.survivalActive)) {
     shareResult(target);
@@ -591,12 +606,15 @@ root.addEventListener("click", (e) => {
       if (id === "continue") start(state);
     }
   }
-  refreshAfterAnswer(previousRun);
+  refreshAfterAnswer(previousRun, previousStage);
   if (id === "next" && !activeSession(state)?.retryStart) root.querySelector(".collection-progress")?.classList.add("show-gains");
 });
-function refreshAfterAnswer(previousRun) {
+function refreshAfterAnswer(previousRun, previousStage) {
   save();
   render(true);
+  const progress = root.querySelector(".word-stage");
+  if (progress && previousStage && progress.dataset.stage !== previousStage)
+    progress.classList.add("stage-advanced");
   const bolt = root.querySelector(".answer-run");
   if (bolt && state.answerRun > previousRun) {
     bolt.querySelector(".run-count").dataset.previous = previousRun;

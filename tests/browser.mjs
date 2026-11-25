@@ -212,6 +212,16 @@ try {
     await tap("Confirmar");
     assert.equal(await page.locator(".word-stage").innerText(), "Consolidada · Revisão");
     assert.equal(await page.locator(".stage-track .filled").count(), 4);
+    const stage = page.locator(".word-stage");
+    assert.ok(await stage.evaluate(el => el.classList.contains("stage-advanced")));
+    const tip = stage.locator(".stage-tip");
+    assert.equal(await tip.isVisible(), false);
+    await stage.locator("summary").click();
+    assert.match(await tip.innerText(), /3 revisões espaçadas/);
+    assert.equal(await tip.isVisible(), true);
+    await page.keyboard.press("Escape");
+    assert.equal(await tip.isVisible(), false);
+    assert.equal(await stage.locator("summary").evaluate(el => el === document.activeElement), true);
 
     await page.evaluate(() => {
       const key = "matiz.pt-PT.v1", saved = JSON.parse(localStorage.getItem(key));

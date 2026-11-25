@@ -8,7 +8,7 @@ import { createSurvival, restoreSurvival, survivalVersion, survivalId, survivalA
 const DAY = 24 * 60 * 60 * 1000;
 const INTERVALS = [1, 3, 7, 14, 30];
 const SIZE = 5;
-const RETAINED_REVIEWS = 3;
+export const RETAINED_REVIEWS = 3;
 
 export function recallPrompt(word) {
   const parts = word.example.split(/([\p{L}\p{M}]+(?:[-’'][\p{L}\p{M}]+)*)/u);
