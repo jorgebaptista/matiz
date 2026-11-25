@@ -234,7 +234,7 @@ try {
     assert.equal(await collection.locator(".round-gains").innerText(), "+1 consolidada");
     assert.equal(await collection.locator("dt").first().innerText(), "Consolidadas");
     assert.deepEqual((await collection.locator("dd").allTextContents()).slice(0, 3), ["1", "0", "0"]);
-    assert.ok(await collection.locator(".collection-bar .retained").isVisible());
+    await collection.locator(".collection-bar .retained").waitFor({ state: "visible" });
     await page.reload();
     assert.equal(await collection.locator("dd").first().innerText(), "1");
 
