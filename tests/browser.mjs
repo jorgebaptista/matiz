@@ -52,7 +52,7 @@ try {
   await page.locator(".band > summary").first().click();
   const entry = page.locator(".band").first();
   assert.equal(await entry.locator("li").count(), levels[0].words.length);
-  assert.match(await entry.innerText(), /Por descobrir/);
+  assert.doesNotMatch(await entry.innerText(), /Por descobrir/);
   const wordStages = entry.locator(".word-stage");
   assert.equal(await wordStages.count(), levels[0].words.length);
   const firstStage = wordStages.first();
@@ -61,6 +61,7 @@ try {
   assert.equal(await firstStage.locator(".stage-track .filled").count(), 0);
   await firstStage.locator("summary").tap();
   assert.ok(await firstTip.isVisible());
+  assert.equal(await firstTip.locator("strong").innerText(), "Por descobrir");
   assert.match(await firstTip.innerText(), /Ainda não praticaste/);
   const secondStage = wordStages.nth(1);
   await secondStage.locator("summary").tap();
@@ -143,7 +144,7 @@ try {
     ),
   );
   assert.equal(
-    await entry.locator("li").filter({ hasText: "Em aprendizagem" }).count(),
+    await entry.locator('.word-stage[data-stage="learning"]').count(),
     5,
   );
   await page.locator(".hero .primary").click();

@@ -68,7 +68,7 @@ export async function testLanguages(browser) {
     await page.getByRole("button", { name: "Back home", exact: true }).click();
     await page.locator(".band > summary").click();
     assert.match(await page.locator(".band").innerText(), /1 of 1 seen/);
-    assert.match(await page.locator(".band").innerText(), /Learning/);
+    assert.equal(await page.locator('.band .word-stage[data-stage="learning"]').count(), 1);
     const enFinished = await page.evaluate(() => localStorage.getItem("matiz.en-GB.v1"));
     await page.goto("https://matiz.test/jogar/");
     assert.equal(await page.locator("h1").innerText(), ptWord);

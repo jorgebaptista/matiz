@@ -385,10 +385,12 @@ h2,
   gap: 4px 10px;
   padding: 6px 8px;
 }
-.band li > span { flex: 1 1 7rem; min-width: 0; overflow-wrap: anywhere; }
-.band .word-stage { margin: 0; margin-inline-start: auto; }
+.band li > span { flex: 1 1 5rem; min-width: 0; overflow-wrap: anywhere; }
+.band .word-stage { margin: 0; margin-inline-start: auto; text-align: end; }
+.band .word-stage[open] { width: min(11rem, 60%); }
+.band .stage-track { margin-inline-end: 0; }
 .band .stage-track i { width: .65rem; }
-.band .stage-tip { position: static; width: 0; min-width: 100%; max-width: none; margin-top: .3rem; }
+.band .stage-tip { position: static; width: 100%; max-width: none; margin-top: .3rem; text-align: start; }
 .band .synonym, .review-time { color: var(--muted); font-size: 0.9375rem; }
 .band .synonym { display: block; }
 .review-time { margin-top: 14px; }
