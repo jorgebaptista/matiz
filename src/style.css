@@ -372,19 +372,24 @@ h2,
 .trail {
   font-size: 22px;
 }
-.band summary { cursor: pointer; list-style: none; }
-.band summary::-webkit-details-marker { display: none; }
-.band summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.band > summary { cursor: pointer; list-style: none; }
+.band > summary::-webkit-details-marker { display: none; }
+.band > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .band[open] .trail { transform: rotate(90deg); }
 .band ul { list-style: none; padding: 0 0 12px; margin: 0; }
 .band li {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
   padding: 6px 8px;
 }
-.band li small, .review-time { color: var(--muted); font-size: 0.9375rem; }
+.band li > span { flex: 1 1 7rem; min-width: 0; overflow-wrap: anywhere; }
+.band .word-stage { margin: 0; margin-inline-start: auto; }
+.band .stage-track i { width: .65rem; }
+.band .stage-tip { position: static; width: 0; min-width: 100%; max-width: none; margin-top: .3rem; }
+.band .synonym, .review-time { color: var(--muted); font-size: 0.9375rem; }
 .band .synonym { display: block; }
 .review-time { margin-top: 14px; }
 .nav {
