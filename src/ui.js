@@ -84,14 +84,17 @@ function stageBar(word, card) {
   const status = wordStage(state, word);
   const stageIndex = stages.indexOf(status);
   const reviews = state.progress[word.id]?.delayedReviews ?? 0;
-  return '<details class="word-stage" data-stage="' + status + '"><summary>' +
+  const stage = t(status);
+  const label = card ? "" : ' aria-label="' + esc(word.word) + ', ' + stage + '"';
+  const caption = card ? '<span>' + stage +
+    (card.learnedReview ? ' <small>· ' + t("reviewLabel") + '</small>' : '') +
+    '</span><i class="stage-chevron" aria-hidden="true"></i>' : "";
+  return '<details class="word-stage" data-stage="' + status + '"><summary' + label + '>' +
     '<span class="stage-track" aria-hidden="true">' +
     stages.map((_, index) =>
       index === stageIndex ? '<i class="filled current"></i>' : index < stageIndex ? '<i class="filled"></i>' : '<i></i>'
-    ).join("") + '</span><span>' + t(status) +
-    (card.learnedReview ? ' <small>· ' + t("reviewLabel") + '</small>' : '') +
-    '</span><i class="stage-chevron" aria-hidden="true"></i></summary>' +
-    '<p class="stage-tip">' + t("stageTip." + status, { count: reviews, total: RETAINED_REVIEWS }) + '</p></details>';
+    ).join("") + '</span>' + caption + '</summary>' +
+    '<p class="stage-tip">' + (card ? "" : '<strong>' + stage + '</strong><br>') + t("stageTip." + status, { count: reviews, total: RETAINED_REVIEWS }) + '</p></details>';
 }
 function currentWordStage() {
   if (state.survivalActive) return;
@@ -222,9 +225,7 @@ function home() {
                 "<li><span>" +
                 esc(w.word) +
                 (state.progress[w.id]?.seen ? "<small class=\"synonym\">" + esc(w.key) + "</small>" : "") +
-                "</span><small>" +
-                t(wordStage(state, w)) +
-                "</small></li>",
+                "</span>" + stageBar(w) + "</li>",
             )
             .join("") +
           "</ul></details>"
